@@ -1,1 +1,5 @@
 # SA_Ferrorama
+O projeto (Ferrorama)consiste no desenvolvimento de ums sitema voltado ao gerenciamento de informações, focado na ramo ferroviário, o sistema permite o gerenciamento de funcionalidades administrativas, controle de usuários e busca de informações.
+nessa primeira etapa o foco foi a organização do projeto, definição da estrutura do código e desenvolvimento da interface do sistema. Um dos principais objetivos é a criação e organização de um repositório colaborativo, a construção das telas iniciais e a aplicação do conceito de CRUD em PHP.
+A equipe é composta por: Isabela de Oliveira (chefe de equipe), Henrique Kiesewetter, Kaio Carmelindo Kraus e Davi Francisco Freitas.
+O Projeto utiliza tecnologias como HTML5, CSS3, PHP, Bootstrap (para estilização e melhor responsabilidade), Javascript e Git Hub que é usado para os commits.

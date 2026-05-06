@@ -11,6 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.4/font/bootstrap-icons.css" rel="stylesheet">
 
     <title>Login</title>
 </head>
@@ -25,14 +26,20 @@
 
             <label for="inputEmail" class="form-label">Email:</label>
 
-            <input type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp" placeholder="Digite seu email" required>
+            <input type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp"
+                placeholder="Digite seu email" required>
         </div>
 
         <div class="mb-3">
 
             <label for="inputSenha" class="form-label">Senha:</label>
 
-            <input type="password" class="form-control" id="inputSenha" placeholder="Digite sua senha" required>
+            <div class="input-group">
+                <input type="password" class="form-control border-end-0" id="inputSenha" placeholder="Digite sua senha" required>
+                <button class="btn border border-start-0 bg-white" type="button" id="toggleSenha">
+                    <i class="bi bi-eye"></i>
+                </button>
+            </div>
         </div>
 
         <div class="btn1">

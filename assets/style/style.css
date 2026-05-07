@@ -4,6 +4,11 @@
     margin: 0;
 }
 
+body{
+    font-family: 'Segoe UI';
+    color: #ffffff;
+}
+
 /*Login*/
 .form1{
     width: 30vw;
@@ -45,4 +50,62 @@
     border-radius: 25px;
     background-color: #ebebeb;
     border: none;
+}
+
+
+
+/*Tela Geral*/
+
+/*header*/
+header{
+    width: 100vw;
+    height: 8vh;
+    background-color: #072446;
+    display: flex;
+    align-items: center;
+
+}
+
+.titulo1{
+    margin-left: 50px;
+    color: #ED6A1A;
+}
+
+.img1{
+    width: 103px;
+    height: 37px;
+    margin-left: 3vw;
+}
+
+.btn2{
+    height: 40px;
+    width: 70px;
+    border-radius: 10px;
+    border: none;
+    background-color: #ED6A1A;
+    margin-left: 70vw;
+    color: white;
+    font-size: 20px;
+}
+
+
+/*Main*/
+.nav1{
+    width: 300px;
+    height: 92vh;
+    background-color: #092E58;
+}
+
+.lista1{
+    padding: 15px;
+}
+
+.ul1{
+    padding-top: 20px;
+}
+
+.hr1{
+    width: 90%;
+    margin: 0 auto;
+    border-color: #ED6A1A;
 }

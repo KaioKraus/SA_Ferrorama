@@ -63,6 +63,7 @@ header{
     background-color: #072446;
     display: flex;
     align-items: center;
+    box-shadow: #072446 0 0 20px;
 
 }
 
@@ -83,9 +84,15 @@ header{
     border-radius: 10px;
     border: none;
     background-color: #ED6A1A;
-    margin-left: 70vw;
+    position: absolute;
+    right: 70px;
     color: white;
     font-size: 20px;
+}
+
+.btn2:hover{
+    cursor: pointer;
+    box-shadow: #ED6A1A 0px 0px 20px;
 }
 
 
@@ -96,13 +103,30 @@ header{
     background-color: #092E58;
 }
 
+.ul1{
+    padding-top: 20px;
+}
+
 .lista1{
     padding: 15px;
 }
 
-.ul1{
-    padding-top: 20px;
+.lista1:hover{
+    color: #c7c7c7;
+    cursor: pointer;
 }
+
+.lista{
+    color: #ED6A1A;
+    font-weight: bolder;
+    padding: 15px;
+}
+
+a{
+    text-decoration: none;
+    color: #ffffff;
+}
+
 
 .hr1{
     width: 90%;

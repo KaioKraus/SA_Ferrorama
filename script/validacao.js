@@ -46,7 +46,7 @@ if (login) {
         }
 
         if (email === emailDefinido && senhaValue === senhaDefinida) {
-            window.location.href = "tela_geral_home.html";
+            window.location.href = "dashboard.html";
         } else {
             elMensagem.innerHTML = "<div class='text-danger fw-bold'>Dados incorretos!</div>";
         }

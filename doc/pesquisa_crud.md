@@ -1,16 +1,67 @@
-CRUD é basicamente o conjunto de 4 operações fundamentais para manipulação do banco de dados, das quais as 4 operações formam seu nome.
+# CRUD
 
-C - Create (Adiciona novos registros).  
-R - Read (Recupera e exibe dados armazenados ).  
-U - Update (Modifica dados no BD).  
-D - Delete (Remove dados do BD).
+CRUD é o conjunto de 4 operações fundamentais utilizadas para manipular dados em um banco de dados, o nome "CRUD" vem das iniciais dessas 4 operações:
 
-Onde vamos usar: 
+- **C — Create** (Criar novos registros)
+- **R — Read** (Ler ou consultar dados)
+- **U — Update** (Atualizar dados existentes)
+- **D — Delete** (Deletar dados)
 
-  O create vai ser usado em momentos onde vamos adicionar novas informações no banco de dados, como: novos usuários, novos sensores, novas locomotivas, novos dados, novos registros.
+## Create (Criar)
 
- O Read vai ser usado quando necessitarmos visualizar alguma informação ou dado puxado do banco de dados.
+A operação **Create** é utilizada para adicionar novas informações no banco de dados.  
+Quando um novo dado é enviado pelo sistema, ele é armazenado no banco de dados através desse comando.
 
- O Update vai ser usado quando for necessário atualizar algum dado, registro ou senha do banco de dados.
+### Exemplos:
+- Cadastro de novos usuários
+- Adição de sensores
+- Registro de locomotivas
+- Adição de novos dados, informações ou registros
 
-O Delete vai ser usado para quando necessário remover algum login ou apagar sensores ou alguma locomotiva ou qualquer outro dado do banco de dados.
+### Resultado no banco de dados:
+Esse "comando" armazena os dados indicados no banco de dados em sua posição correta.
+
+---
+
+## Read (Ler)
+
+O comando **Read** serve para consultar e exibir informações do banco de dados, permitindo a exibição dos dados.
+
+### Exemplos:
+- Visualizar usuários cadastrados
+- Consultar informações de sensores
+- Exibir dados das locomotivas
+- Buscar registros armazenados
+
+### Efeito no banco de dados:
+Esse comando apenas consulta os dados e pode exibi-los, porem os dados não podem ser alterados.
+
+---
+
+## Update (Atualizar)
+
+O comando **Update** é utilizado para modificar dados que já existem no banco de dados, alterando informações selecionadas no banco de dados.
+
+### Exemplos:
+- Atualizar senha de usuário
+- Alterar informações de sensores
+- Modificar dados de locomotivas
+- Corrigir registros cadastrados
+
+### Efeito no banco de dados:
+Esse comando altera dados existentes dentro do banco de dados.
+
+---
+
+## Delete (Excluir)
+
+o comando **Delete** é responsável por apagar dados do banco de dados.  
+
+### Exemplos:
+- Excluir usuários
+- Remover sensores
+- Apagar locomotivas
+- Deletar dados antigos
+
+### Efeito no banco de dados:
+Esse comando remove permanentemente o dado selecionado da tabela.

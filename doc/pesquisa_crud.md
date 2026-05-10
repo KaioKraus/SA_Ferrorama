@@ -19,7 +19,7 @@ Quando um novo dado é enviado pelo sistema, ele é armazenado no banco de dados
 - Adição de novos dados, informações ou registros
 
 ### Resultado no banco de dados:
-Esse "comando" armazena os dados indicados no banco de dados em sua posição correta.
+Esse comando armazena os dados indicados no banco de dados em sua posição correta.
 
 ---
 

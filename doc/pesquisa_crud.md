@@ -21,6 +21,10 @@ Quando um novo dado é enviado pelo sistema, ele é armazenado no banco de dados
 ### Resultado no banco de dados:
 Esse comando armazena os dados indicados no banco de dados em sua posição correta.
 
+```php
+/*Exemplo de aplicação em código*/
+$conn->query("INSERT INTO usuarios (nome, email) VALUES ('Nome', 'xxxxxxx@gmail.com')");
+```
 ---
 
 ## Read (Ler)
@@ -35,6 +39,11 @@ O comando **Read** serve para consultar e exibir informações do banco de dados
 
 ### Efeito no banco de dados:
 Esse comando apenas consulta os dados e pode exibi-los, porem os dados não podem ser alterados.
+
+```php
+/*Exemplo de aplicação em código*/
+$conn->query("SELECT * FROM usuarios");
+```
 
 ---
 
@@ -51,6 +60,11 @@ O comando **Update** é utilizado para modificar dados que já existem no banco 
 ### Efeito no banco de dados:
 Esse comando altera dados existentes dentro do banco de dados.
 
+```php
+/*Exemplo de aplicação em código*/
+$conn->query("UPDATE usuarios SET nome = 'Isabela de Oliveira' WHERE id = 1");
+```
+
 ---
 
 ## Delete (Excluir)
@@ -65,3 +79,8 @@ o comando **Delete** é responsável por apagar dados do banco de dados.
 
 ### Efeito no banco de dados:
 Esse comando remove permanentemente o dado selecionado da tabela.
+
+```php
+/*Exemplo de aplicação em código*/
+$conn->query("DELETE FROM usuarios WHERE id = 1");
+```

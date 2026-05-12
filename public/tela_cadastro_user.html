@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="../assets/style/style.css">
+    <title>Rafael Onibus</title>
+</head>
+<body>
+    
+    <!--Header-->
+    <header>
+        <h2 class="titulo1">Bem vindo, [NOME]!</h2>
+
+        <img src="../assets/img/logo.png" alt="logo" class="img1">
+    </header>
+
+    <!--Main-->
+    <main>
+
+        <nav class="nav1">
+
+            <ul class="ul1">
+
+                <li class="lista1" id="li1"><a href="" class="lista">Dashboard</a></li><hr class="hr1 opacity-100">
+
+                <li class="lista1" id="li1"><a href="tela_relatorios.html" class="lista1">Relatórios</a></li><hr class="hr1 opacity-100">
+
+                <li class="lista" id="li1"><a href="tela_cadastro_user.html" class="lista1">Usuários</a></li><hr class="hr1 opacity-100">
+
+                <li class="lista1" id="li1"><a href="tela_rotas.html" class="lista1">Rotas</a></li><hr class="hr1 opacity-100">
+
+                <li class="lista1" id="li1"><a href="tela_sensores.html" class="lista1">Sensores</a></li>
+            </ul>
+
+            <button class="btn2" id="btn2" onclick="window.location.href='tela_login.html'">Sair</button>
+        </nav>
+
+        <section class="conteudo">
+            <div class="card_usuarios">
+                <div class="barra_busca">
+                    <div>
+                        <input type="text" class="input_buscar" placeholder="Buscar por ID ou Nome">
+                        <button class="btn_buscar">Buscar</button>    
+                    </div>
+                    <button class="btn_add">Add +</button>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>CPF</th>
+                            <th>Nome</th>
+                            <th>E-mail</th>
+                            <th>Permissão</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>999.999.999-99</td>
+                            <td>Nome do usuário</td>
+                            <td>usuario@gmail.com</td>
+                            <td><span class="badge_admin">Administrador</span></td>
+                            <td>
+                                <button class="btn_edit"><i class="bi bi-pencil-square"></i> Edit</button>
+                                <button class="btn_delete ms-4"><i class="bi bi-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>999.999.999-99</td>
+                            <td>Nome do usuário</td>
+                            <td>usuario@gmail.com</td>
+                            <td><span class="badge_funcionario">Funcionário</span></td>
+                            <td>
+                                <button class="btn_edit"><i class="bi bi-pencil-square"></i> Edit</button>
+                                <button class="btn_delete ms-4"><i class="bi bi-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>999.999.999-99</td>
+                            <td>Nome do usuário</td>
+                            <td>usuario@gmail.com</td>
+                            <td><span class="badge_funcionario">Funcionário</span></td>
+                            <td>
+                                <button class="btn_edit"><i class="bi bi-pencil-square"></i> Edit</button>
+                                <button class="btn_delete ms-4"><i class="bi bi-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>999.999.999-99</td>
+                            <td>Nome do usuário</td>
+                            <td>usuario@gmail.com</td>
+                            <td><span class="badge_funcionario">Funcionário</span></td>
+                            <td>
+                                <button class="btn_edit"><i class="bi bi-pencil-square"></i> Edit</button>
+                                <button class="btn_delete ms-4"><i class="bi bi-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>    
+            </div>
+        </section>
+
+    </main>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

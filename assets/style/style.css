@@ -13,7 +13,7 @@ body {
 /*Login*/
 .body_login {
     background: linear-gradient(#101111,  #072A2A, #072A2A);
-    height: 84vh;
+    height: auto;
 }
 
 .form1 {
@@ -54,10 +54,10 @@ body {
 }
 
 .button {
-    width: 200px;
-    height: 60px;
+    width: 150px;
+    height: 55px;
     border-radius: 30px;
-    background-color: #ED6A1A;
+    background-color: #599967;
     border: none;
     color: white;
     font-size: 24px;

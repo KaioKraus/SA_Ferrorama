@@ -10,6 +10,10 @@ body {
 }
 
 /*Login*/
+.body_login {
+    background: linear-gradient(#101111, #072A2A);
+}
+
 .form1 {
     width: 30vw;
     height: 80vh;
@@ -17,7 +21,8 @@ body {
     border: 1px solid black;
     border-radius: 25px;
     margin: 10vh auto;
-    background-color: #c3c3c3;
+    background-color: #0A3D3D;
+    color: white;
 }
 
 .h1_login {
@@ -46,11 +51,14 @@ body {
 }
 
 .button {
-    width: 150px;
-    height: 50px;
+    width: 207px;
+    height: 53px;
     border-radius: 25px;
-    background-color: #ebebeb;
+    background-color: #ED6A1A;
     border: none;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
 }
 
 

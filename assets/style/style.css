@@ -7,6 +7,7 @@
 body {
     font-family: 'Segoe UI';
     color: #ffffff;
+    background-color: #cfd8d6;
 }
 
 /*Login*/
@@ -65,60 +66,28 @@ body {
 
 
 /*Tela Geral*/
-
-/*header*/
-header {
-    width: 100vw;
-    height: 8vh;
-    background-color: #072A2A;
-    display: flex;
-    align-items: center;
-    box-shadow: #072446 0 0 20px;
-
-}
-
-.titulo1 {
-    margin-left: 50px;
-    color: #ED6A1A;
-    font-size: 24px;
-}
-
-.img1 {
-    width: 103px;
-    height: 37px;
-    margin-left: 3vw;
-}
-
-.btn2 {
-    height: 28px;
-    width: 187px;
-    border-radius: 10px;
-    border: none;
-    background-color: #ED6A1A;
-    color: white;
-    font-size: 20px;
-    margin-bottom: 30px;
-}
-
-.btn2:hover {
-    cursor: pointer;
-    box-shadow: #ED6A1A 0px 0px 20px;
-}
-
-
 /*Main*/
 main {
     display: flex;
 }
 
 .nav1 {
-    width: 239px;
-    height: 92vh;
+    width: 240px;
+    height: 100vh;
     background-color: #0A3D3D;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+}
+
+.logo{
+    width: 155px;
+    height: auto;
+    margin-top: 30px;
+    margin-bottom: -470px;
+    filter: saturate(0);
+    filter: brightness(100);
 }
 
 .ul1 {
@@ -139,7 +108,7 @@ main {
 }
 
 .lista {
-    color: #ED6A1A !important;
+    color: #599967 !important;
     font-weight: bolder;
     padding: 15px 0px 15px 6px;
 }
@@ -149,18 +118,47 @@ a {
     color: #ffffff !important;
 }
 
-
 .hr1 {
     width: 90%;
     margin: 0 auto;
-    border-color: #ED6A1A;
+    border-color: #599967;
+}
+
+.box_usuario{
+    width: 240px;
+    height: 8vh;
+    background-color: #0F2222;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.box_img_usuario{
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: #fff;
+}
+
+.h3{
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+.h3_2{
+    font-size: 13px;
+    color: #b4b4b4;
+}
+
+h3{
+    font-size: 18px;
 }
 
 /*Cadastro de usuários*/
 .conteudo {
     flex-grow: 1;
     background-color: #CFD8D6;
-    height: 92vh;
+    height: 100vh;
     padding: 40px;
     overflow-y: auto;
 }

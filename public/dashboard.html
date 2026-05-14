@@ -19,7 +19,7 @@
 
             <ul class="ul1">
 
-                <li class="lista" id="li1"><a href="" class="lista">Dashboard</a></li><hr class="hr1 opacity-100">
+                <li class="lista" id="li1"><a href="dashboard.html" class="lista">Dashboard</a></li><hr class="hr1 opacity-100">
 
                 <li class="lista1" id="li1"><a href="tela_relatorios.html" class="lista1">Relatórios</a></li><hr class="hr1 opacity-100">
 
@@ -30,14 +30,18 @@
                 <li class="lista1" id="li1"><a href="tela_sensores.html" class="lista1">Sensores</a></li>
             </ul>
 
-            <div class="box_usuario">
-                 
-                <img src="" alt="" class="box_img_usuario">
-
-                <div class="h3">
-                    <h3 class="h3_1">Fulano de Tal</h3>
-                    <h3 class="h3_2">Matricula:</h3>
+            <div class="dropdown">
+                <div class="box_usuario dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" role="button">
+                    <img src="" alt="" class="box_img_usuario">
+                    <div class="h3">
+                        <h3 class="h3_1">Fulano de Tal</h3>
+                        <h3 class="h3_2">Matricula:</h3>
+                    </div>
                 </div>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Editar</a></li>
+                    <li><a class="dropdown-item" href="tela_login.html">Sair</a></li>
+                </ul>
             </div>
         </nav>
 

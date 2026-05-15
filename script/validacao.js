@@ -1,18 +1,18 @@
 const login = document.querySelector(".form1");
-const elMensagem = document.getElementById("mensagem");
+const mensagem = document.getElementById("mensagem");
 
-const toggleSenha = document.getElementById("toggleSenha");
+const toggle_senha = document.getElementById("toggleSenha");
 const senha = document.getElementById("inputSenha");
-const iconSenha = toggleSenha.querySelector("i");
 
-if (toggleSenha) {
-    toggleSenha.onclick = () => {
+if (toggle_senha) {
+    const icon_senha = toggle_senha.querySelector("i");
+    toggle_senha.onclick = () => {
         if (senha.type === "password") {
             senha.type = "text";
-            iconSenha.className = "bi bi-eye-slash";
+            icon_senha.className = "bi bi-eye-slash";
         } else {
             senha.type = "password";
-            iconSenha.className = "bi bi-eye";
+            icon_senha.className = "bi bi-eye";
         }
     };
 }
@@ -23,32 +23,145 @@ if (login) {
         event.preventDefault();
 
         const email = document.getElementById("inputEmail").value;
-        const senhaValue = inputSenha.value;
+        const senha_value = senha.value;
 
-        const emailDefinido = "admin@teste.com";
-        const senhaDefinida = "adm1n123";
+        const email_definido = "admin@teste.com";
+        const senha_definida = "adm1n123";
 
-        elMensagem.innerHTML = "";
+        mensagem.innerHTML = "";
 
-        if (email === "" || senhaValue === "") {
-            elMensagem.innerHTML = "<div class='text-danger fw-bold'>Preencha todos os campos</div>";
+        if (email === "" || senha_value === "") {
+            mensagem.innerHTML = "<div class='text-danger fw-bold'>Preencha todos os campos</div>";
             return;
         }
 
         if (!email.includes("@") || !email.includes(".")) {
-            elMensagem.innerHTML = "<div class='text-danger fw-bold'>Email Inválido!</div>";
+            mensagem.innerHTML = "<div class='text-danger fw-bold'>Email Inválido!</div>";
             return;
         }
 
-        if (senha.length < 4) {
-            elMensagem.innerHTML = "<div class='text-danger fw-bold'>Senha muito curta!</div>";
-            return
+        if (senha_value.length < 4) {
+            mensagem.innerHTML = "<div class='text-danger fw-bold'>Senha muito curta!</div>";
+            return;
         }
 
-        if (email === emailDefinido && senhaValue === senhaDefinida) {
+        if (email === email_definido && senha_value === senha_definida) {
             window.location.href = "dashboard.html";
         } else {
-            elMensagem.innerHTML = "<div class='text-danger fw-bold'>Dados incorretos!</div>";
+            mensagem.innerHTML = "<div class='text-danger fw-bold'>Dados incorretos!</div>";
         }
     };
 }
+
+// Validação do form de cadastro de usuário
+
+const form_cadastro_user = document.getElementById("form_cadastro_user");
+const input_cpf = document.getElementById("input_cpf");
+const input_telefone = document.getElementById("input_telefone");
+const mensagem_cadastro = document.getElementById("mensagem_cadastro");
+
+const toggle_senha_cadastro = document.getElementById("toggleSenhaCadastro");
+const input_senha_cadastro = document.getElementById("input_senha");
+
+if (toggle_senha_cadastro) {
+    const icon_senha_cadastro = toggle_senha_cadastro.querySelector("i");
+    toggle_senha_cadastro.onclick = () => {
+        if (input_senha_cadastro.type === "password") {
+            input_senha_cadastro.type = "text";
+            icon_senha_cadastro.className = "bi bi-eye-slash";
+        } else {
+            input_senha_cadastro.type = "password";
+            icon_senha_cadastro.className = "bi bi-eye";
+        }
+    };
+}
+
+if (input_cpf) {
+    input_cpf.addEventListener('input', function (e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 11) value = value.slice(0, 11);
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        e.target.value = value;
+    });
+}
+
+if (input_telefone) {
+    input_telefone.addEventListener('input', function (e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length > 11) value = value.slice(0, 11);
+
+        if (value.length > 2) {
+            value = value.replace(/^(\d{2})(\d)/g, '($1) $2');
+        }
+        if (value.length > 9) {
+            value = value.replace(/(\d{5})(\d{1,4})$/, '$1-$2');
+        } else if (value.length > 8) {
+            value = value.replace(/(\d{4})(\d{1,4})$/, '$1-$2');
+        }
+        e.target.value = value;
+    });
+}
+
+if (form_cadastro_user) {
+    form_cadastro_user.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const nome = document.getElementById("input_nome").value.trim();
+        const cpf = document.getElementById("input_cpf").value;
+        const email = document.getElementById("input_email").value.trim();
+        const matricula = document.getElementById("input_matricula").value.trim();
+        const telefone = document.getElementById("input_telefone").value;
+        const senha = document.getElementById("input_senha").value;
+
+        mensagem_cadastro.innerHTML = "";
+
+        if (!nome || !cpf || !email || !matricula || !telefone || !senha) {
+            mensagem_cadastro.innerHTML = "<div class='text-danger fw-bold'>Preencha todos os campos!</div>";
+            return;
+        }
+
+        if (nome.length < 3) {
+            mensagem_cadastro.innerHTML = "<div class='text-danger fw-bold'>Nome deve ter pelo menos 3 caracteres!</div>";
+            return;
+        }
+
+        if (cpf.length !== 14) {
+            mensagem_cadastro.innerHTML = "<div class='text-danger fw-bold'>CPF inválido!</div>";
+            return;
+        }
+
+        const email_regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email_regex.test(email)) {
+            mensagem_cadastro.innerHTML = "<div class='text-danger fw-bold'>Email inválido!</div>";
+            return;
+        }
+
+        if (telefone.length < 14) {
+            mensagem_cadastro.innerHTML = "<div class='text-danger fw-bold'>Telefone inválido!</div>";
+            return;
+        }
+
+        if (senha.length < 6) {
+            mensagem_cadastro.innerHTML = "<div class='text-danger fw-bold'>A senha deve ter pelo menos 6 caracteres!</div>";
+            return;
+        }
+
+        mensagem_cadastro.innerHTML = "<div class='text-success fw-bold'>Usuário cadastrado com sucesso!</div>";
+
+        // Fechar o modal após sucesso
+        setTimeout(() => {
+            form_cadastro_user.reset();
+            mensagem_cadastro.innerHTML = "";
+            const modal_element = document.getElementById('modal_cadastro');
+            if (typeof bootstrap !== 'undefined') {
+                const modal = bootstrap.Modal.getOrCreateInstance(modal_element);
+                modal.hide();
+            }
+        });
+
+    });
+}
+
+

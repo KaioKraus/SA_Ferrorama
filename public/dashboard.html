@@ -224,7 +224,61 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content modal-ferroviario">
                     <div class="modal-header border-0 pb-0">
-                        <h5 class="modal-title w-100 text-center fw-bold text-dark" id="label_modal_cadastro">Cadastro Ferrovi&aacute;rio</h5>
+                        <h5 class="modal-title w-100 text-center fw-bold text-dark" id="label_modal_cadastro">Cadastro Ferroviário</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="position: absolute; right: 20px; top: 20px;"></button>
+                    </div>
+                    <div class="modal-body px-5 pt-4 pb-4">
+                        <form>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" placeholder="Nome">
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col pe-2">
+                                    <input type="text" class="form-control" placeholder="Local de Partida">
+                                </div>
+                                <div class="col ps-2">
+                                    <input type="text" class="form-control" placeholder="Local de Chegada">
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-center gap-2 mb-4 mt-4">
+                                <input type="checkbox" class="btn-check" id="btn-d" autocomplete="off">
+                                <label class="btn btn-outline-secondary rounded-circle btn_dia" for="btn-d">D</label>
+
+                                <input type="checkbox" class="btn-check" id="btn-s1" autocomplete="off">
+                                <label class="btn btn-outline-secondary rounded-circle btn_dia" for="btn-s1">S</label>
+
+                                <input type="checkbox" class="btn-check" id="btn-t" autocomplete="off" checked>
+                                <label class="btn btn-outline-secondary rounded-circle btn_dia" for="btn-t">T</label>
+
+                                <input type="checkbox" class="btn-check" id="btn-q1" autocomplete="off">
+                                <label class="btn btn-outline-secondary rounded-circle btn_dia" for="btn-q1">Q</label>
+
+                                <input type="checkbox" class="btn-check" id="btn-q2" autocomplete="off">
+                                <label class="btn btn-outline-secondary rounded-circle btn_dia" for="btn-q2">Q</label>
+
+                                <input type="checkbox" class="btn-check" id="btn-s2" autocomplete="off">
+                                <label class="btn btn-outline-secondary rounded-circle btn_dia" for="btn-s2">S</label>
+
+                                <input type="checkbox" class="btn-check" id="btn-s3" autocomplete="off">
+                                <label class="btn btn-outline-secondary rounded-circle btn_dia" for="btn-s3">S</label>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="button" class="btn btn_adicionar">Adicionar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+-------------------
+    <div class="modal fade" id="modal_monitoramento" tabindex="-1" aria-labelledby="label_modal_monitoramento" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content modal-ferroviario">
+                    <div class="modal-header border-0 pb-0">
+                        <h5 class="modal-title w-100 text-center fw-bold text-dark" id="label_modal_cadastro">Cadastro Ferroviário</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="position: absolute; right: 20px; top: 20px;"></button>
                     </div>
                     <div class="modal-body px-5 pt-4 pb-4">

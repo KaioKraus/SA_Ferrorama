@@ -588,3 +588,8 @@ h3 {
     margin: 0;
     text-align: center;
 }
+
+.btn-close {
+    position: absolute; 
+    right: 20px; top: 20px;    
+}

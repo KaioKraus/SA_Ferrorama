@@ -1,7 +1,34 @@
-# SA_Ferrorama
-O projeto (Ferrorama)consiste no desenvolvimento de ums sitema voltado ao gerenciamento de informações, focado na ramo ferroviário, o sistema permite o gerenciamento de funcionalidades administrativas, controle de usuários e busca de informações.
-nessa primeira etapa o foco foi a organização do projeto, definição da estrutura do código e desenvolvimento da interface do sistema. Um dos principais objetivos é a criação e organização de um repositório colaborativo, a construção das telas iniciais e a aplicação do conceito de CRUD em PHP.
-A equipe é composta por: Isabela de Oliveira (chefe de equipe), Henrique Kiesewetter, Kaio Carmelindo Kraus e Davi Francisco Freitas.
-O nosso Projeto utiliza tecnologias como HTML5, CSS3, PHP, Bootstrap (para estilização e melhor responsabilidade), Javascript e Git Hub que é usado para os commits.
-As principais funcionalidades do proketo são: Uma tela de login, permitindo inserir um email senha e botão de acesso, com possibilidade de se cadastrar no sistema caso o usuário ainda não tenha uma conta, onde nesse campo de cadastro ele pode inserir seu nome, email, senha e a confirmação de senha.
-O sistema também contem uma tela onde permite o usuário a ver os trens cadastrados, contendo informações como o id, hora de partida, hora de chegada e etc.
+SA_Ferrorama
+Sobre o Projeto
+O SA_Ferrorama é um sistema web desenvolvido para o gerenciamento de informações do setor ferroviário. O projeto permite o controle de usuários, consulta de dados e gerenciamento de informações relacionadas aos trens e suas operações.
+O desenvolvimento teve como foco a organização do projeto, criação da interface do sistema e aplicação dos conceitos de CRUD utilizando PHP.
+Tecnologias Utilizadas
+HTML5
+CSS3
+JavaScript
+PHP
+Bootstrap
+Git e GitHub
+Funcionalidades
+Login de usuários
+Cadastro de usuários
+Painel administrativo
+Visualização de trens cadastrados
+Consulta de rotas
+Monitoramento de sensores
+Relatórios do sistema
+Equipe
+Isabela de Oliveira (Chefe de Equipe)
+Henrique Kiesewetter
+Kaio Carmelindo Kraus
+Davi Francisco Freitas
+Estrutura do Projeto
+SA_Ferrorama/
+├── ativos/
+├── documento/
+├── publico/
+├── roteiro/
+├── index.html
+└── README.md
+Licença
+Este projeto está licenciado sob a Licença MIT

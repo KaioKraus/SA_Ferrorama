@@ -74,7 +74,7 @@ main {
 .nav1 {
     width: 240px;
     height: 100vh;
-    background-color: #0A3D3D;
+    background-color: #072727;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -91,7 +91,7 @@ main {
 }
 
 .ul1 {
-    padding-top: 20px;
+    margin-top: 80px;
     width: 100%;
     list-style: none;
     padding-left: 0;
@@ -421,8 +421,9 @@ h3 {
     border-radius: 50%;
 }
 
-/* Dashboard */
-.dashboard-conteudo {
+/* Dashboard e Trens */
+.dashboard-conteudo,
+.trens-conteudo {
     flex-grow: 1;
     height: 100vh;
     padding: 102px 90px 80px 104px;
@@ -430,7 +431,8 @@ h3 {
     overflow: hidden;
 }
 
-.dashboard-painel {
+.dashboard-painel,
+.trens-painel {
     width: 100%;
     height: 100%;
     background-color: #D9D9D9;
@@ -440,31 +442,35 @@ h3 {
     overflow: hidden;
 }
 
-.dashboard-topo {
+.dashboard-topo,
+.trens-topo {
     height: 92px;
     padding: 25px 34px 25px 65px;
-    border-bottom: 3px solid #ffffff;
 }
 
-.dashboard-busca {
+.dashboard-busca,
+.trens-busca {
     width: 381px;
     height: 39px;
 }
 
-.dashboard-input {
+.dashboard-input,
+.trens-input {
     height: 39px;
     border: none;
     border-radius: 7px 0 0 7px !important;
     color: #000000;
-    font-size: 13px;
+    font-size: 16px;
     padding: 7px 14px;
 }
 
-.dashboard-input::placeholder {
+.dashboard-input::placeholder,
+.trens-input::placeholder {
     color: #777777;
 }
 
-.dashboard-btn-busca {
+.dashboard-btn-busca,
+.trens-btn-busca {
     width: 44px;
     height: 39px;
     border: none;
@@ -478,12 +484,14 @@ h3 {
 }
 
 .dashboard-btn-busca:hover,
-.dashboard-btn-busca:focus {
+.dashboard-btn-busca:focus,
+.trens-btn-busca:hover,
+.trens-btn-busca:focus {
     background-color: #b0b0b0;
     color: #000000;
 }
 
-.dashboard-btn-add {
+.trens-btn-add {
     width: 139px;
     height: 39px;
     padding: 0;
@@ -495,14 +503,14 @@ h3 {
     line-height: 1;
 }
 
-.dashboard-btn-add:hover,
-.dashboard-btn-add:focus {
+.trens-btn-add:hover,
+.trens-btn-add:focus {
     border-color: #599967;
     background-color: #f8fff9;
     color: #599967;
 }
 
-.dashboard-lista {
+.trens-lista {
     height: calc(100% - 92px);
     padding: 29px 22px 31px 66px;
     overflow-y: scroll;
@@ -510,21 +518,22 @@ h3 {
     scrollbar-width: thin;
 }
 
-.dashboard-lista::-webkit-scrollbar {
+.trens-lista::-webkit-scrollbar {
     width: 8px;
 }
 
-.dashboard-lista::-webkit-scrollbar-track {
+.trens-lista::-webkit-scrollbar-track {
     background-color: #ffffff;
     border-radius: 10px;
 }
 
-.dashboard-lista::-webkit-scrollbar-thumb {
+.trens-lista::-webkit-scrollbar-thumb {
     background-color: #3f704d;
     border-radius: 10px;
 }
 
-.dashboard-grid {
+.dashboard-grid,
+.trens-grid {
     --bs-gutter-x: 0;
     --bs-gutter-y: 0;
     display: grid;
@@ -536,13 +545,14 @@ h3 {
     padding-right: 46px;
 }
 
-.dashboard-grid > .col {
+.dashboard-grid > .col,
+.trens-grid > .col {
     width: 250px;
     padding: 0;
     margin-top: 0;
 }
 
-.dashboard-card-trem {
+.trens-card-trem {
     width: 250px;
     height: 265px;
     padding: 26px 14px 20px;
@@ -553,7 +563,8 @@ h3 {
     font-weight: 700;
 }
 
-.dashboard-card-cabecalho {
+
+.trens-card-cabecalho {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -561,7 +572,7 @@ h3 {
     margin-bottom: 19px;
 }
 
-.dashboard-card-acao {
+.trens-card-acao {
     width: 29px;
     height: 29px;
     padding: 0;
@@ -575,7 +586,7 @@ h3 {
     justify-content: center;
 }
 
-.dashboard-card-img {
+.trens-card-img {
     display: block;
     width: 213px;
     height: 94px;
@@ -584,12 +595,40 @@ h3 {
     background-color: #ffffff;
 }
 
-.dashboard-card-trem p {
+.trens-card-trem p {
     margin: 0;
     text-align: center;
 }
 
 .btn-close {
     position: absolute; 
-    right: 20px; top: 20px;    
+    right: 20px; 
+    top: 20px;    
+}
+
+.dashboard-graficos{
+    margin: 20px 65px 0px;
+}
+
+.dashboard-graficos div{
+    background-color: #EAEAEA;
+    height: 142px;
+    width: 305px;
+    border-radius: 10px;
+}
+
+.trilho{
+    padding: 30px 65px 50px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.trilho-img{
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0 auto;
+    object-fit: contain;
+    max-width: 100%;
+    max-height: 420px;
 }

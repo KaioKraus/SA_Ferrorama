@@ -61,6 +61,7 @@
                             <th>ID</th>
                             <th>Data</th>
                             <th>Tipo de falha</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -99,8 +100,42 @@
                     </tbody>
                 </table>
             </div>
+
+            <div class="card_gerar_relatorios">
+                <h5 class="card-title">Gerar Relatório</h5>
+                <p class="card-text">Selecione o período e o tipo de erro para gerar o relatório.</p>
+
+                <div class="form-relatorio-row">
+                    <div class="form-relatorio-group">
+                        <label for="data_inicio">Data início</label>
+                        <input type="date" id="data_inicio" name="data_inicio" class="form-control input-relatorio">
+                    </div>
+
+                    <div class="form-relatorio-group">
+                        <label for="data_fim">Data fim</label>
+                        <input type="date" id="data_fim" name="data_fim" class="form-control input-relatorio">
+                    </div>
+                </div>
+
+                <div class="form-relatorio-group form-relatorio-group-full">
+                    <label for="tipo_erro">Tipo de erro</label>
+                    <select id="tipo_erro" name="tipo_erro" class="form-select input-relatorio">
+                        <option value="">Selecione</option>
+                        <option value="falha_sensores">Falha de sensores</option>
+                        <option value="falha_trens">Falha de trens</option>
+                        <option value="falha_rotas">Falha de rotas</option>
+                        <option value="outros">Outros</option>
+                    </select>
+                </div>
+
+                <div class="form-relatorio-actions">
+                    <button class="btn btn_adicionar">Enviar</button>
+                </div>
+            </div>
+
         </section>
 
+        
         <div class="modal fade" id="modal_cadastro" tabindex="-1" aria-labelledby="label_modal_cadastro" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content" style="border-radius: 15px; border: none;">

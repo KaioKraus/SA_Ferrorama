@@ -637,5 +637,72 @@ h3 {
     border-radius: 20px;
     padding: 30px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    min-height: 80vh;
+    min-height: 45vh;
+    margin-bottom: 20px;
+}
+
+.card_gerar_relatorios {
+    background-color: #D9D9D9;
+    border-radius: 20px;
+    padding: 30px 35px 28px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    min-height: 30vh;
+    margin-top: 10px;
+    color: #000000;
+}
+
+.card_gerar_relatorios .card-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #0A3D3D;
+}
+
+.card_gerar_relatorios .card-text {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.form-relatorio-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.form-relatorio-group {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.form-relatorio-group-full {
+    margin-bottom: 20px;
+}
+
+.form-relatorio-group label {
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #1f1f1f;
+}
+
+.input-relatorio {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid #b5b5b5;
+    background-color: #fff;
+    color: #000;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    min-height: 45px;
+}
+
+.form-relatorio-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+}
+
+.form-relatorio-actions .btn_adicionar {
+    min-width: 180px;
 }

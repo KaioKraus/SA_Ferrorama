@@ -149,6 +149,105 @@ public/tela_login.html
 
 ---
 
+## Requisitos Funcionais
+
+RF01
+O sistema deve permitir cadastrar usuário
+RF02
+O sistema deve permitir cadastrar trens
+RF03
+O sistema deve listar trens.
+RF04
+O sistema deve permitir pesquisar trens 
+RF05
+O sistema deve permitir excluir trens.  
+RF06
+ O sistema deve permitir realizar logout.
+RF07
+O sistema deve permitir visualizar detalhes do monitoramento. 
+RF08
+O sistema deve atualizar os dados telemétricos em tempo real, sem necessidade de recarregamento manual da página.
+RF09
+O sistema deve exibir mapa gráfico da malha ferroviária e desvios em tempo real. 
+RF10
+O sistema deve listar rotas
+RF11
+O sistema deve permitir pesquisar rotas
+RF12
+O sistema deve permitir visualizar detalhes técnicos das rotas.
+RF13
+O sistema deve listar usuários cadastrados
+RF14
+ O sistema deve permitir editar dados de usuários. 
+RF15
+ O sistema deve permitir excluir usuários do sistema. 
+RF16
+O sistema deve permitir pesquisar usuários
+RF17
+O sistema deve listar sensores
+RF18
+O sistema deve permitir cadastrar sensores
+RF19
+O sistema deve permitir excluir sensores. 
+RF20
+O sistema deve listar relatório. 
+RF21
+O sistema deve permitir buscar relatório.
+RF22
+O sistema deve permitir gerar relatórios personalizados. 
+RF23
+O sistema deve permitir que usuários cadastrados realizem upload, alteração e remoção da foto de perfil.
+RF24
+O sistema deve permitir cadastrar rotas
+RF25
+O sistema deve permitir realizar login
+RF26
+O sistema deve permitir excluir rotas
+RF27
+O sistema deve validar usuário ao realizar o login
+
+---
+
+## Requisitos Não Funcionais
+
+RNF01
+O sistema deve aceitar apenas imagens nos formatos JPG, JPEG ou PNG.
+RNF02
+O tamanho máximo permitido para a foto de perfil deve ser de 5 MB.
+RNF03
+A senha deve possuir no mínimo 8 caracteres.
+RNF04
+O sistema deve ocultar a senha digitada por padrão, permitindo sua visualização apenas por ação do usuário.
+RNF05
+O sistema deve manter uma interface responsiva.
+RNF06
+O sistema deve manter padrão visual consistente entre telas, utilizando o mesmo cabeçalho, menu lateral, cores, etc.
+
+---
+
+## Regras de Negócio
+
+RN01
+O usuário deve estar cadastrado para ter acesso ao sistema.
+RN02
+O administrador deve cadastrar os demais funcionários.
+RN03
+Todo sensor deve estar vinculado a um trem ou a um trecho da ferrovia.
+RN04
+Um sensor não pode ser excluído caso possua dados de monitoramento.
+RN05
+O status operacional do trem deve ser classificado como normal, alerta ou falha.
+RN06
+Somente usuários com permissão administrativa podem cadastrar, editar ou excluir trens, sensores, rotas, usuários e relatórios.
+RN07
+O encerramento da sessão deve remover o acesso do usuário autenticado e redirecioná-lo para a tela de login.
+RN08
+Cada usuário pode possuir apenas uma foto de perfil ativa por vez.
+RN09
+Apenas o próprio usuário poderá alterar sua senha, exceto em casos de redefinição feita por administrador.
+
+---
+
 ## Documentação
 
 Durante o desenvolvimento foram feitas algumas pesquisas e documentos para ajudar na construção do projeto.

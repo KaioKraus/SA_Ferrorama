@@ -185,41 +185,30 @@ public/tela_login.html
 
 ## Requisitos Não Funcionais
 
-RNF01
-O sistema deve aceitar apenas imagens nos formatos JPG, JPEG ou PNG.
-RNF02
-O tamanho máximo permitido para a foto de perfil deve ser de 5 MB.
-RNF03
-A senha deve possuir no mínimo 8 caracteres.
-RNF04
-O sistema deve ocultar a senha digitada por padrão, permitindo sua visualização apenas por ação do usuário.
-RNF05
-O sistema deve manter uma interface responsiva.
-RNF06
-O sistema deve manter padrão visual consistente entre telas, utilizando o mesmo cabeçalho, menu lateral, cores, etc.
+| Código | Descrição |
+|:------:|-----------|
+| RNF01 | O sistema deve aceitar apenas imagens nos formatos JPG, JPEG ou PNG. |
+| RNF02 | O tamanho máximo permitido para a foto de perfil deve ser de 5 MB. |
+| RNF03 | A senha deve possuir no mínimo 8 caracteres. |
+| RNF04 | O sistema deve ocultar a senha digitada por padrão, permitindo sua visualização apenas por ação do usuário. |
+| RNF05 | O sistema deve manter uma interface responsiva. |
+| RNF06 | O sistema deve manter padrão visual consistente entre telas, utilizando o mesmo cabeçalho, menu lateral, cores, etc. |
 
 ---
 
 ## Regras de Negócio
 
-RN01
-O usuário deve estar cadastrado para ter acesso ao sistema.
-RN02
-O administrador deve cadastrar os demais funcionários.
-RN03
-Todo sensor deve estar vinculado a um trem ou a um trecho da ferrovia.
-RN04
-Um sensor não pode ser excluído caso possua dados de monitoramento.
-RN05
-O status operacional do trem deve ser classificado como normal, alerta ou falha.
-RN06
-Somente usuários com permissão administrativa podem cadastrar, editar ou excluir trens, sensores, rotas, usuários e relatórios.
-RN07
-O encerramento da sessão deve remover o acesso do usuário autenticado e redirecioná-lo para a tela de login.
-RN08
-Cada usuário pode possuir apenas uma foto de perfil ativa por vez.
-RN09
-Apenas o próprio usuário poderá alterar sua senha, exceto em casos de redefinição feita por administrador.
+| Código | Descrição |
+|:------:|-----------|
+| RN01 | O usuário deve estar cadastrado para ter acesso ao sistema. |
+| RN02 | O administrador deve cadastrar os demais funcionários. |
+| RN03 | Todo sensor deve estar vinculado a um trem ou a um trecho da ferrovia. |
+| RN04 | Um sensor não pode ser excluído caso possua dados de monitoramento. |
+| RN05 | O status operacional do trem deve ser classificado como normal, alerta ou falha. |
+| RN06 | Somente usuários com permissão administrativa podem cadastrar, editar ou excluir trens, sensores, rotas, usuários e relatórios. |
+| RN07 | O encerramento da sessão deve remover o acesso do usuário autenticado e redirecioná-lo para a tela de login. |
+| RN08 | Cada usuário pode possuir apenas uma foto de perfil ativa por vez. |
+| RN09 | Apenas o próprio usuário poderá alterar sua senha, exceto em casos de redefinição feita por administrador. |
 
 ---
 

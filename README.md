@@ -151,60 +151,35 @@ public/tela_login.html
 
 ## Requisitos Funcionais
 
-RF01
-O sistema deve permitir cadastrar usuário
-RF02
-O sistema deve permitir cadastrar trens
-RF03
-O sistema deve listar trens.
-RF04
-O sistema deve permitir pesquisar trens 
-RF05
-O sistema deve permitir excluir trens.  
-RF06
- O sistema deve permitir realizar logout.
-RF07
-O sistema deve permitir visualizar detalhes do monitoramento. 
-RF08
-O sistema deve atualizar os dados telemétricos em tempo real, sem necessidade de recarregamento manual da página.
-RF09
-O sistema deve exibir mapa gráfico da malha ferroviária e desvios em tempo real. 
-RF10
-O sistema deve listar rotas
-RF11
-O sistema deve permitir pesquisar rotas
-RF12
-O sistema deve permitir visualizar detalhes técnicos das rotas.
-RF13
-O sistema deve listar usuários cadastrados
-RF14
- O sistema deve permitir editar dados de usuários. 
-RF15
- O sistema deve permitir excluir usuários do sistema. 
-RF16
-O sistema deve permitir pesquisar usuários
-RF17
-O sistema deve listar sensores
-RF18
-O sistema deve permitir cadastrar sensores
-RF19
-O sistema deve permitir excluir sensores. 
-RF20
-O sistema deve listar relatório. 
-RF21
-O sistema deve permitir buscar relatório.
-RF22
-O sistema deve permitir gerar relatórios personalizados. 
-RF23
-O sistema deve permitir que usuários cadastrados realizem upload, alteração e remoção da foto de perfil.
-RF24
-O sistema deve permitir cadastrar rotas
-RF25
-O sistema deve permitir realizar login
-RF26
-O sistema deve permitir excluir rotas
-RF27
-O sistema deve validar usuário ao realizar o login
+| Código | Descrição |
+|:------:|-----------|
+| RF01 | O sistema deve permitir cadastrar usuário. |
+| RF02 | O sistema deve permitir cadastrar trens. |
+| RF03 | O sistema deve listar trens. |
+| RF04 | O sistema deve permitir pesquisar trens. |
+| RF05 | O sistema deve permitir excluir trens. |
+| RF06 | O sistema deve permitir realizar logout. |
+| RF07 | O sistema deve permitir visualizar detalhes do monitoramento. |
+| RF08 | O sistema deve atualizar os dados telemétricos em tempo real, sem necessidade de recarregamento manual da página. |
+| RF09 | O sistema deve exibir mapa gráfico da malha ferroviária e desvios em tempo real. |
+| RF10 | O sistema deve listar rotas. |
+| RF11 | O sistema deve permitir pesquisar rotas. |
+| RF12 | O sistema deve permitir visualizar detalhes técnicos das rotas. |
+| RF13 | O sistema deve listar usuários cadastrados. |
+| RF14 | O sistema deve permitir editar dados de usuários. |
+| RF15 | O sistema deve permitir excluir usuários do sistema. |
+| RF16 | O sistema deve permitir pesquisar usuários. |
+| RF17 | O sistema deve listar sensores. |
+| RF18 | O sistema deve permitir cadastrar sensores. |
+| RF19 | O sistema deve permitir excluir sensores. |
+| RF20 | O sistema deve listar relatórios. |
+| RF21 | O sistema deve permitir buscar relatórios. |
+| RF22 | O sistema deve permitir gerar relatórios personalizados. |
+| RF23 | O sistema deve permitir que usuários cadastrados realizem upload, alteração e remoção da foto de perfil. |
+| RF24 | O sistema deve permitir cadastrar rotas. |
+| RF25 | O sistema deve permitir realizar login. |
+| RF26 | O sistema deve permitir excluir rotas. |
+| RF27 | O sistema deve validar o usuário ao realizar o login. |
 
 ---
 

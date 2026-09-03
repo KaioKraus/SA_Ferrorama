@@ -1,4 +1,4 @@
-# 🚆 SA_Ferrorama
+# SA_Ferrorama
 
 ##  Sobre o Projeto
 

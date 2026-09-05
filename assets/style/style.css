@@ -381,6 +381,14 @@ h3 {
 #funcionario:checked~.slider {
     transform: translateX(100%);
 }
+
+#vinculo_trem:checked~.slider {
+    transform: translateX(0);
+}
+
+#vinculo_rota:checked~.slider {
+    transform: translateX(100%);
+}
 /*fim animaçõa select*/
 
 .input-field {

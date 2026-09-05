@@ -40,8 +40,8 @@ if (login) {
             return;
         }
 
-        if (senha_value.length < 4) {
-            mensagem.innerHTML = "<div class='text-danger fw-bold'>Senha muito curta!</div>";
+        if (senha_value.length < 8) {
+            mensagem.innerHTML = "<div class='text-danger fw-bold'>A senha deve possuir no mínimo 8 caracteres!</div>";
             return;
         }
 
@@ -143,8 +143,8 @@ if (form_cadastro_user) {
             return;
         }
 
-        if (senha.length < 6) {
-            mensagem_cadastro.innerHTML = "<div class='text-danger fw-bold'>A senha deve ter pelo menos 6 caracteres!</div>";
+        if (senha.length < 8) {
+            mensagem_cadastro.innerHTML = "<div class='text-danger fw-bold'>A senha deve possuir no mínimo 8 caracteres!</div>";
             return;
         }
 
@@ -163,5 +163,3 @@ if (form_cadastro_user) {
 
     });
 }
-
-

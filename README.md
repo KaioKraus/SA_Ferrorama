@@ -80,6 +80,9 @@ SA_Ferrorama/
 │   ├── img/
 │   └── style/
 │
+├── database/
+│   └── Celestial_steel_db.sql
+│
 ├── doc/
 │   ├── identidade_visual.md
 │   ├── pesquisa_crud.md
@@ -87,13 +90,13 @@ SA_Ferrorama/
 │   └── pesquisa_xampp.md
 │
 ├── public/
-│   ├── dashboard.html
-│   ├── tela_cadastro_user.html
-│   ├── tela_login.html
-│   ├── tela_relatorios.html
-│   ├── tela_rotas.html
-│   ├── tela_sensores.html
-│   └── tela_trens.html
+│   ├── dashboard.php
+│   ├── tela_cadastro_user.php
+│   ├── tela_login.php
+│   ├── tela_relatorios.php
+│   ├── tela_rotas.php
+│   ├── tela_sensores.php
+│   └── tela_trens.php
 │
 ├── script/
 │   ├── botoes.js
@@ -101,7 +104,7 @@ SA_Ferrorama/
 │   ├── scripts.js
 │   └── validacao.js
 │
-├── index.html
+├── index.php
 ├── LICENSE
 └── README.md
 ```
@@ -115,12 +118,12 @@ Contém os arquivos utilizados no visual do sistema, como imagens e estilos.
 Contém as pesquisas e documentos utilizados durante o desenvolvimento do projeto.
 
 **public/**  
-Contém as principais páginas HTML do sistema.
+Contém as principais páginas PHP do sistema.
 
 **script/**  
 Contém os arquivos JavaScript responsáveis por algumas funções, botões e validações do sistema.
 
-**index.html**  
+**index.php**  
 É a página inicial do projeto.
 
 **LICENSE**  
@@ -139,12 +142,10 @@ Como o projeto utiliza PHP e XAMPP, o XAMPP pode ser utilizado para executar o s
 
 Depois de colocar o projeto na pasta `htdocs` do XAMPP, basta iniciar o **Apache** e acessar o projeto pelo navegador.
 
-Também é possível visualizar as páginas HTML utilizando o **Live Server** no VS Code.
-
 A tela de login está localizada em:
 
 ```text
-public/tela_login.html
+public/tela_login.php
 ```
 
 ---

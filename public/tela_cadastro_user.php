@@ -22,21 +22,21 @@
 
             <ul class="ul1">
 
-                <li class="lista1" id="li1"><a href="dashboard.html" class="lista1">Dashboard</a></li>
+                <li class="lista1" id="li1"><a href="dashboard.php" class="lista1">Dashboard</a></li>
                 <hr class="hr1 opacity-100">
 
-                <li class="lista1" id="li1"><a href="tela_relatorios.html" class="lista1">Relatórios</a></li>
+                <li class="lista1" id="li1"><a href="tela_relatorios.php" class="lista1">Relatórios</a></li>
                 <hr class="hr1 opacity-100">
 
-                <li class="lista" id="li1"><a href="tela_cadastro_user.html" class="lista">Usuários</a></li>
+                <li class="lista" id="li1"><a href="tela_cadastro_user.php" class="lista">Usuários</a></li>
                 <hr class="hr1 opacity-100">
 
-                <li class="lista1" id="li1"><a href="tela_rotas.html" class="lista1">Rotas</a></li>
+                <li class="lista1" id="li1"><a href="tela_rotas.php" class="lista1">Rotas</a></li>
                 <hr class="hr1 opacity-100">
 
-                <li class="lista1" id="li1"><a href="tela_sensores.html" class="lista1">Sensores</a></li><hr class="hr1 opacity-100">
+                <li class="lista1" id="li1"><a href="tela_sensores.php" class="lista1">Sensores</a></li><hr class="hr1 opacity-100">
 
-                <li class="lista1" id="li1"><a href="tela_trens.html" class="lista1">Trens</a></li>
+                <li class="lista1" id="li1"><a href="tela_trens.php" class="lista1">Trens</a></li>
             </ul>
 
             <div class="dropdown">
@@ -49,7 +49,7 @@
                 </div>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="">Editar</a></li>
-                    <li><a class="dropdown-item" href="tela_login.html">Sair</a></li>
+                    <li><a class="dropdown-item" href="tela_login.php">Sair</a></li>
                 </ul>
             </div>
         </nav>

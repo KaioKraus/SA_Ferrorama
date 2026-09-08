@@ -46,7 +46,7 @@ if (login) {
         }
 
         if (email === email_definido && senha_value === senha_definida) {
-            window.location.href = "dashboard.html";
+            window.location.href = "dashboard.php";
         } else {
             mensagem.innerHTML = "<div class='text-danger fw-bold'>Dados incorretos!</div>";
         }

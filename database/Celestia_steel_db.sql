@@ -10,7 +10,7 @@ CREATE TABLE trens(
 );
 
 CREATE TABLE rotas(
-	rota_id INT AUTO_INCREMENT PRIMARY KEY,s
+	rota_id INT AUTO_INCREMENT PRIMARY KEY,
 	dias_semana DATE NOT NULL,
 	horario_partida DATETIME NOT NULL,
 	horario_chegada DATETIME NOT NULL

@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS celestia_steel_db;
-USE celestia_steel_db;
+CREATE DATABASE IF NOT EXISTS celestial_steel_db;
+USE celestial_steel_db;
 
 CREATE TABLE trens(
 	trem_id INT AUTO_INCREMENT PRIMARY KEY,

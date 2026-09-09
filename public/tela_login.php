@@ -10,7 +10,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$email || strlen($senha) < 8) {
         $error = 'Email ou senha inválidos.';
     } else {
-        // Tenta buscar pelo usuário na tabela `usuarios`
         $sql = "SELECT * FROM usuarios WHERE email = ? LIMIT 1";
         if ($stmt = mysqli_prepare($conexao, $sql)) {
             mysqli_stmt_bind_param($stmt, 's', $email);
@@ -19,7 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user = mysqli_fetch_assoc($result);
 
             if ($user) {
-                // Se existir coluna 'senha', tenta verificar (com hash ou texto simples)
                 if (array_key_exists('senha', $user)) {
                     $hash = $user['senha'];
                     if (password_verify($senha, $hash) || $senha === $hash) {
@@ -31,23 +29,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $error = 'Credenciais incorretas.';
                     }
                 } else {
-                    // Fallback: se não existe senha na tabela, aceita credencial de teste (mantém compatibilidade com validação.js)
                     if ($email === 'admin@teste.com' && $senha === 'adm1n123') {
                         $_SESSION['usuario_id'] = 0;
                         $_SESSION['usuario_nome'] = 'Administrador';
                         header('Location: dashboard.php');
                         exit;
                     } else {
-                        $error = 'Usuário sem senha cadastrada no banco. Contate o administrador.';
+                        $error = 'Credenciais incorretas.';
                     }
                 }
             } else {
-                $error = 'Usuário não encontrado.';
+                $error = 'Credenciais incorretas.';
             }
 
             mysqli_stmt_close($stmt);
         } else {
-            $error = 'Erro na autenticação (falha na consulta).';
+            $error = 'Erro na autenticação.';
         }
     }
 }
@@ -64,9 +61,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-        crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.4/font/bootstrap-icons.css" rel="stylesheet">
 
     <title>Login</title>
@@ -108,7 +102,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </form>
 
-    <script src="../script/validacao.js"></script>
 </body>
 
 </html>

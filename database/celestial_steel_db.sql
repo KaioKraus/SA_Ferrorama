@@ -65,9 +65,13 @@ CREATE TABLE usuarios(
 	telefone VARCHAR(11) NOT NULL,
 	cpf VARCHAR(11) NOT NULL,
 	email VARCHAR(155) NOT NULL,
+	senha VARCHAR(255) NULL,
     cargo_id INT,
     FOREIGN KEY (cargo_id) REFERENCES Cargos(id)
 );
+
+INSERT INTO usuarios (nome, telefone, cpf, email, senha)
+VALUES ('Administrador', '11999999999', '12345678901', 'admin@teste.com', 'adm1n123');
 
 CREATE TABLE Permissoes (
     id INT AUTO_INCREMENT PRIMARY KEY,

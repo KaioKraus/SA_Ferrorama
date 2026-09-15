@@ -64,7 +64,7 @@
                         </button>
                     </div>
 
-                    <button class="btn trens-btn-add" type="button" data-bs-toggle="modal" data-bs-target="#modal_cadastro_sensor">Adicionar</button>
+                    <button class="btn trens-btn-add" type="button" data-bs-toggle="modal" data-bs-target="#modal_cadastro">Adicionar</button>
                 </div>
                 <table class="table">
                     <thead>

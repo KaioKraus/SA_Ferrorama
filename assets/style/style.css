@@ -527,11 +527,10 @@ h3 {
     line-height: 1;
 }
 
-.trens-btn-add:hover,
-.trens-btn-add:focus {
-    border-color: #599967;
-    background-color: #f8fff9;
-    color: #599967;
+.trens-btn-add:hover {
+    border-color: #376441;
+    background-color: #376441;
+    color: #f8fff9;
 }
 
 .trens-lista {

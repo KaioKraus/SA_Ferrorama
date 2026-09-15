@@ -57,8 +57,6 @@
                         </button>
                     </div>
 
-                <button class="btn btn-relatorios-adicionar" type="button" data-bs-toggle="modal" data-bs-target="#modal_cadastro_sensor">Adicionar</button>
-
                 </div>
                 <table class="table">
                     <thead>

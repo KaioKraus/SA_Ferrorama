@@ -50,12 +50,6 @@
         <section class="conteudo">
             <div class="dashboard-painel">
                 <div class="dashboard-topo d-flex align-items-center justify-content-between">
-                    <div class="input-group dashboard-busca">
-                        <input type="text" class="form-control dashboard-input" placeholder="Buscar por ID ou Nome" aria-label="Buscar por ID ou Nome">
-                        <button class="btn dashboard-btn-busca" type="button" aria-label="Buscar">
-                            <i class="bi bi-search"></i>
-                        </button>
-                    </div>
                 </div>
 
                 <div>

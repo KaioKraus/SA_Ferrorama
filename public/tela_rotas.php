@@ -127,6 +127,9 @@
                             <td>
                                 <button class="btn_edit"><i class="bi bi-pencil-square"></i> Edit</button>
                                 <button class="btn_delete ms-4"><i class="bi bi-trash"></i></button>
+                                <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
+                                    <i class="bi bi-info-lg"></i>
+                                </button>
                             </td>
                         </tr>
                         <tr>
@@ -139,6 +142,9 @@
                             <td>
                                 <button class="btn_edit"><i class="bi bi-pencil-square"></i> Edit</button>
                                 <button class="btn_delete ms-4"><i class="bi bi-trash"></i></button>
+                                <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
+                                    <i class="bi bi-info-lg"></i>
+                                </button>
                             </td>
                         </tr>
                     </tbody>
@@ -146,7 +152,68 @@
             </div>
         </section>
 
+        <div class="modal fade" id="modal_monitoramento" tabindex="-1" aria-labelledby="label_modal_monitoramento" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 rounded-4 shadow">
 
+            <!-- HEADER -->
+            <div class="modal-header border-0 pb-0 px-4 pt-4">
+                <h4 class="modal-title w-100 text-center fw-bold">
+                    Rotas
+                </h4>
+
+                <button type="button" 
+                        class="btn-close position-absolute end-0 top-0 m-4"
+                        data-bs-dismiss="modal" 
+                        aria-label="Close">
+                </button>
+                
+            </div>
+
+            <!-- BODY -->
+            <div class="modal-body px-5 pb-4">
+
+                <!-- IMAGEM -->
+                <div class="text-center mb-5">
+                    <img 
+                        src="../assets/img/trilho.png" alt="" class="img-fluid"
+                        alt="Mapa Ferroviário"
+                        class="img-fluid rounded"
+                        style="max-height: 350px; background: #f2f2f2;"
+                    >
+                </div>
+
+                <div class="row text-center align-items-center">
+
+                    <div class="col-md-3 mb-3 mb-md-0">
+                        <span class="fw-bold fs-5">Velocidade:</span>
+                        <span class="fs-5"> 999km/h</span>
+                    </div>
+
+                    <div class="col-md-3 mb-3 mb-md-0">
+                        <span class="fw-bold fs-5">Temperatura:</span>
+                        <span class="fs-5"> 99,99C°</span>
+                    </div>
+
+                    <div class="col-md-3 mb-3 mb-md-0">
+                        <span class="fw-bold fs-5">Status:</span>
+
+                        <span class="badge rounded-pill bg-success fs-6 px-3 py-2">
+                            Normal
+                        </span>
+                    </div>
+
+                    <div class="col-md-3">
+                        <span class="fw-bold fs-5">Consumo:</span>
+                        <span class="fs-5"> 99,99kWh</span>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
 
 
     </main>

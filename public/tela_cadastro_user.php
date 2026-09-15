@@ -57,11 +57,14 @@
         <section class="conteudo">
             <div class="card_usuarios">
                 <div class="barra_busca">
-                    <div>
-                        <input type="text" class="input_buscar" placeholder="Buscar por ID ou Nome">
-                        <button class="btn_buscar">Buscar</button>
+                    <div class="input-group dashboard-busca">
+                        <input type="text" id="input_busca_sensor" class="form-control dashboard-input" placeholder="Buscar por ID ou Nome" aria-label="Buscar por ID ou Nome">
+                        <button class="btn dashboard-btn-busca" id="btn_busca_sensor" type="button" aria-label="Buscar">
+                            <i class="bi bi-search"></i>
+                        </button>
                     </div>
-                    <button class="btn_add" data-bs-toggle="modal" data-bs-target="#modal_cadastro">Adicionar</button>
+
+                    <button class="btn trens-btn-add" type="button" data-bs-toggle="modal" data-bs-target="#modal_cadastro_sensor">Adicionar</button>
                 </div>
                 <table class="table">
                     <thead>

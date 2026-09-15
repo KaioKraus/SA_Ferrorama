@@ -29,7 +29,7 @@
 
                 <li class="lista1" id="li1"><a href="tela_sensores.php" class="lista1">Sensores</a></li><hr class="hr1 opacity-100">
 
-                <li class="lista1" id="li1"><a href="tela_trens.php" class="lista1">Trens</a></li>
+                <li class="lista" id="li1"><a href="tela_trens.php" class="lista">Trens</a></li>
             </ul>
 
             <div class="dropdown">

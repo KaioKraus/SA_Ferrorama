@@ -25,7 +25,7 @@
 
                 <li class="lista1" id="li1"><a href="tela_cadastro_user.php" class="lista1">Usuários</a></li><hr class="hr1 opacity-100">
 
-                <li class="lista1" id="li1"><a href="tela_rotas.php" class="lista1">Rotas</a></li><hr class="hr1 opacity-100">
+                <li class="lista" id="li1"><a href="tela_rotas.php" class="lista">Rotas</a></li><hr class="hr1 opacity-100">
 
                 <li class="lista1" id="li1"><a href="tela_sensores.php" class="lista1">Sensores</a></li><hr class="hr1 opacity-100">
 

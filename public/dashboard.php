@@ -6,7 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../assets/style/style.css">
-    <title>Rafael Onibus</title>
+    <title>Celestial Steel</title>
 </head>
 <body>
     
@@ -50,12 +50,6 @@
         <section class="conteudo">
             <div class="dashboard-painel">
                 <div class="dashboard-topo d-flex align-items-center justify-content-between">
-                    <div class="input-group dashboard-busca">
-                        <input type="text" class="form-control dashboard-input" placeholder="Buscar por ID ou Nome" aria-label="Buscar por ID ou Nome">
-                        <button class="btn dashboard-btn-busca" type="button" aria-label="Buscar">
-                            <i class="bi bi-search"></i>
-                        </button>
-                    </div>
                 </div>
 
                 <div>

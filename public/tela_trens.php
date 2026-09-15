@@ -6,7 +6,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../assets/style/style.css">
-    <title>Rafael Onibus</title>
+    <title>Celestial Steel</title>
 </head>
 <body>
     
@@ -350,6 +350,7 @@
                         data-bs-dismiss="modal" 
                         aria-label="Close">
                 </button>
+                
             </div>
 
             <!-- BODY -->
@@ -365,22 +366,18 @@
                     >
                 </div>
 
-                <!-- INFORMAÇÕES -->
                 <div class="row text-center align-items-center">
 
-                    <!-- Velocidade -->
                     <div class="col-md-3 mb-3 mb-md-0">
                         <span class="fw-bold fs-5">Velocidade:</span>
                         <span class="fs-5"> 999km/h</span>
                     </div>
 
-                    <!-- Temperatura -->
                     <div class="col-md-3 mb-3 mb-md-0">
                         <span class="fw-bold fs-5">Temperatura:</span>
                         <span class="fs-5"> 99,99C°</span>
                     </div>
 
-                    <!-- Status -->
                     <div class="col-md-3 mb-3 mb-md-0">
                         <span class="fw-bold fs-5">Status:</span>
 
@@ -389,7 +386,6 @@
                         </span>
                     </div>
 
-                    <!-- Consumo -->
                     <div class="col-md-3">
                         <span class="fw-bold fs-5">Consumo:</span>
                         <span class="fs-5"> 99,99kWh</span>
@@ -403,7 +399,28 @@
 </div>
 
     </main>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+                <div class="modal fade" id="modal_confirm_delete" tabindex="-1" aria-labelledby="label_modal_confirm_delete" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="label_modal_confirm_delete">Confirmar exclusão</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p id="modal_confirm_text">Deseja realmente excluir este trem?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <form id="form_delete_train" method="post" action="excluir_trem.php">
+                                    <input type="hidden" name="id" id="delete_train_id" value="">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-danger">Excluir</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+                    <script src="../script/trens.js"></script>
+            </body>
+            </html>

@@ -2,7 +2,7 @@
 
 $host = "localhost";
 $user = "root";
-$password = "";
+$password = "root";
 $database = "celestial_steel_db";
 
 $conexao = mysqli_connect($host, $user, $password, $database);

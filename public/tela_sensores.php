@@ -8,7 +8,7 @@
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../assets/style/style.css">
-    <title>Rafael Onibus</title>
+    <title>Celestial Steel</title>
 </head>
 
 <body>
@@ -34,7 +34,7 @@
                 <li class="lista1" id="li1"><a href="tela_rotas.php" class="lista1">Rotas</a></li>
                 <hr class="hr1 opacity-100">
 
-                <li class="lista1" id="li1"><a href="tela_sensores.php" class="lista1">Sensores</a></li><hr class="hr1 opacity-100">
+                <li class="lista" id="li1"><a href="tela_sensores.php" class="lista">Sensores</a></li><hr class="hr1 opacity-100">
 
                 <li class="lista1" id="li1"><a href="tela_trens.php" class="lista1">Trens</a></li>
             </ul>

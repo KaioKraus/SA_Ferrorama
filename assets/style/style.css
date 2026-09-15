@@ -731,3 +731,12 @@ h3 {
 .form-relatorio-actions .btn_adicionar {
     min-width: 180px;
 }
+
+.btn-relatorios-adicionar {
+    background-color: #0A3D3D;
+    color: white;
+    border-radius: 10px;
+    padding: 5px 20px;
+    border: none;
+    margin-left: 10px;
+}

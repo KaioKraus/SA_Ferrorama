@@ -50,9 +50,11 @@
      <section class="conteudo">
             <div class="card_relatorios">
                 <div class="barra_busca">
-                    <div>
-                        <input type="text" class="input_buscar" placeholder="Buscar por ID ou Tipo de falha">
-                        <button class="btn_buscar">Buscar</button>
+                    <div class="input-group dashboard-busca">
+                        <input type="text" class="form-control dashboard-input" placeholder="Buscar por ID, Data ou Tipo de falha" aria-label="Buscar por ID, Data ou Tipo de falha">
+                        <button class="btn dashboard-btn-busca" type="button" aria-label="Buscar">
+                            <i class="bi bi-search"></i>
+                        </button>
                     </div>
 
                 <button class="btn btn-relatorios-adicionar" type="button" data-bs-toggle="modal" data-bs-target="#modal_cadastro_sensor">Adicionar</button>

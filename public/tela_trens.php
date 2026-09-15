@@ -311,7 +311,7 @@
                                 <input type="checkbox" class="btn-check" id="btn-s1" autocomplete="off">
                                 <label class="btn btn-outline-secondary rounded-circle btn_dia" for="btn-s1">S</label>
 
-                                <input type="checkbox" class="btn-check" id="btn-t" autocomplete="off" checked>
+                                <input type="checkbox" class="btn-check" id="btn-t" autocomplete="off">
                                 <label class="btn btn-outline-secondary rounded-circle btn_dia" for="btn-t">T</label>
 
                                 <input type="checkbox" class="btn-check" id="btn-q1" autocomplete="off">

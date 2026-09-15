@@ -739,3 +739,15 @@ h3 {
     border: none;
     margin-left: 10px;
 }
+
+/* Rotas modal tweaks */
+.nome-rota-input {
+    font-size: 1.05rem;
+    padding: 12px 15px;
+}
+
+/* Ensure time inputs in modals have consistent height */
+.modal-body .input-field input[type="time"] {
+    padding: 10px 15px;
+    height: 44px;
+}

@@ -3,56 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../assets/style/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-                    </div>
-                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAddRota">
-                        <i class="bi bi-plus-lg"></i> Adicionar
-                    </button>
-                </div>
-                <!-- Modal: Adicionar Rota -->
-                <div class="modal fade" id="modalAddRota" tabindex="-1" aria-labelledby="modalAddRotaLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <form action="tela_rotas.php" method="post">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="modalAddRotaLabel">Adicionar Rota</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="mb-3">
-                                        <label class="form-label">Ponto de Partida</label>
-                                        <input type="text" name="ponto_partida" class="form-control" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Destino</label>
-                                        <input type="text" name="destino" class="form-control" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Nome da Rota</label>
-                                        <input type="text" name="nome_rota" class="form-control" required>
-                                    </div>
-                                    <div class="row g-2">
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">Horário de Início</label>
-                                            <input type="time" name="horario_inicio" class="form-control" required>
-                                        </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label class="form-label">Horário de Término</label>
-                                            <input type="time" name="horario_termino" class="form-control" required>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                    <button type="submit" class="btn btn-primary">Salvar</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-    
+    <link rel="stylesheet" href="../assets/style/style.css">
+    </head>
+<body>
     <!--Main-->
     <main>
 
@@ -100,8 +55,8 @@
                             <i class="bi bi-search"></i>
                         </button>
                     </div>
-                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAddRota">
-                        <i class="bi bi-plus-lg"></i> Adicionar
+                    <button class="btn trens-btn-add" data-bs-toggle="modal" data-bs-target="#modalAddRota">
+                        <i class="bi"></i> Adicionar
                     </button>
                 </div>
                 <table class="table">
@@ -149,6 +104,63 @@
                         </tr>
                     </tbody>
                 </table>
+                <!-- Modal: Adicionar Rota (igual a Usuários) -->
+                <div class="modal fade" id="modalAddRota" tabindex="-1" aria-labelledby="modalAddRotaLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content" style="border-radius: 15px; border: none;">
+                            <div class="modal-header border-0 pb-0">
+                                <h5 class="modal-title w-100 text-center text-dark" id="modalAddRotaLabel">Adicionar Rota</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="position: absolute; right: 20px; top: 20px;"></button>
+                            </div>
+                            <div class="modal-body px-5 pt-4 pb-4">
+                                <form class="w-100" action="tela_rotas.php" method="post">
+                                    <div class="row mb-4">
+                                        <div class="col pe-2">
+                                            <div class="input-field">
+                                                <input required autocomplete="off" type="text" name="ponto_partida" class="form-control" />
+                                                <label>Ponto de Partida</label>
+                                            </div>
+                                        </div>
+                                        <div class="col ps-2">
+                                            <div class="input-field">
+                                                <input required autocomplete="off" type="text" name="destino" class="form-control" />
+                                                <label>Destino</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <div class="input-field">
+                                                <input required autocomplete="off" type="text" name="nome_rota" class="form-control nome-rota-input" />
+                                                <label>Nome da Rota</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-4">
+                                        <div class="col pe-2">
+                                            <div class="input-field">
+                                                <input required type="time" name="horario_inicio" class="form-control" />
+                                                <label>Horário de Início</label>
+                                            </div>
+                                        </div>
+                                        <div class="col ps-2">
+                                            <div class="input-field">
+                                                <input required type="time" name="horario_termino" class="form-control" />
+                                                <label>Horário de Término</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn_adicionar">Adicionar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 

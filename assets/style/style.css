@@ -307,6 +307,47 @@ h3 {
     color: #000000;
 }
 
+
+#navModal .modal-content,
+.modal-content {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.modal-header,
+.modal-body,
+.modal-footer {
+    color: #000000;
+}
+
+.modal-body a {
+    color: #072727;
+}
+
+
+#navModal .modal-content {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
+
+#navModal .modal-header,
+#navModal .modal-body,
+#navModal .modal-footer {
+    color: #000000 !important;
+}
+
+#navModal .modal-body a,
+#navModal .modal-body a:link,
+#navModal .modal-body a:visited,
+#navModal .modal-body a:hover {
+    color: #072727 !important;
+}
+
+
+#navModal a {
+    color: #072727 !important;
+}
+
 .modal-ferroviario {
     border: none;
     border-radius: 15px;
@@ -740,14 +781,118 @@ h3 {
     margin-left: 10px;
 }
 
-/* Rotas modal tweaks */
 .nome-rota-input {
     font-size: 1.05rem;
     padding: 12px 15px;
 }
 
-/* Ensure time inputs in modals have consistent height */
 .modal-body .input-field input[type="time"] {
     padding: 10px 15px;
     height: 44px;
+}
+
+.hamburger-btn {
+    display: none;
+}
+
+/*Responsividade*/
+@media (max-width: 820px) {
+
+    /*Tela de login*/
+    .body_login {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .form1 {
+        width: 90vw;
+        height: auto;
+        padding: 20px;
+        border: 1px solid black;
+        border-radius: 25px;
+        margin: 0 auto;
+        background-color: #0A3D3D;
+        color: white;
+    }
+
+    .h1_login {
+        font-size: 36px;
+        padding: 20px;
+        margin-top: 30px;
+        text-align: center;
+        font-weight: lighter;
+    }
+
+    /* Dashboard */
+        .nav1{
+            display: none;
+        }
+
+        .nav1_mobile {
+            display: block;
+            position: fixed;
+            width: 100%;
+            height: 60px;
+            background-color: #072727;
+            z-index: 1000;
+        }
+
+        .hamburger-btn {
+            display: block;
+            position: fixed;
+            top: 12px;
+            left: 12px;
+            z-index: 1100;
+            width: 40px;
+            height: 40px;
+            background-color: transparent;
+            border: none;
+            color: #fff;
+            font-size: 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-mobile {
+            position: fixed;
+            top: 10px;
+            left: 70%;
+            width: 80px;
+            height: auto;
+            z-index: 1100;
+            filter: saturate(0);
+            filter: brightness(100);
+        }
+
+        .dashboard-painel{
+            margin: 50px auto;
+            height: auto;
+        }
+
+        .dashboard-graficos{
+            width: 95%;
+            max-width: 630px;
+            margin: 20px auto 0;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .dashboard-topo{
+            height: 0px;
+            margin: 0;
+            padding: 0;
+            display: none;
+        }
+
+        .trilho{
+            width: 75vw;
+            margin: 20px auto 20px;
+            padding: 0;
+            border-radius: 10px;
+        }
+
 }

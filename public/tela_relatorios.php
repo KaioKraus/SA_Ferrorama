@@ -50,14 +50,12 @@
 
             <div class="dropdown">
                 <div class="box_usuario dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" role="button">
-                    <img src="" alt="" class="box_img_usuario">
                     <div class="h3">
-                        <h3 class="h3_1">Fulano de Tal</h3>
-                        <h3 class="h3_2">Matricula:</h3>
+                        <h3 class="h3_1">Bem vindo Fulano de Tal</h3>
+                        <h3 class="h3_2">Matricula: 123456</h3>
                     </div>
                 </div>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="">Editar</a></li>
                     <li><a class="dropdown-item" href="tela_login.php">Sair</a></li>
                 </ul>
             </div>
@@ -90,7 +88,7 @@
                             <td>10/09/2026</td>
                             <td>Temperatura elevada</td>
                             <td>
-                                <button class="btn_delete ms-4"><i class="bi bi-trash"></i></button>
+                                <button class="btn_delete"><i class="bi bi-trash"></i></button>
                             </td>
                         </tr>
                         <tr data-id="1002" data-trem="5824" data-sensor="vibracao" data-data="2026-09-12" data-falha="vibração excessiva">
@@ -98,7 +96,7 @@
                             <td>12/09/2026</td>
                             <td>Vibração excessiva</td>
                             <td>
-                                <button class="btn_delete ms-4"><i class="bi bi-trash"></i></button>
+                                <button class="btn_delete"><i class="bi bi-trash"></i></button>
                             </td>
                         </tr>
                         <tr data-id="1003" data-trem="5823" data-sensor="velocidade" data-data="2026-09-15" data-falha="desaceleração brusca">
@@ -106,7 +104,7 @@
                             <td>15/09/2026</td>
                             <td>Desaceleração brusca</td>
                             <td>
-                                <button class="btn_delete ms-4"><i class="bi bi-trash"></i></button>
+                                <button class="btn_delete"><i class="bi bi-trash"></i></button>
                             </td>
                         </tr>
                         <tr data-id="1004" data-trem="5825" data-sensor="pressao" data-data="2026-09-20" data-falha="pressão anormal">
@@ -114,7 +112,7 @@
                             <td>20/09/2026</td>
                             <td>Pressão anormal</td>
                             <td>
-                                <button class="btn_delete ms-4"><i class="bi bi-trash"></i></button>
+                                <button class="btn_delete"><i class="bi bi-trash"></i></button>
                             </td>
                         </tr>
                     </tbody>

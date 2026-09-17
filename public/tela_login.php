@@ -57,11 +57,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../assets/style/style.css">
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.4/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/style/style.css">
 
     <title>Login</title>
 </head>
@@ -95,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="btn1">
 
             <div id="mensagem">
-                <?php if (!empty($error)) echo '<div class="text-danger fw-bold">'.htmlspecialchars($error).'</div>'; ?>
+                <?php if (!empty($error)) echo '<div class="text-danger fw-bold">' . htmlspecialchars($error) . '</div>'; ?>
             </div>
 
             <button type="submit" class="button" id="button1">Entrar</button>

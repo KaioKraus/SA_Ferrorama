@@ -146,7 +146,6 @@ a {
     height: 8vh;
     background-color: #0F2222;
     display: flex;
-    justify-content: center;
     align-items: center;
 }
 
@@ -222,7 +221,8 @@ h3 {
     background-color: #0A3D3D;
     color: white;
     border-radius: 10px;
-    padding: 5px 25px;
+    width: 29px;
+    height: 29px;
     border: none;
     margin-left: 10px;
 }
@@ -232,7 +232,8 @@ h3 {
     background-color: #0A3D3D;
     color: white;
     border-radius: 10px;
-    padding: 5px 20px;
+    width: 29px;
+    height: 29px;
     border: none;
 }
 
@@ -281,20 +282,42 @@ h3 {
     display: inline-block;
 }
 
+.btn_edit,
+.btn_delete,
+.trens-card-acao {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    min-width: 35px;
+    min-height: 35px;
+    padding: 0;
+    border: none;
+    border-radius: 5px;
+    line-height: 1;
+}
+
 .btn_edit {
     background-color: #06700f;
     color: white;
-    border: none;
-    padding: 2px 5px;
-    border-radius: 5px;
 }
 
 .btn_delete {
     background-color: #FB4242;
     color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
+}
+
+.trens-card-acao {
+    background-color: #000000;
+    color: #ffffff;
+}
+
+.btn_edit i,
+.btn_delete i,
+.trens-card-acao i {
+    font-size: 1.2rem;
+    line-height: 1;
 }
 
 .modal-content {
@@ -655,23 +678,12 @@ h3 {
 .trens-card-cabecalho {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     height: 31px;
     margin-bottom: 19px;
 }
 
-.trens-card-acao {
-    width: 29px;
-    height: 29px;
-    padding: 0;
-    border: none;
-    border-radius: 4px;
-    background-color: #000000;
-    color: #ffffff;
-    font-size: 19px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+.trens-card-acoes{
+    margin-left: 65px;
 }
 
 .trens-card-img {

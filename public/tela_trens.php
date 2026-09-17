@@ -50,14 +50,12 @@
 
             <div class="dropdown">
                 <div class="box_usuario dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" role="button">
-                    <img src="" alt="" class="box_img_usuario">
                     <div class="h3">
-                        <h3 class="h3_1">Fulano de Tal</h3>
-                        <h3 class="h3_2">Matricula:</h3>
+                        <h3 class="h3_1">Bem vindo Fulano de Tal</h3>
+                        <h3 class="h3_2">Matricula: 123456</h3>
                     </div>
                 </div>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="">Editar</a></li>
                     <li><a class="dropdown-item" href="tela_login.php">Sair</a></li>
                 </ul>
             </div>
@@ -81,15 +79,19 @@
                         <div class="col">
                             <article class="trens-card-trem">
                                 <div class="trens-card-cabecalho">
-                                    <strong>ID: 5823</strong>
-                                    <button class="trens-card-acao"
-                                        type="button"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modal_monitoramento"
-                                        aria-label="Detalhes do trem">
+                                    <div>    
+                                        <strong>ID: 5823</strong>
+                                    </div>
+                                    <div class ="trens-card-acoes">
+                                        <button class="trens-card-acao"
+                                            type="button"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modal_monitoramento"
+                                            aria-label="Detalhes do trem">
 
-                                        <i class="bi bi-info-lg"></i>
-                                    </button>
+                                            <i class="bi bi-info-lg"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 <img src="../assets/img/trem_card.png" alt="Trem" class="trens-card-img">
                                 <p>Nome:Nome do Trem</p>
@@ -99,15 +101,19 @@
                         <div class="col">
                             <article class="trens-card-trem">
                                 <div class="trens-card-cabecalho">
-                                    <strong>ID: 5823</strong>
-                                    <button class="trens-card-acao"
-                                        type="button"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modal_monitoramento"
-                                        aria-label="Detalhes do trem">
+                                    <div>    
+                                        <strong>ID: 5823</strong>
+                                    </div>
+                                    <div class ="trens-card-acoes">
+                                        <button class="trens-card-acao"
+                                            type="button"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modal_monitoramento"
+                                            aria-label="Detalhes do trem">
 
-                                        <i class="bi bi-info-lg"></i>
-                                    </button>
+                                            <i class="bi bi-info-lg"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 <img src="../assets/img/trem_card.png" alt="Trem" class="trens-card-img">
                                 <p>Nome:Nome do Trem</p>
@@ -117,15 +123,19 @@
                         <div class="col">
                             <article class="trens-card-trem">
                                 <div class="trens-card-cabecalho">
-                                    <strong>ID: 5823</strong>
-                                    <button class="trens-card-acao"
-                                        type="button"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modal_monitoramento"
-                                        aria-label="Detalhes do trem">
+                                    <div>    
+                                        <strong>ID: 5823</strong>
+                                    </div>
+                                    <div class ="trens-card-acoes">
+                                        <button class="trens-card-acao"
+                                            type="button"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modal_monitoramento"
+                                            aria-label="Detalhes do trem">
 
-                                        <i class="bi bi-info-lg"></i>
-                                    </button>
+                                            <i class="bi bi-info-lg"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 <img src="../assets/img/trem_card.png" alt="Trem" class="trens-card-img">
                                 <p>Nome:Nome do Trem</p>
@@ -135,15 +145,19 @@
                         <div class="col">
                             <article class="trens-card-trem">
                                 <div class="trens-card-cabecalho">
-                                    <strong>ID: 5823</strong>
-                                    <button class="trens-card-acao"
-                                        type="button"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modal_monitoramento"
-                                        aria-label="Detalhes do trem">
+                                    <div>    
+                                        <strong>ID: 5823</strong>
+                                    </div>
+                                    <div class ="trens-card-acoes">
+                                        <button class="trens-card-acao"
+                                            type="button"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modal_monitoramento"
+                                            aria-label="Detalhes do trem">
 
-                                        <i class="bi bi-info-lg"></i>
-                                    </button>
+                                            <i class="bi bi-info-lg"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 <img src="../assets/img/trem_card.png" alt="Trem" class="trens-card-img">
                                 <p>Nome:Nome do Trem</p>
@@ -153,15 +167,19 @@
                         <div class="col">
                             <article class="trens-card-trem">
                                 <div class="trens-card-cabecalho">
-                                    <strong>ID: 5823</strong>
-                                    <button class="trens-card-acao"
-                                        type="button"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modal_monitoramento"
-                                        aria-label="Detalhes do trem">
+                                    <div>    
+                                        <strong>ID: 5823</strong>
+                                    </div>
+                                    <div class ="trens-card-acoes">
+                                        <button class="trens-card-acao"
+                                            type="button"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modal_monitoramento"
+                                            aria-label="Detalhes do trem">
 
-                                        <i class="bi bi-info-lg"></i>
-                                    </button>
+                                            <i class="bi bi-info-lg"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 <img src="../assets/img/trem_card.png" alt="Trem" class="trens-card-img">
                                 <p>Nome:Nome do Trem</p>
@@ -171,15 +189,19 @@
                         <div class="col">
                             <article class="trens-card-trem">
                                 <div class="trens-card-cabecalho">
-                                    <strong>ID: 5823</strong>
-                                    <button class="trens-card-acao"
-                                        type="button"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modal_monitoramento"
-                                        aria-label="Detalhes do trem">
+                                    <div>    
+                                        <strong>ID: 5823</strong>
+                                    </div>
+                                    <div class ="trens-card-acoes">
+                                        <button class="trens-card-acao"
+                                            type="button"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modal_monitoramento"
+                                            aria-label="Detalhes do trem">
 
-                                        <i class="bi bi-info-lg"></i>
-                                    </button>
+                                            <i class="bi bi-info-lg"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 <img src="../assets/img/trem_card.png" alt="Trem" class="trens-card-img">
                                 <p>Nome:Nome do Trem</p>
@@ -189,15 +211,19 @@
                         <div class="col">
                             <article class="trens-card-trem">
                                 <div class="trens-card-cabecalho">
-                                    <strong>ID: 5823</strong>
-                                    <button class="trens-card-acao"
-                                        type="button"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modal_monitoramento"
-                                        aria-label="Detalhes do trem">
+                                    <div>    
+                                        <strong>ID: 5823</strong>
+                                    </div>
+                                    <div class ="trens-card-acoes">
+                                        <button class="trens-card-acao"
+                                            type="button"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modal_monitoramento"
+                                            aria-label="Detalhes do trem">
 
-                                        <i class="bi bi-info-lg"></i>
-                                    </button>
+                                            <i class="bi bi-info-lg"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 <img src="../assets/img/trem_card.png" alt="Trem" class="trens-card-img">
                                 <p>Nome:Nome do Trem</p>
@@ -207,15 +233,19 @@
                         <div class="col">
                             <article class="trens-card-trem">
                                 <div class="trens-card-cabecalho">
-                                    <strong>ID: 5823</strong>
-                                    <button class="trens-card-acao"
-                                        type="button"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modal_monitoramento"
-                                        aria-label="Detalhes do trem">
+                                    <div>    
+                                        <strong>ID: 5823</strong>
+                                    </div>
+                                    <div class ="trens-card-acoes">
+                                        <button class="trens-card-acao"
+                                            type="button"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modal_monitoramento"
+                                            aria-label="Detalhes do trem">
 
-                                        <i class="bi bi-info-lg"></i>
-                                    </button>
+                                            <i class="bi bi-info-lg"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 <img src="../assets/img/trem_card.png" alt="Trem" class="trens-card-img">
                                 <p>Nome:Nome do Trem</p>
@@ -225,15 +255,19 @@
                         <div class="col">
                             <article class="trens-card-trem">
                                 <div class="trens-card-cabecalho">
-                                    <strong>ID: 5823</strong>
-                                    <button class="trens-card-acao"
-                                        type="button"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modal_monitoramento"
-                                        aria-label="Detalhes do trem">
+                                    <div>    
+                                        <strong>ID: 5823</strong>
+                                    </div>
+                                    <div class ="trens-card-acoes">
+                                        <button class="trens-card-acao"
+                                            type="button"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modal_monitoramento"
+                                            aria-label="Detalhes do trem">
 
-                                        <i class="bi bi-info-lg"></i>
-                                    </button>
+                                            <i class="bi bi-info-lg"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 <img src="../assets/img/trem_card.png" alt="Trem" class="trens-card-img">
                                 <p>Nome:Nome do Trem</p>
@@ -243,15 +277,19 @@
                         <div class="col">
                             <article class="trens-card-trem">
                                 <div class="trens-card-cabecalho">
-                                    <strong>ID: 5823</strong>
-                                    <button class="trens-card-acao"
-                                        type="button"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modal_monitoramento"
-                                        aria-label="Detalhes do trem">
+                                    <div>    
+                                        <strong>ID: 5823</strong>
+                                    </div>
+                                    <div class ="trens-card-acoes">
+                                        <button class="trens-card-acao"
+                                            type="button"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modal_monitoramento"
+                                            aria-label="Detalhes do trem">
 
-                                        <i class="bi bi-info-lg"></i>
-                                    </button>
+                                            <i class="bi bi-info-lg"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 <img src="../assets/img/trem_card.png" alt="Trem" class="trens-card-img">
                                 <p>Nome:Nome do Trem</p>
@@ -261,15 +299,19 @@
                         <div class="col">
                             <article class="trens-card-trem">
                                 <div class="trens-card-cabecalho">
-                                    <strong>ID: 5823</strong>
-                                    <button class="trens-card-acao"
-                                        type="button"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modal_monitoramento"
-                                        aria-label="Detalhes do trem">
+                                    <div>    
+                                        <strong>ID: 5823</strong>
+                                    </div>
+                                    <div class ="trens-card-acoes">
+                                        <button class="trens-card-acao"
+                                            type="button"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modal_monitoramento"
+                                            aria-label="Detalhes do trem">
 
-                                        <i class="bi bi-info-lg"></i>
-                                    </button>
+                                            <i class="bi bi-info-lg"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 <img src="../assets/img/trem_card.png" alt="Trem" class="trens-card-img">
                                 <p>Nome:Nome do Trem</p>
@@ -279,15 +321,19 @@
                         <div class="col">
                             <article class="trens-card-trem">
                                 <div class="trens-card-cabecalho">
-                                    <strong>ID: 5823</strong>
-                                    <button class="trens-card-acao"
-                                        type="button"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modal_monitoramento"
-                                        aria-label="Detalhes do trem">
+                                    <div>    
+                                        <strong>ID: 5823</strong>
+                                    </div>
+                                    <div class ="trens-card-acoes">
+                                        <button class="trens-card-acao"
+                                            type="button"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modal_monitoramento"
+                                            aria-label="Detalhes do trem">
 
-                                        <i class="bi bi-info-lg"></i>
-                                    </button>
+                                            <i class="bi bi-info-lg"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 <img src="../assets/img/trem_card.png" alt="Trem" class="trens-card-img">
                                 <p>Nome:Nome do Trem</p>

@@ -48,14 +48,12 @@
 
             <div class="dropdown">
                 <div class="box_usuario dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" role="button">
-                    <img src="" alt="" class="box_img_usuario">
                     <div class="h3">
-                        <h3 class="h3_1">Fulano de Tal</h3>
-                        <h3 class="h3_2">Matricula:</h3>
+                        <h3 class="h3_1">Bem vindo Fulano de Tal</h3>
+                        <h3 class="h3_2">Matricula: 123456</h3>
                     </div>
                 </div>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="">Editar</a></li>
                     <li><a class="dropdown-item" href="tela_login.php">Sair</a></li>
                 </ul>
             </div>
@@ -71,8 +69,7 @@
                             <i class="bi bi-search"></i>
                         </button>
                     </div>
-                    <button class="btn trens-btn-add" data-bs-toggle="modal" data-bs-target="#modalAddRota">
-                        <i class="bi"></i> Adicionar
+                    <button class="btn trens-btn-add" data-bs-toggle="modal" data-bs-target="#modalAddRota"> Adicionar
                     </button>
                 </div>
                 <table class="table">
@@ -96,14 +93,14 @@
                             <td>08:00</td>
                             <td>09:00</td>
                             <td>
-                                <button class="btn_edit"><i class="bi bi-pencil-square"></i> Edit</button>
-                                <button class="btn_delete ms-4"><i class="bi bi-trash"></i></button>
+                                <button class="btn_edit"><i class="bi bi-pencil-square"></i></button>
+                                <button class="btn_delete mx-2"><i class="bi bi-trash"></i></button>
                                 <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
                                     <i class="bi bi-info-lg"></i>
                                 </button>
                             </td>
                         </tr>
-                        <tr>
+                        <tr>|
                             <td>99999</td>
                             <td>Estação Norte</td>
                             <td>Estação Sul</td>
@@ -111,8 +108,8 @@
                             <td>10:00</td>
                             <td>11:00</td>
                             <td>
-                                <button class="btn_edit"><i class="bi bi-pencil-square"></i> Edit</button>
-                                <button class="btn_delete ms-4"><i class="bi bi-trash"></i></button>
+                                <button class="btn_edit"><i class="bi bi-pencil-square"></i></button>
+                                <button class="btn_delete mx-2"><i class="bi bi-trash"></i></button>
                                 <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
                                     <i class="bi bi-info-lg"></i>
                                 </button>

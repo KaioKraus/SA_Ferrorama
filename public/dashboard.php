@@ -50,14 +50,12 @@
 
             <div class="dropdown">
                 <div class="box_usuario dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" role="button">
-                    <img src="" alt="" class="box_img_usuario">
                     <div class="h3">
-                        <h3 class="h3_1">Fulano de Tal</h3>
-                        <h3 class="h3_2">Matricula:</h3>
+                        <h3 class="h3_1">Bem vindo Fulano de Tal</h3>
+                        <h3 class="h3_2">Matricula: 123456</h3>
                     </div>
                 </div>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="">Editar</a></li>
                     <li><a class="dropdown-item" href="tela_login.php">Sair</a></li>
                 </ul>
             </div>

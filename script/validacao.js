@@ -172,6 +172,172 @@ const select_localizacao_sensor = document.getElementById("input_localizacao_sen
 const vinculo_trem_radio = document.getElementById("vinculo_trem");
 const vinculo_rota_radio = document.getElementById("vinculo_rota");
 
+const form_relatorio = document.getElementById("form_relatorio");
+const form_relatorio_modal = document.getElementById("form_relatorio_modal");
+const mensagem_relatorio = document.getElementById("mensagem_relatorio");
+const mensagem_relatorio_modal = document.getElementById("mensagem_relatorio_modal");
+const tbody_relatorios = document.querySelector("#tbody_relatorios");
+const input_busca_relatorio = document.getElementById("input_busca_relatorio");
+const btn_busca_relatorio = document.getElementById("btn_busca_relatorio");
+
+function aplicarFiltroRelatorio() {
+    if (!tbody_relatorios) return;
+
+    const trem = document.getElementById("relatorio_modal_trem") ? document.getElementById("relatorio_modal_trem").value : document.getElementById("relatorio_trem").value;
+    const sensor = document.getElementById("relatorio_modal_sensor") ? document.getElementById("relatorio_modal_sensor").value : document.getElementById("relatorio_sensor").value;
+    const dataInicio = document.getElementById("relatorio_modal_data_inicio") ? document.getElementById("relatorio_modal_data_inicio").value : document.getElementById("relatorio_data_inicio").value;
+    const dataFim = document.getElementById("relatorio_modal_data_fim") ? document.getElementById("relatorio_modal_data_fim").value : document.getElementById("relatorio_data_fim").value;
+
+    const linhas = tbody_relatorios.querySelectorAll("tr");
+    let registrosEncontrados = 0;
+
+    linhas.forEach((linha) => {
+        const linhaTrem = linha.dataset.trem;
+        const linhaSensor = linha.dataset.sensor;
+        const linhaData = linha.dataset.data;
+
+        const atendeTrem = trem === "todos" || linhaTrem === trem;
+        const atendeSensor = sensor === "todos" || linhaSensor === sensor;
+        const atendeData = !dataInicio || !dataFim || (linhaData >= dataInicio && linhaData <= dataFim);
+
+        const visivel = atendeTrem && atendeSensor && atendeData;
+        linha.hidden = !visivel;
+
+        if (visivel) {
+            registrosEncontrados += 1;
+        }
+    });
+
+    if (mensagem_relatorio) {
+        if (registrosEncontrados > 0) {
+            mensagem_relatorio.innerHTML = `<div class='text-success fw-bold'>${registrosEncontrados} registro(s) encontrado(s).</div>`;
+        } else {
+            mensagem_relatorio.innerHTML = "<div class='text-warning fw-bold'>Nenhum registro encontrado para os filtros selecionados.</div>";
+        }
+    }
+
+    if (mensagem_relatorio_modal) {
+        if (registrosEncontrados > 0) {
+            mensagem_relatorio_modal.innerHTML = `<div class='text-success fw-bold'>${registrosEncontrados} registro(s) encontrado(s).</div>`;
+        } else {
+            mensagem_relatorio_modal.innerHTML = "<div class='text-warning fw-bold'>Nenhum registro encontrado para os filtros selecionados.</div>";
+        }
+    }
+}
+
+function atualizarBuscaRelatorios() {
+    if (!tbody_relatorios || !input_busca_relatorio) return;
+
+    const termo = input_busca_relatorio.value.trim().toLowerCase();
+    const linhas = tbody_relatorios.querySelectorAll("tr");
+
+    linhas.forEach((linha) => {
+        const textoLinha = linha.textContent.toLowerCase();
+        linha.hidden = termo !== "" && !textoLinha.includes(termo);
+    });
+}
+
+if (input_busca_relatorio) {
+    input_busca_relatorio.addEventListener("input", atualizarBuscaRelatorios);
+}
+
+if (btn_busca_relatorio) {
+    btn_busca_relatorio.addEventListener("click", atualizarBuscaRelatorios);
+}
+
+if (form_relatorio) {
+    form_relatorio.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const trem = document.getElementById("relatorio_trem").value;
+        const sensor = document.getElementById("relatorio_sensor").value;
+        const dataInicio = document.getElementById("relatorio_data_inicio").value;
+        const dataFim = document.getElementById("relatorio_data_fim").value;
+
+        if (mensagem_relatorio) mensagem_relatorio.innerHTML = "";
+
+        if (!trem || !sensor || !dataInicio || !dataFim) {
+            if (mensagem_relatorio) {
+                mensagem_relatorio.innerHTML = "<div class='text-danger fw-bold'>Preencha todos os campos.</div>";
+            }
+            return;
+        }
+
+        if (new Date(dataInicio) > new Date(dataFim)) {
+            if (mensagem_relatorio) {
+                mensagem_relatorio.innerHTML = "<div class='text-danger fw-bold'>A data inicial não pode ser maior que a final.</div>";
+            }
+            return;
+        }
+
+        aplicarFiltroRelatorio();
+    });
+}
+
+if (form_relatorio_modal) {
+    form_relatorio_modal.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const trem = document.getElementById("relatorio_modal_trem").value;
+        const sensor = document.getElementById("relatorio_modal_sensor").value;
+        const dataInicio = document.getElementById("relatorio_modal_data_inicio").value;
+        const dataFim = document.getElementById("relatorio_modal_data_fim").value;
+
+        if (mensagem_relatorio_modal) mensagem_relatorio_modal.innerHTML = "";
+
+        if (!trem || !sensor || !dataInicio || !dataFim) {
+            if (mensagem_relatorio_modal) {
+                mensagem_relatorio_modal.innerHTML = "<div class='text-danger fw-bold'>Preencha todos os campos.</div>";
+            }
+            return;
+        }
+
+        if (new Date(dataInicio) > new Date(dataFim)) {
+            if (mensagem_relatorio_modal) {
+                mensagem_relatorio_modal.innerHTML = "<div class='text-danger fw-bold'>A data inicial não pode ser maior que a final.</div>";
+            }
+            return;
+        }
+
+        const linhas = tbody_relatorios ? tbody_relatorios.querySelectorAll("tr") : [];
+        let registrosEncontrados = 0;
+
+        linhas.forEach((linha) => {
+            const linhaTrem = linha.dataset.trem;
+            const linhaSensor = linha.dataset.sensor;
+            const linhaData = linha.dataset.data;
+
+            const atendeTrem = trem === "todos" || linhaTrem === trem;
+            const atendeSensor = sensor === "todos" || linhaSensor === sensor;
+            const atendeData = linhaData >= dataInicio && linhaData <= dataFim;
+
+            const visivel = atendeTrem && atendeSensor && atendeData;
+            linha.hidden = !visivel;
+
+            if (visivel) {
+                registrosEncontrados += 1;
+            }
+        });
+
+        if (mensagem_relatorio_modal) {
+            if (registrosEncontrados > 0) {
+                mensagem_relatorio_modal.innerHTML = `<div class='text-success fw-bold'>${registrosEncontrados} registro(s) encontrado(s).</div>`;
+            } else {
+                mensagem_relatorio_modal.innerHTML = "<div class='text-warning fw-bold'>Nenhum registro encontrado para os filtros selecionados.</div>";
+            }
+        }
+
+        setTimeout(() => {
+            form_relatorio_modal.reset();
+            const modal_element = document.getElementById('modal_relatorio');
+            if (typeof bootstrap !== 'undefined' && modal_element) {
+                const modal = bootstrap.Modal.getOrCreateInstance(modal_element);
+                modal.hide();
+            }
+        }, 1200);
+    });
+}
+
 // RN03: Todo sensor deve estar vinculado a um trem ou a um trecho da ferrovia.
 // O toggle Trem/Rota controla quais opções aparecem no select de Localização.
 const opcoes_localizacao_trem = [
@@ -246,3 +412,4 @@ if (form_cadastro_sensor) {
         });
     });
 }
+

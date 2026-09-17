@@ -791,6 +791,10 @@ h3 {
     height: 44px;
 }
 
+.nav1_mobile{
+    display: none;
+}
+
 .hamburger-btn {
     display: none;
 }

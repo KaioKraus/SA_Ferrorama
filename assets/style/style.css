@@ -382,7 +382,8 @@ h3 {
 }
 
 #navModal .modal-body a.nav-active {
-    color: #0A3D3D !important; /* cor do nav1_mobile */
+    color: #0A3D3D !important;
+    /* cor do nav1_mobile */
     font-weight: 700;
     text-shadow: 0 0 25px #0A3D3D;
 }
@@ -416,7 +417,7 @@ h3 {
     font-weight: bold;
 }
 
-.btn-check:checked + .btn_dia {
+.btn-check:checked+.btn_dia {
     background-color: #34495e;
     color: #ffffff;
 }
@@ -492,6 +493,7 @@ h3 {
 #vinculo_rota:checked~.slider {
     transform: translateX(100%);
 }
+
 /*fim animaçõa select*/
 
 .input-field {
@@ -654,8 +656,8 @@ h3 {
     padding-right: 46px;
 }
 
-.dashboard-grid > .col,
-.trens-grid > .col {
+.dashboard-grid>.col,
+.trens-grid>.col {
     width: 250px;
     padding: 0;
     margin-top: 0;
@@ -699,29 +701,29 @@ h3 {
 }
 
 .btn-close {
-    position: absolute; 
-    right: 20px; 
-    top: 20px;    
+    position: absolute;
+    right: 20px;
+    top: 20px;
 }
 
-.dashboard-graficos{
+.dashboard-graficos {
     margin: 20px 65px 0px;
 }
 
-.dashboard-graficos div{
+.dashboard-graficos div {
     background-color: #EAEAEA;
     height: 142px;
     width: 305px;
     border-radius: 10px;
 }
 
-.trilho{
+.trilho {
     padding: 30px 65px 50px;
     box-sizing: border-box;
     overflow: hidden;
 }
 
-.trilho-img{
+.trilho-img {
     display: block;
     width: 100%;
     height: auto;
@@ -755,6 +757,18 @@ h3 {
     font-weight: 700;
     margin-bottom: 8px;
     color: #0A3D3D;
+}
+
+/* Center the card title like users table pattern */
+.card_relatorios .card-title,
+.card_gerar_relatorios .card-title {
+    text-align: center;
+    color: #333 !important;
+    padding: 10px 16px;
+    background: #D9D9D9;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    display: block;
 }
 
 .card_gerar_relatorios .card-text {
@@ -825,12 +839,192 @@ h3 {
     height: 44px;
 }
 
-.nav1_mobile{
+.nav1_mobile {
     display: none;
 }
 
 .hamburger-btn {
     display: none;
+}
+
+.card_relatorios,
+.card_gerar_relatorios {
+    background-color: #D9D9D9;
+    border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(7, 39, 39, 0.06);
+    padding: 24px;
+}
+
+.card_relatorios .table {
+    border-collapse: separate;
+    border-spacing: 0 12px;
+    width: 100%;
+}
+
+.card_relatorios .table thead th {
+    color: #072727;
+    font-weight: 700;
+    background: transparent;
+    padding: 8px 12px;
+    text-align: left;
+}
+
+.card_relatorios .table tbody tr {
+    background: #D9D9D9 !important;
+    border-radius: 10px !important; 
+    box-shadow: 0 6px 18px rgba(7, 39, 39, 0.04) !important;
+}
+
+.card_relatorios .table tbody td {
+    padding: 12px 14px;
+    vertical-align: middle;
+    color: #333333;
+}
+
+.btn-detalhes-relatorio {
+    border-radius: 8px;
+    padding: 6px 12px;
+    color: #599967;
+    border: 1px solid #599967;
+    background: transparent;
+    transition: all 0.15s ease-in-out;
+}
+
+.btn-detalhes-relatorio:hover {
+    background: #599967;
+    color: #D9D9D9;
+    box-shadow: 0 8px 20px rgba(89, 153, 103, 0.14);
+}
+
+.btn.btn-outline-primary.btn-detalhes-relatorio,
+.btn-detalhes-relatorio.btn-outline-primary {
+    color: #599967 !important;
+    border-color: #599967 !important;
+    background: transparent !important;
+}
+
+.btn-detalhes-relatorio:focus,
+.btn-detalhes-relatorio:active,
+.btn-detalhes-relatorio:hover {
+    background: #599967 !important;
+    color: #ffffff !important;
+    border-color: #599967 !important;
+    box-shadow: 0 8px 20px rgba(89, 153, 103, 0.14) !important;
+}
+
+
+.btn_delete {
+    border-radius: 8px;
+    padding: 6px 10px;
+    background: transparent;
+    border: 1px solid #fb4242;
+    color: #fb4242;
+    transition: all 0.15s ease-in-out;
+}
+
+.btn_delete:hover {
+    background: #fb4242;
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(251, 66, 66, 0.12);
+}
+
+
+.relatorios-grid {
+    display: none;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 10px;
+}
+
+.relatorios-table {
+    display: table;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.relatorio-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 8px 20px rgba(7, 39, 39, 0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.relatorio-date {
+    font-size: 0.95rem;
+    color: #072727;
+    font-weight: 700;
+}
+
+.relatorio-type {
+    color: #333;
+    font-size: 0.95rem;
+    min-height: 36px;
+}
+
+.relatorio-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-start;
+}
+
+.relatorios-table {
+    display: table !important;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.relatorios-table thead th,
+.relatorios-table tbody td {
+    display: table-cell !important;
+    vertical-align: middle !important;
+        text-align: center !important;
+    padding: 12px 10px;
+    white-space: nowrap;
+}
+
+.relatorios-table tbody tr {
+    display: table-row !important;
+}
+
+.relatorios-table .btn-detalhes-relatorio {
+    display: none !important;
+}
+
+.card_relatorios .table {
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
+    width: 100%;
+}
+
+.card_relatorios .table tbody tr {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+.relatorios-table tbody tr {
+    border-bottom: 1px solid #ececec;
+}
+
+.relatorios-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.card_relatorios .table.relatorios-table,
+.card_relatorios .table,
+.relatorios-table {
+    
+    background-color: transparent;
+}
+
+
+@media (min-width: 821px) {
+    .card_relatorios { background-color: #D9D9D9 !important; }
+    .card_relatorios .table, .relatorios-table { background-color: #ffff !important; }
+    .relatorios-table tbody tr { background: transparent !important; box-shadow: none !important; }
 }
 
 /*Responsividade*/
@@ -865,72 +1059,179 @@ h3 {
     }
 
     /* Dashboard */
-        .nav1{
-            display: none;
-        }
+    .nav1 {
+        display: none;
+    }
 
-        .nav1_mobile {
-            display: block;
-            position: fixed;
-            width: 100%;
-            height: 60px;
-            background-color: #072727;
-            z-index: 1000;
-        }
+    .nav1_mobile {
+        display: block;
+        position: fixed;
+        width: 100%;
+        height: 60px;
+        background-color: #072727;
+        z-index: 1000;
+    }
 
-        .hamburger-btn {
-            display: block;
-            position: fixed;
-            top: 12px;
-            left: 12px;
-            z-index: 1100;
-            width: 40px;
-            height: 40px;
-            background-color: transparent;
-            border: none;
-            color: #fff;
-            font-size: 26px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
+    .hamburger-btn {
+        display: block;
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        z-index: 1100;
+        width: 40px;
+        height: 40px;
+        background-color: transparent;
+        border: none;
+        color: #fff;
+        font-size: 26px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-        .logo-mobile {
-            position: fixed;
-            top: 10px;
-            left: 70%;
-            width: 80px;
-            height: auto;
-            z-index: 1100;
-            filter: saturate(0);
-            filter: brightness(100);
-        }
+    .logo-mobile {
+        position: fixed;
+        top: 10px;
+        left: 70%;
+        width: 80px;
+        height: auto;
+        z-index: 1100;
+        filter: saturate(0);
+        filter: brightness(100);
+    }
 
-        .dashboard-painel{
-            margin: 50px auto;
-            height: auto;
-        }
+    .dashboard-painel {
+        margin: 50px auto;
+        height: auto;
+    }
 
-        .dashboard-graficos{
-            width: 95%;
-            max-width: 630px;
-            margin: 20px auto 0;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
+    .dashboard-graficos {
+        width: 95%;
+        max-width: 630px;
+        margin: 20px auto 0;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
 
-        .dashboard-topo{
-            height: 0px;
-            margin: 0;
-            padding: 0;
-            display: none;
-        }
+    .dashboard-topo {
+        height: 0px;
+        margin: 0;
+        padding: 0;
+        display: none;
+    }
 
-        .trilho{
-            width: 75vw;
-            margin: 20px auto 20px;
-            padding: 0;
-            border-radius: 10px;
-        }
+    .trilho {
+        width: 75vw;
+        margin: 20px auto 20px;
+        padding: 0;
+        border-radius: 10px;
+    }
 
+    /* Relatórios*/
+    .card_relatorios,
+    .card_gerar_relatorios {
+        width: 95%;
+        margin: 90px auto 20px;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .card_gerar_relatorios .form-relatorio-row,
+    .form-relatorio-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .barra_busca {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+
+    .dashboard-busca,
+    .input_buscar {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .card_relatorios .table {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .relatorios-grid {
+        display: grid !important;
+    }
+
+    .relatorios-table {
+        display: none !important;
+    }
+
+    .card_relatorios .table thead th,
+    .card_relatorios .table tbody td {
+        white-space: nowrap;
+    }
+
+
+    .card_relatorios .table thead th:first-child,
+    .card_relatorios .table tbody td:first-child {
+        display: none;
+    }
+
+    .card_relatorios .table tbody tr {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 8px;
+        border-bottom: 1px solid #ececec;
+    }
+
+    .card_relatorios .table tbody td {
+        display: block;
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
+    .card_relatorios .table tbody td:last-child {
+        flex: 0 0 auto;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+    }
+
+    .btn-detalhes-relatorio,
+    .btn_delete {
+        white-space: nowrap;
+    }
+
+    .card_relatorios .table tbody tr {
+        background: #D9D9D9;
+        padding: 10px;
+        box-shadow: 0 6px 18px rgba(7, 39, 39, 0.04);
+        border-radius: 10px;
+        margin-bottom: 12px;
+    }
+
+    .card_relatorios .table tbody td {
+        padding: 8px 6px;
+    }
+
+    .card_relatorios .table tbody td:last-child {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 6px;
+    }
+
+}
+
+
+@media (max-width: 420px) {
+    .relatorios-grid {
+        grid-template-columns: 1fr;
+    }
 }

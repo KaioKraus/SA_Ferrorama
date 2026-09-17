@@ -345,7 +345,28 @@ h3 {
 
 
 #navModal a {
-    color: #072727 !important;
+    color: #0A3D3D !important;
+}
+
+/* Estilos para link ativo e para logout no modal */
+#navModal .modal-body a {
+    display: inline-block;
+    padding: 8px 10px;
+    border-radius: 8px;
+    transition: all 0.15s ease-in-out;
+    color: #333333 !important;
+}
+
+#navModal .modal-body a.nav-active {
+    color: #0A3D3D !important; /* cor do nav1_mobile */
+    font-weight: 700;
+    text-shadow: 0 0 25px #0A3D3D;
+}
+
+#navModal .modal-body a.nav-logout {
+    color: #ce2e2e !important;
+    font-weight: 700;
+    text-shadow: 0 0 25px #FB4242;
 }
 
 .modal-ferroviario {

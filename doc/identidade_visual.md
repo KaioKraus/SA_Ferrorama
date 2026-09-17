@@ -28,38 +28,22 @@ O logotipo representa, de forma minimalista, um trem de alta velocidade visto de
 **Aplicações:**  
 O logotipo aparece na tela de login, logo abaixo do título, e também no canto superior direito do header nas telas do sistema.
 
+**Curiosidade**
+O nome dado ao projeto (Celestial Steel) faz referencia ao logo que contem um C e um S.
+
 ---
 
 ## 3. Paleta de Cores
 
 A paleta de cores foi organizada em três grupos principais, cada um com uma função específica dentro da interface.
 
-### 3.1 Cores de Destaque
-
-| Cor | HEX | Uso |
+| Cor | HEX | Aplicação |
 |---|---|---|
-| 🟠 Laranja | `#ED6A1A` | Botões de ação, como Entrar, Buscar e Sair; item de menu ativo |
-
-
-### 3.2 Cores Estruturais
-
-| Cor | HEX | Uso |
-|---|---|---|
-| 🟢 Verde-Escuro (Teal) | `#072A2A` | Header, fundo da tela de login e sombras |
-| 🟢 Verde-Petróleo | `#1E4D4D` | Sidebar de navegação lateral |
-| ⬜ Verde-Claro | `#CFD8D6` | Backgrounds do sistema |
-| ⚪ Branco | `#FFFFFF` | Cards, tabelas, inputs e textos em fundos escuros |
-
-
-### 3.3 Cores Semânticas
-
-| Cor | Estado | Uso |
-|---|---|---|
-| 🟢 Verde | Normal / Operacional | Badges de status e permissão de Administrador |
-| 🟡 Amarelo | Alerta / Atenção | Manutenção preventiva e permissão de Funcionário |
-| 🔴 Vermelho | Falha Crítica | Botões de exclusão, alertas de falha e erros de validação |
-| 🟩 Verde Escuro | Informação | Botões de detalhes nos cards |
-
+| **🟢 Verde-petróleo** | #063A38 | Cor principal da marca, menu e fundos |
+| **🟢 Verde institucional** | #0B5552 | Botões, títulos e elementos de destaque |
+| **🟢 Verde claros** | #58A86A | Ações positivas e destaques |
+| **⚪ Branco** | #FFFFFF | Fundos, cards e textos sobre cores escuras |
+| **🔴 Vermelho** | #FF3B3B | Exclusão, erros e ações destrutivas |
 
 ---
 
@@ -69,9 +53,6 @@ A paleta foi pensada para transmitir segurança, inovação, controle e sustenta
 
 - **Verde-Escuro e Verde-Petróleo:**  
   São usados na base da interface, principalmente no header e na sidebar. Essas cores transmitem uma sensação de estabilidade e seriedade, além de formarem a ligação do projeto com tecnologia e sustentabilidade.
-
-- **Laranja:**  
-  Funciona como a cor de ação do sistema. Ele aparece em botões, alertas e elementos interativos, ajudando o usuário a identificar rapidamente onde precisa clicar ou prestar atenção. Essa cor transmite energia, ação e dinamismo.
 
 - **Verde-Claro, Branco e Tons Neutros:**  
   São usados nas áreas de conteúdo, tabelas e dashboards. Eles ajudam a deixar a interface mais leve, organizada e fácil de ler, principalmente em situações de uso prolongado.
@@ -104,15 +85,15 @@ Os títulos utilizam o negrito (Bold), como o título “Login”. Labels aparec
 
 ### 6.1 Tela de Login
 
-A tela de login apresenta um card centralizado com cantos arredondados sobre um fundo escuro. Ela conta com o título “Login”, o logotipo da marca, campos de e-mail e senha e o botão “Entrar” em laranja.
+A tela de login apresenta um card centralizado com cantos arredondados sobre um fundo escuro com degradê. Ela conta com o título “Login”, o logotipo da marca, campos de e-mail e senha e o botão “Entrar” em verde claro.
 
 O campo de senha possui ícone de visibilidade integrado, tornando a experiência mais prática. O layout é direto e sem distrações, focado apenas no acesso do usuário ao sistema.
 
 ### 6.2 Dashboard — Cards de Trens
 
-O dashboard utiliza um grid de cards brancos para exibir os trens cadastrados. Cada card apresenta a imagem do trem, seu ID, nome e botões de ação, como informações em verde escuro e exclusão em vermelho.
+O dashboard utiliza um grid de cards brancos para exibir os trens cadastrados. Cada card apresenta a imagem do trem, seu ID, nome e botões de ação, como informações em preto e exclusão em vermelho.
 
-Na parte superior, há uma barra com campo de busca e o botão “Add+”, facilitando a localização e o cadastro de novos trens.
+Na parte superior, há uma barra com campo de busca e o botão “Adicioanar”, facilitando a localização e o cadastro de novos trens.
 
 ### 6.3 Monitoramento de Rotas
 
@@ -129,13 +110,19 @@ Os pontos de sensores mudam de cor conforme o estado operacional, permitindo que
 
 As telas de cadastro aparecem em modais centralizados, com fundo branco e overlay escuro. Essa escolha ajuda a manter o foco do usuário na ação que está sendo realizada.
 
-Os formulários permitem o cadastro de trens, com informações como nome, localização e sensores, além do cadastro de usuários, com nome, CPF, e-mail, matrícula e tipo de permissão.
+Os formulários permitem o cadastro de trens, com informações como nome, local de partida e local de chegada, além do cadastro de usuários, com nome, CPF, e-mail, matrícula, telefone, senha e tipo de permissão.
 
-### 6.5 Tela de Usuários e Rotas
+### 6.5 Tela de Usuários
 
-As telas de usuários e rotas utilizam tabelas com linhas alternadas, facilitando a leitura das informações. As permissões aparecem em badges coloridos, sendo verde para Administrador e amarelo para Funcionário.
+As telas de usuários utiliza tabelas com linhas alternadas, facilitando a leitura das informações. As permissões aparecem em badges coloridos, sendo verde para Administrador e amarelo para Funcionário.
 
 Cada linha da tabela possui botões de ação, permitindo editar, visualizar ou excluir informações de forma simples e rápida.
+
+### 6.6 Tela de Rotas
+
+As telas de rotas utiliza uma tabela com linhas alternadas, facilitando a leitura das informações. A tabela contém o ID do trem, o ponto de partida e o seu destino, ainda por cima contem o horario de início e horário de término da rota
+
+Cada linha da tabela possui botões de ação, permitindo editar ou excluir informações de forma simples e rápida.
 
 ---
 
@@ -143,7 +130,7 @@ Cada linha da tabela possui botões de ação, permitindo editar, visualizar ou 
 
 | Componente | Estilo |
 |---|---|
-| **Botão Entrar** | Fundo laranja `#ED6A1A`, texto branco e `border-radius: 50px` |
+| **Botão Entrar** | Fundo Verde `#ED6A1A`, texto branco e `border-radius: 50px` |
 | **Botão de ícone** | Informação em verde escuro, exclusão em vermelho e edição em verde claro |
 | **Cards** | Fundo branco, sombra sutil e cantos arredondados |
 | **Modais** | Fundo branco, overlay escuro e botão “X” para fechar |

@@ -73,7 +73,7 @@
                         </button>
                     </div>
 
-                    <button class="btn trens-btn-add" type="button" data-bs-toggle="modal" data-bs-target="#modal_relatorio">Adicionar</button>
+                   
                 </div>
                 <table class="table">
                     <thead>

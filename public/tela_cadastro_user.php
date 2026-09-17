@@ -228,12 +228,14 @@
                         <li class="mb-2"><a href="tela_cadastro_user.php" class="text-decoration-none">Usuários</a></li>
                         <li class="mb-2"><a href="tela_rotas.php" class="text-decoration-none">Rotas</a></li>
                         <li class="mb-2"><a href="tela_sensores.php" class="text-decoration-none">Sensores</a></li>
+                        <li class="mb-2"><a href="tela_login.php" class="text-decoration-none">Sair</a></li>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../script/nav.js"></script>
 </body>
 
 </html>

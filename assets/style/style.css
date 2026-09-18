@@ -299,12 +299,18 @@ h3 {
 }
 
 .btn_edit {
-    background-color: #06700f;
+    background-color: #1d7d39;
     color: white;
 }
 
 .btn_delete {
-    background-color: #FB4242;
+    background-color: #cf3c3c;
+    color: white;
+    border: none;
+}
+
+.btn_delete:hover {
+    background-color: #a82e2e;
     color: white;
 }
 
@@ -316,7 +322,7 @@ h3 {
 .btn_edit i,
 .btn_delete i,
 .trens-card-acao i {
-    font-size: 1.2rem;
+    font-size: 18px;
     line-height: 1;
 }
 
@@ -648,56 +654,113 @@ h3 {
     --bs-gutter-x: 0;
     --bs-gutter-y: 0;
     display: grid;
-    grid-template-columns: repeat(4, 250px);
-    column-gap: 54px;
-    row-gap: 53px;
-    justify-content: space-between;
+    grid-template-columns: repeat(5, minmax(220px, 1fr));
+    column-gap: 18px;
+    row-gap: 22px;
+    justify-content: center;
+    align-items: start;
     margin: 0;
-    padding-right: 46px;
+    padding-right: 0;
+    width: 100%;
 }
 
 .dashboard-grid>.col,
 .trens-grid>.col {
-    width: 250px;
+    width: 100%;
+    max-width: 240px;
     padding: 0;
     margin-top: 0;
+    justify-self: center;
 }
 
 .trens-card-trem {
-    width: 250px;
-    height: 265px;
-    padding: 26px 14px 20px;
-    background-color: #f9f9f9;
-    border-radius: 14px;
-    color: #000000;
-    font-size: 15px;
-    font-weight: 700;
+    width: 100%;
+    max-width: 240px;
+    height: 310px;
+    padding: 10px;
+    background-color: #f3f3f3;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
 }
-
 
 .trens-card-cabecalho {
     display: flex;
-    align-items: center;
-    height: 31px;
-    margin-bottom: 19px;
+    flex-direction: column;
+    gap: 3px;
+    margin-bottom: 6px;
 }
 
-.trens-card-acoes{
-    margin-left: 65px;
+.trens-card-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 28px;
+    gap: 8px;
+}
+
+.trens-card-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px 10px;
+    min-width: 66px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    text-transform: none;
+    border: 1px solid transparent;
+    line-height: 1.2;
+}
+
+.trens-card-status.ativo {
+    background-color: #a9e79d;
+    color: #1b4d1b;
+    border-color: #4a9d52;
+}
+
+.trens-card-status.inativo {
+    background-color: #d9d9d9;
+    color: #4a4a4a;
+    border-color: #878787;
+}
+
+.trens-card-acoes {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-left: auto;
+}
+
+.trens-card-id {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.4;
+    color: #000000;
 }
 
 .trens-card-img {
     display: block;
-    width: 213px;
-    height: 94px;
+    width: 100%;
+    height: 140px;
+    max-height: 140px;
     object-fit: contain;
-    margin: 0 auto 23px;
+    margin: 4px auto 0;
     background-color: #ffffff;
+    border-radius: 6px;
+    flex-shrink: 0;
 }
 
-.trens-card-trem p {
-    margin: 0;
-    text-align: center;
+.trens-card-nome {
+    margin: 2px 0 0;
+    text-align: left;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: #000000;
 }
 
 .btn-close {
@@ -912,21 +975,6 @@ h3 {
     box-shadow: 0 8px 20px rgba(89, 153, 103, 0.14) !important;
 }
 
-
-.btn_delete {
-    border-radius: 8px;
-    padding: 6px 10px;
-    background: transparent;
-    border: 1px solid #fb4242;
-    color: #fb4242;
-    transition: all 0.15s ease-in-out;
-}
-
-.btn_delete:hover {
-    background: #fb4242;
-    color: #fff;
-    box-shadow: 0 8px 20px rgba(251, 66, 66, 0.12);
-}
 
 
 .relatorios-grid {

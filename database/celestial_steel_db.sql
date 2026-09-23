@@ -59,6 +59,10 @@ CREATE TABLE Cargos (
     descricao TEXT
 );
 
+INSERT INTO Cargos (id, nome, descricao) VALUES 
+(1, 'Administrador', 'Acesso total ao sistema'),
+(2, 'Funcionário', 'Acesso limitado ao sistema');
+
 CREATE TABLE usuarios(
 	usuario_id INT AUTO_INCREMENT PRIMARY KEY,
 	nome VARCHAR(155) NOT NULL,

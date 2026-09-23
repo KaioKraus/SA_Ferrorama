@@ -28,15 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     } else {
                         $error = 'Credenciais incorretas.';
                     }
-                } else {
-                    if ($email === 'admin@teste.com' && $senha === 'adm1n123') {
-                        $_SESSION['usuario_id'] = 0;
-                        $_SESSION['usuario_nome'] = 'Administrador';
-                        header('Location: dashboard.php');
-                        exit;
-                    } else {
-                        $error = 'Credenciais incorretas.';
-                    }
                 }
             } else {
                 $error = 'Credenciais incorretas.';

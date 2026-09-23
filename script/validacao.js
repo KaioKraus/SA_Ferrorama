@@ -17,48 +17,10 @@ if (toggle_senha) {
     };
 }
 
-if (login) {
-
-    login.onsubmit = function (event) {
-        event.preventDefault();
-
-        const email = document.getElementById("inputEmail").value;
-        const senha_value = senha.value;
-
-        const email_definido = "admin@teste.com";
-        const senha_definida = "adm1n123";
-
-        mensagem.innerHTML = "";
-
-        if (email === "" || senha_value === "") {
-            mensagem.innerHTML = "<div class='text-danger fw-bold'>Preencha todos os campos</div>";
-            return;
-        }
-
-        if (!email.includes("@") || !email.includes(".")) {
-            mensagem.innerHTML = "<div class='text-danger fw-bold'>Email Inválido!</div>";
-            return;
-        }
-
-        if (senha_value.length < 8) {
-            mensagem.innerHTML = "<div class='text-danger fw-bold'>A senha deve possuir no mínimo 8 caracteres!</div>";
-            return;
-        }
-
-        if (email === email_definido && senha_value === senha_definida) {
-            window.location.href = "dashboard.php";
-        } else {
-            mensagem.innerHTML = "<div class='text-danger fw-bold'>Dados incorretos!</div>";
-        }
-    };
-}
-
 // Validação do form de cadastro de usuário
 
-const form_cadastro_user = document.getElementById("form_cadastro_user");
 const input_cpf = document.getElementById("input_cpf");
 const input_telefone = document.getElementById("input_telefone");
-const mensagem_cadastro = document.getElementById("mensagem_cadastro");
 
 const toggle_senha_cadastro = document.getElementById("toggleSenhaCadastro");
 const input_senha_cadastro = document.getElementById("input_senha");
@@ -101,66 +63,6 @@ if (input_telefone) {
             value = value.replace(/(\d{4})(\d{1,4})$/, '$1-$2');
         }
         e.target.value = value;
-    });
-}
-
-if (form_cadastro_user) {
-    form_cadastro_user.addEventListener('submit', function (event) {
-        event.preventDefault();
-
-        const nome = document.getElementById("input_nome").value.trim();
-        const cpf = document.getElementById("input_cpf").value;
-        const email = document.getElementById("input_email").value.trim();
-        const matricula = document.getElementById("input_matricula").value.trim();
-        const telefone = document.getElementById("input_telefone").value;
-        const senha = document.getElementById("input_senha").value;
-
-        mensagem_cadastro.innerHTML = "";
-
-        if (!nome || !cpf || !email || !matricula || !telefone || !senha) {
-            mensagem_cadastro.innerHTML = "<div class='text-danger fw-bold'>Preencha todos os campos!</div>";
-            return;
-        }
-
-        if (nome.length < 3) {
-            mensagem_cadastro.innerHTML = "<div class='text-danger fw-bold'>Nome deve ter pelo menos 3 caracteres!</div>";
-            return;
-        }
-
-        if (cpf.length !== 14) {
-            mensagem_cadastro.innerHTML = "<div class='text-danger fw-bold'>CPF inválido!</div>";
-            return;
-        }
-
-        const email_regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!email_regex.test(email)) {
-            mensagem_cadastro.innerHTML = "<div class='text-danger fw-bold'>Email inválido!</div>";
-            return;
-        }
-
-        if (telefone.length < 14) {
-            mensagem_cadastro.innerHTML = "<div class='text-danger fw-bold'>Telefone inválido!</div>";
-            return;
-        }
-
-        if (senha.length < 8) {
-            mensagem_cadastro.innerHTML = "<div class='text-danger fw-bold'>A senha deve possuir no mínimo 8 caracteres!</div>";
-            return;
-        }
-
-        mensagem_cadastro.innerHTML = "<div class='text-success fw-bold'>Usuário cadastrado com sucesso!</div>";
-
-        // Fechar o modal após sucesso
-        setTimeout(() => {
-            form_cadastro_user.reset();
-            mensagem_cadastro.innerHTML = "";
-            const modal_element = document.getElementById('modal_cadastro');
-            if (typeof bootstrap !== 'undefined') {
-                const modal = bootstrap.Modal.getOrCreateInstance(modal_element);
-                modal.hide();
-            }
-        });
-
     });
 }
 

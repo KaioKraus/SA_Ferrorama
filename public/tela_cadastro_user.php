@@ -164,20 +164,14 @@
                                 </div>
                                 <div class="col ps-2">
                                     <div class="input-field">
-                                        <input required="" autocomplete="off" type="text" id="input_matricula" class="form-control" />
-                                        <label for="input_matricula">Matrícula</label>
+                                        <input required="" autocomplete="off" type="text" id="input_telefone" class="form-control" />
+                                        <label for="input_telefone">Telefone</label>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="row mb-4">
-                                <div class="col pe-2">
-                                    <div class="input-field">
-                                        <input required="" autocomplete="off" type="text" id="input_telefone" class="form-control" />
-                                        <label for="input_telefone">Telefone</label>
-                                    </div>
-                                </div>
-                                <div class="col ps-2">
+                                <div class="col">
                                     <div class="input-field">
                                         <input required="" autocomplete="off" type="password" id="input_senha" class="form-control pe-5" minlength="8" />
                                         <label for="input_senha">Senha</label>
@@ -233,7 +227,7 @@
         </div>
     </div>
 
-    <script src="../script/validacao.js"></script>d
+    <script src="../script/validacao.js"></script>
     <!-- Modal: Navegação (para telas pequenas) -->
     <div class="modal fade" id="navModal" tabindex="-1" aria-labelledby="navModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-top">

@@ -72,6 +72,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Hash da senha
     $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
     
+    // Define o cargo_id baseado na permissão
+    $cargo_id = ($permissao === 'admin') ? 1 : 2;
+
+    // Insere o usuário no banco
+    $sql = "INSERT INTO usuarios (nome, telefone, cpf, email, senha, cargo_id) VALUES (?, ?, ?, ?, ?, ?)";
+    
+    if ($stmt = mysqli_prepare($conexao, $sql)) {
+        mysqli_stmt_bind_param($stmt, 'sssssi', $nome, $telefone, $cpf, $email, $senha_hash, $cargo_id);
+        
+        if (mysqli_stmt_execute($stmt)) {
+            echo json_encode(['success' => true, 'message' => 'Usuário cadastrado com sucesso!']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Erro ao cadastrar usuário: ' . mysqli_error($conexao)]);
+        }
+        
+        mysqli_stmt_close($stmt);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Erro ao preparar consulta: ' . mysqli_error($conexao)]);
+    }
 } else {
     echo json_encode(['success' => false, 'message' => 'Método não permitido']);
 }

@@ -74,8 +74,9 @@ CREATE TABLE usuarios(
     FOREIGN KEY (cargo_id) REFERENCES Cargos(id)
 );
 
-INSERT INTO usuarios (nome, telefone, cpf, email, senha, cargo_id)
-VALUES ('Administrador', '11999999999', '12345678901', 'admin@teste.com', 'adm1n123', 1);
+INSERT INTO usuarios (nome, telefone, cpf, email, senha, cargo_id)VALUES 
+('Administrador', '11999999999', '12345678901', 'admin@teste.com', 'adm1n123', 1),
+('Funcionário', '11999999999', '22345678901', 'funcionario@teste.com', 'func1234', 2);
 
 CREATE TABLE Permissoes (
     id INT AUTO_INCREMENT PRIMARY KEY,

@@ -23,6 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if (password_verify($senha, $hash) || $senha === $hash) {
                         $_SESSION['usuario_id'] = $user['usuario_id'];
                         $_SESSION['usuario_nome'] = $user['nome'];
+                        $_SESSION['usuario_email'] = strtolower(trim($user['email'] ?? ''));
+                        $_SESSION['usuario_cargo_id'] = (int)($user['cargo_id'] ?? 0);
                         header('Location: dashboard.php');
                         exit;
                     } else {

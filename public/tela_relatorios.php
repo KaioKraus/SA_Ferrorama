@@ -1,9 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['usuario_id'])) {
-    header('Location: tela_login.php');
-    exit;
-}
+include __DIR__ . '/validar_acesso.php';
 $usuarioNome = $_SESSION['usuario_nome'] ?? 'Usuário';
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
@@ -48,8 +45,10 @@ header('Expires: 0');
                 <li class="lista" id="li1"><a href="tela_relatorios.php" class="lista">Relatórios</a></li>
                 <hr class="hr1 opacity-100">
 
-                <li class="lista1" id="li1"><a href="tela_cadastro_user.php" class="lista1">Usuários</a></li>
-                <hr class="hr1 opacity-100">
+                <?php if ($usuarioEhAdministrador): ?>
+                    <li class="lista1" id="li1"><a href="tela_cadastro_user.php" class="lista1">Usuários</a></li>
+                    <hr class="hr1 opacity-100">
+                <?php endif; ?>
 
                 <li class="lista1" id="li1"><a href="tela_rotas.php" class="lista1">Rotas</a></li>
                 <hr class="hr1 opacity-100">
@@ -271,7 +270,9 @@ header('Expires: 0');
                     <ul class="list-unstyled">
                         <li class="mb-2"><a href="dashboard.php" class="text-decoration-none">Dashboard</a></li>
                         <li class="mb-2"><a href="tela_relatorios.php" class="text-decoration-none">Relatórios</a></li>
-                        <li class="mb-2"><a href="tela_cadastro_user.php" class="text-decoration-none">Usuários</a></li>
+                        <?php if ($usuarioEhAdministrador): ?>
+                            <li class="mb-2"><a href="tela_cadastro_user.php" class="text-decoration-none">Usuários</a></li>
+                        <?php endif; ?>
                         <li class="mb-2"><a href="tela_rotas.php" class="text-decoration-none">Rotas</a></li>
                         <li class="mb-2"><a href="tela_sensores.php" class="text-decoration-none">Sensores</a></li>
                         <li class="mb-2"><a href="tela_login.php" class="text-decoration-none">Sair</a></li>

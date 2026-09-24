@@ -4,6 +4,7 @@ if (!isset($_SESSION['usuario_id'])) {
     header('Location: tela_login.php');
     exit;
 }
+$usuarioNome = $_SESSION['usuario_nome'] ?? 'Usuário';
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Expires: 0');
@@ -59,13 +60,17 @@ header('Expires: 0');
 
             <div class="dropdown">
                 <div class="box_usuario dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" role="button">
+                    <div class="img_usuario">
+                        <img src="../assets/img/usuario.png" alt="usuario" class="img-fluid">
+                    </div>
                     <div class="h3">
-                        <h3 class="h3_1">Bem vindo Fulano de Tal</h3>
-                        <h3 class="h3_2">Matricula: 123456</h3>
+                        <h3 class="h3_1">Seja Bem Vindo!</h3>
+                        <h3 class="h3_2"><?php echo htmlspecialchars($usuarioNome); ?></h3>
                     </div>
                 </div>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="logout.php">Sair</a></li>
+                    <li><a class="dropdown-item" href="">Editar</a></li>
                 </ul>
             </div>
         </nav>

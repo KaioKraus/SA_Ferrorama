@@ -175,8 +175,11 @@ header('Expires: 0');
                             <div class="row mb-4">
                                 <div class="col pe-2">
                                     <div class="input-field">
-                                        <input required="" autocomplete="off" type="email" id="input_email" class="form-control" />
-                                        <label for="input_email">Email</label>
+                                        <input required="" autocomplete="off" type="password" id="input_senha" class="form-control pe-5" minlength="8" />
+                                        <label for="input_senha">Senha</label>
+                                        <button type="button" id="toggleSenhaCadastro" class="btn position-absolute top-50 end-0 translate-middle-y border-0" style="background: transparent; color: #585858; z-index: 5;">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="col ps-2">
@@ -190,11 +193,8 @@ header('Expires: 0');
                             <div class="row mb-4">
                                 <div class="col">
                                     <div class="input-field">
-                                        <input required="" autocomplete="off" type="password" id="input_senha" class="form-control pe-5" minlength="8" />
-                                        <label for="input_senha">Senha</label>
-                                        <button type="button" id="toggleSenhaCadastro" class="btn position-absolute top-50 end-0 translate-middle-y border-0" style="background: transparent; color: #585858; z-index: 5;">
-                                            <i class="bi bi-eye"></i>
-                                        </button>
+                                        <input required="" autocomplete="off" type="email" id="input_email" class="form-control" />
+                                        <label for="input_email">Email</label>
                                     </div>
                                 </div>
                             </div>

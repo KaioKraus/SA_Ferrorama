@@ -1,3 +1,14 @@
+<?php
+session_start();
+if (!isset($_SESSION['usuario_id'])) {
+    header('Location: tela_login.php');
+    exit;
+}
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
+header('Expires: 0');
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -54,7 +65,7 @@
                     </div>
                 </div>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="tela_login.php">Sair</a></li>
+                    <li><a class="dropdown-item" href="logout.php">Sair</a></li>
                 </ul>
             </div>
         </nav>

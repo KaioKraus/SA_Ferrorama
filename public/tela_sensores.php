@@ -72,7 +72,7 @@ header('Expires: 0');
                 </div>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="logout.php">Sair</a></li>
-                    <li><a class="dropdown-item" href="">Editar</a></li>
+                    <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalEditarPerfil">Editar</button></li>
                 </ul>
             </div>
         </nav>
@@ -88,7 +88,9 @@ header('Expires: 0');
                         </button>
                     </div>
 
+                    <?php if ($usuarioEhAdministrador): ?>
                     <button class="btn trens-btn-add" type="button" data-bs-toggle="modal" data-bs-target="#modal_cadastro_sensor">Adicionar</button>
+                    <?php endif; ?>
                 </div>
                 <table class="table">
                     <thead>
@@ -107,8 +109,10 @@ header('Expires: 0');
                             <td>Trem - ID 5823</td>
                             <td>Temperatura</td>
                             <td>
+                                <?php if ($usuarioEhAdministrador): ?>
                                 <button class="btn_edit"><i class="bi bi-pencil-square"></i></button>
                                 <button type="button" class="btn_delete ms-4" data-id="10001"><i class="bi bi-trash"></i></button>
+                                <?php endif; ?>
                             </td>
                         </tr>
                         <tr>
@@ -117,8 +121,10 @@ header('Expires: 0');
                             <td>Rota 1 (Estação Norte → Estação Sul)</td>
                             <td>Vibração</td>
                             <td>
+                                <?php if ($usuarioEhAdministrador): ?>
                                 <button class="btn_edit"><i class="bi bi-pencil-square"></i></button>
                                 <button type="button" class="btn_delete ms-4" data-id="10002"><i class="bi bi-trash"></i></button>
+                                <?php endif; ?>
                             </td>
                         </tr>
                         <tr>
@@ -127,8 +133,10 @@ header('Expires: 0');
                             <td>Trem - ID 5823</td>
                             <td>Velocidade</td>
                             <td>
+                                <?php if ($usuarioEhAdministrador): ?>
                                 <button class="btn_edit"><i class="bi bi-pencil-square"></i></button>
                                 <button type="button" class="btn_delete ms-4" data-id="10003"><i class="bi bi-trash"></i></button>
+                                <?php endif; ?>
                             </td>
                         </tr>
                         <tr>
@@ -137,8 +145,10 @@ header('Expires: 0');
                             <td>Rota 2 (Estação Norte → Estação Sul)</td>
                             <td>Pressão</td>
                             <td>
+                                <?php if ($usuarioEhAdministrador): ?>
                                 <button class="btn_edit"><i class="bi bi-pencil-square"></i></button>
                                 <button type="button" class="btn_delete ms-4" data-id="10004"><i class="bi bi-trash"></i></button>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     </tbody>
@@ -252,6 +262,7 @@ header('Expires: 0');
         </div>
     </div>
 
+    <?php include __DIR__ . '/_modal_perfil.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../script/nav.js"></script>
     <script src="../script/sensores.js"></script>

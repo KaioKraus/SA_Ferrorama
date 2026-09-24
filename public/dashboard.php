@@ -71,17 +71,12 @@ header('Expires: 0');
                 </div>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="logout.php">Sair</a></li>
-                    <li><a class="dropdown-item" href="">Editar</a></li>
+                    <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalEditarPerfil">Editar</button></li>
                 </ul>
             </div>
         </nav>
 
-        <?php if (!empty($_SESSION['mensagem_acesso'])): ?>
-            <div class="alert alert-warning mx-4 mt-3 mb-0">
-                <?php echo htmlspecialchars($_SESSION['mensagem_acesso']); ?>
-            </div>
-            <?php unset($_SESSION['mensagem_acesso']); ?>
-        <?php endif; ?>
+        
 
         <section class="conteudo">
             <div class="dashboard-painel">
@@ -138,6 +133,8 @@ header('Expires: 0');
             </div>
         </div>
     </div>
+
+    <?php include __DIR__ . '/_modal_perfil.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../script/nav.js"></script>

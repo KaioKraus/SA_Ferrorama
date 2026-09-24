@@ -21,6 +21,12 @@ header('Expires: 0');
 
 <body>
 
+<?php if (empty($usuarioEhAdministrador) || !$usuarioEhAdministrador): ?>
+<style>
+    .btn_delete { display: none !important; }
+</style>
+<?php endif; ?>
+
     <!--Main-->
     <main>
 
@@ -71,7 +77,7 @@ header('Expires: 0');
                 </div>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="logout.php">Sair</a></li>
-                    <li><a class="dropdown-item" href="">Editar</a></li>
+                    <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalEditarPerfil">Editar</button></li>
                 </ul>
             </div>
         </nav>
@@ -86,7 +92,9 @@ header('Expires: 0');
                         </button>
                     </div>
 
+                    <?php if ($usuarioEhAdministrador): ?>
                     <button class="btn trens-btn-add" type="button" data-bs-toggle="modal" data-bs-target="#modal_cadastro">Adicionar</button>
+                    <?php endif; ?>
                 </div>
 
                 <div class="trens-lista">
@@ -97,12 +105,14 @@ header('Expires: 0');
                                     <div class="trens-card-header-row">
                                         <span class="trens-card-status ativo">Ativo</span>
                                         <div class="trens-card-acoes">
+                                            <?php if ($usuarioEhAdministrador): ?>
                                             <button class="btn_edit" type="button" aria-label="Editar trem">
                                                 <i class="bi bi-pencil-square"></i>
                                             </button>
                                             <button class="btn_delete" type="button" data-id="5823" aria-label="Excluir trem">
                                                 <i class="bi bi-trash"></i>
                                             </button>
+                                            <?php endif; ?>
                                             <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
                                                 <i class="bi bi-info-lg"></i>
                                             </button>
@@ -123,12 +133,14 @@ header('Expires: 0');
                                     <div class="trens-card-header-row">
                                         <span class="trens-card-status inativo">Inativo</span>
                                         <div class="trens-card-acoes">
+                                            <?php if ($usuarioEhAdministrador): ?>
                                             <button class="btn_edit" type="button" aria-label="Editar trem">
                                                 <i class="bi bi-pencil-square"></i>
                                             </button>
                                             <button class="btn_delete" type="button" data-id="5824" aria-label="Excluir trem">
                                                 <i class="bi bi-trash"></i>
                                             </button>
+                                            <?php endif; ?>
                                             <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
                                                 <i class="bi bi-info-lg"></i>
                                             </button>
@@ -149,12 +161,14 @@ header('Expires: 0');
                                     <div class="trens-card-header-row">
                                         <span class="trens-card-status ativo">Ativo</span>
                                         <div class="trens-card-acoes">
+                                            <?php if ($usuarioEhAdministrador): ?>
                                             <button class="btn_edit" type="button" aria-label="Editar trem">
                                                 <i class="bi bi-pencil-square"></i>
                                             </button>
                                             <button class="btn_delete" type="button" data-id="5825" aria-label="Excluir trem">
                                                 <i class="bi bi-trash"></i>
                                             </button>
+                                            <?php endif; ?>
                                             <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
                                                 <i class="bi bi-info-lg"></i>
                                             </button>
@@ -175,12 +189,14 @@ header('Expires: 0');
                                     <div class="trens-card-header-row">
                                         <span class="trens-card-status inativo">Inativo</span>
                                         <div class="trens-card-acoes">
+                                            <?php if ($usuarioEhAdministrador): ?>
                                             <button class="btn_edit" type="button" aria-label="Editar trem">
                                                 <i class="bi bi-pencil-square"></i>
                                             </button>
                                             <button class="btn_delete" type="button" data-id="5826" aria-label="Excluir trem">
                                                 <i class="bi bi-trash"></i>
                                             </button>
+                                            <?php endif; ?>
                                             <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
                                                 <i class="bi bi-info-lg"></i>
                                             </button>
@@ -201,12 +217,14 @@ header('Expires: 0');
                                     <div class="trens-card-header-row">
                                         <span class="trens-card-status ativo">Ativo</span>
                                         <div class="trens-card-acoes">
+                                            <?php if ($usuarioEhAdministrador): ?>
                                             <button class="btn_edit" type="button" aria-label="Editar trem">
                                                 <i class="bi bi-pencil-square"></i>
                                             </button>
                                             <button class="btn_delete" type="button" data-id="5827" aria-label="Excluir trem">
                                                 <i class="bi bi-trash"></i>
                                             </button>
+                                            <?php endif; ?>
                                             <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
                                                 <i class="bi bi-info-lg"></i>
                                             </button>
@@ -227,12 +245,14 @@ header('Expires: 0');
                                     <div class="trens-card-header-row">
                                         <span class="trens-card-status inativo">Inativo</span>
                                         <div class="trens-card-acoes">
+                                            <?php if ($usuarioEhAdministrador): ?>
                                             <button class="btn_edit" type="button" aria-label="Editar trem">
                                                 <i class="bi bi-pencil-square"></i>
                                             </button>
                                             <button class="btn_delete" type="button" data-id="5828" aria-label="Excluir trem">
                                                 <i class="bi bi-trash"></i>
                                             </button>
+                                            <?php endif; ?>
                                             <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
                                                 <i class="bi bi-info-lg"></i>
                                             </button>
@@ -253,12 +273,14 @@ header('Expires: 0');
                                     <div class="trens-card-header-row">
                                         <span class="trens-card-status ativo">Ativo</span>
                                         <div class="trens-card-acoes">
+                                            <?php if ($usuarioEhAdministrador): ?>
                                             <button class="btn_edit" type="button" aria-label="Editar trem">
                                                 <i class="bi bi-pencil-square"></i>
                                             </button>
                                             <button class="btn_delete" type="button" data-id="5829" aria-label="Excluir trem">
                                                 <i class="bi bi-trash"></i>
                                             </button>
+                                            <?php endif; ?>
                                             <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
                                                 <i class="bi bi-info-lg"></i>
                                             </button>
@@ -279,12 +301,14 @@ header('Expires: 0');
                                     <div class="trens-card-header-row">
                                         <span class="trens-card-status inativo">Inativo</span>
                                         <div class="trens-card-acoes">
+                                            <?php if ($usuarioEhAdministrador): ?>
                                             <button class="btn_edit" type="button" aria-label="Editar trem">
                                                 <i class="bi bi-pencil-square"></i>
                                             </button>
                                             <button class="btn_delete" type="button" data-id="5830" aria-label="Excluir trem">
                                                 <i class="bi bi-trash"></i>
                                             </button>
+                                            <?php endif; ?>
                                             <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
                                                 <i class="bi bi-info-lg"></i>
                                             </button>
@@ -305,12 +329,14 @@ header('Expires: 0');
                                     <div class="trens-card-header-row">
                                         <span class="trens-card-status ativo">Ativo</span>
                                         <div class="trens-card-acoes">
+                                            <?php if ($usuarioEhAdministrador): ?>
                                             <button class="btn_edit" type="button" aria-label="Editar trem">
                                                 <i class="bi bi-pencil-square"></i>
                                             </button>
                                             <button class="btn_delete" type="button" data-id="5831" aria-label="Excluir trem">
                                                 <i class="bi bi-trash"></i>
                                             </button>
+                                            <?php endif; ?>
                                             <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
                                                 <i class="bi bi-info-lg"></i>
                                             </button>
@@ -331,12 +357,16 @@ header('Expires: 0');
                                     <div class="trens-card-header-row">
                                         <span class="trens-card-status inativo">Inativo</span>
                                         <div class="trens-card-acoes">
+                                            <?php if ($usuarioEhAdministrador): ?>
+                                            <?php if ($usuarioEhAdministrador): ?>
                                             <button class="btn_edit" type="button" aria-label="Editar trem">
                                                 <i class="bi bi-pencil-square"></i>
                                             </button>
                                             <button class="btn_delete" type="button" data-id="5832" aria-label="Excluir trem">
                                                 <i class="bi bi-trash"></i>
                                             </button>
+                                            <?php endif; ?>
+                                            <?php endif; ?>
                                             <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
                                                 <i class="bi bi-info-lg"></i>
                                             </button>
@@ -357,12 +387,16 @@ header('Expires: 0');
                                     <div class="trens-card-header-row">
                                         <span class="trens-card-status ativo">Ativo</span>
                                         <div class="trens-card-acoes">
+                                            <?php if ($usuarioEhAdministrador): ?>
+                                            <?php if ($usuarioEhAdministrador): ?>
                                             <button class="btn_edit" type="button" aria-label="Editar trem">
                                                 <i class="bi bi-pencil-square"></i>
                                             </button>
                                             <button class="btn_delete" type="button" data-id="5833" aria-label="Excluir trem">
                                                 <i class="bi bi-trash"></i>
                                             </button>
+                                            <?php endif; ?>
+                                            <?php endif; ?>
                                             <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
                                                 <i class="bi bi-info-lg"></i>
                                             </button>
@@ -542,6 +576,7 @@ header('Expires: 0');
         </div>
     </div>
 
+    <?php include __DIR__ . '/_modal_perfil.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../script/nav.js"></script>
     <script src="../script/trens.js"></script>

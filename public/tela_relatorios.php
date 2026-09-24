@@ -71,7 +71,7 @@ header('Expires: 0');
                 </div>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="logout.php">Sair</a></li>
-                    <li><a class="dropdown-item" href="">Editar</a></li>
+                    <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalEditarPerfil">Editar</button></li>
                 </ul>
             </div>
         </nav>
@@ -103,7 +103,9 @@ header('Expires: 0');
                             <td>10/09/2026</td>
                             <td>Temperatura elevada</td>
                             <td>
+                                <?php if ($usuarioEhAdministrador): ?>
                                 <button class="btn_delete ms-4"><i class="bi bi-trash"></i></button>
+                                <?php endif; ?>
                             </td>
                         </tr>
                         <tr data-id="1002" data-trem="5824" data-sensor="vibracao" data-data="2026-09-12" data-falha="vibração excessiva">
@@ -111,7 +113,9 @@ header('Expires: 0');
                             <td>12/09/2026</td>
                             <td>Vibração excessiva</td>
                             <td>
+                                <?php if ($usuarioEhAdministrador): ?>
                                 <button class="btn_delete ms-4"><i class="bi bi-trash"></i></button>
+                                <?php endif; ?>
                             </td>
                         </tr>
                         <tr data-id="1003" data-trem="5823" data-sensor="velocidade" data-data="2026-09-15" data-falha="desaceleração brusca">
@@ -119,7 +123,9 @@ header('Expires: 0');
                             <td>15/09/2026</td>
                             <td>Desaceleração brusca</td>
                             <td>
+                                <?php if ($usuarioEhAdministrador): ?>
                                 <button class="btn_delete ms-4"><i class="bi bi-trash"></i></button>
+                                <?php endif; ?>
                             </td>
                         </tr>
                         <tr data-id="1004" data-trem="5825" data-sensor="pressao" data-data="2026-09-20" data-falha="pressão anormal">
@@ -127,7 +133,9 @@ header('Expires: 0');
                             <td>20/09/2026</td>
                             <td>Pressão anormal</td>
                             <td>
+                                <?php if ($usuarioEhAdministrador): ?>
                                 <button class="btn_delete ms-4"><i class="bi bi-trash"></i></button>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     </tbody>
@@ -301,6 +309,7 @@ header('Expires: 0');
             </div>
         </div>
     </div>
+    <?php include __DIR__ . '/_modal_perfil.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../script/sensores.js"></script>
     <script src="../script/nav.js"></script>

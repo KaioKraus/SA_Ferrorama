@@ -69,7 +69,7 @@ header('Expires: 0');
                 </div>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="logout.php">Sair</a></li>
-                    <li><a class="dropdown-item" href="">Editar</a></li>
+                    <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalEditarPerfil">Editar</button></li>
                 </ul>
             </div>
         </nav>
@@ -84,8 +84,10 @@ header('Expires: 0');
                             <i class="bi bi-search"></i>
                         </button>
                     </div>
+                    <?php if ($usuarioEhAdministrador): ?>
                     <button class="btn trens-btn-add" data-bs-toggle="modal" data-bs-target="#modalAddRota"> Adicionar
                     </button>
+                    <?php endif; ?>
                 </div>
                 <table class="table">
                     <thead>
@@ -108,8 +110,10 @@ header('Expires: 0');
                             <td>08:00</td>
                             <td>09:00</td>
                             <td>
+                                <?php if ($usuarioEhAdministrador): ?>
                                 <button class="btn_edit"><i class="bi bi-pencil-square"></i></button>
                                 <button class="btn_delete mx-2"><i class="bi bi-trash"></i></button>
+                                <?php endif; ?>
                                 <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
                                     <i class="bi bi-info-lg"></i>
                                 </button>
@@ -123,8 +127,10 @@ header('Expires: 0');
                             <td>10:00</td>
                             <td>11:00</td>
                             <td>
+                                <?php if ($usuarioEhAdministrador): ?>
                                 <button class="btn_edit"><i class="bi bi-pencil-square"></i></button>
                                 <button class="btn_delete mx-2"><i class="bi bi-trash"></i></button>
+                                <?php endif; ?>
                                 <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
                                     <i class="bi bi-info-lg"></i>
                                 </button>
@@ -302,6 +308,7 @@ header('Expires: 0');
         </div>
     </div>
 
+    <?php include __DIR__ . '/_modal_perfil.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../script/nav.js"></script>
     <script src="../script/rotas.js"></script>

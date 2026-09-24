@@ -151,6 +151,7 @@ header('Expires: 0');
                     </div>
                     <div class="modal-body px-5 pt-4 pb-4">
                         <form class="w-100" id="form_cadastro_user">
+                            <input type="hidden" id="input_user_id" name="id" value="">
                             <div class="row mb-4">
                                 <div class="col pe-2">
                                     <div class="input-field">

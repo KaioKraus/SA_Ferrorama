@@ -1,4 +1,45 @@
 document.addEventListener('DOMContentLoaded', function () {
+    const inputBuscaUsuario = document.getElementById('input_busca_usuario');
+    const btnBuscaUsuario = document.getElementById('btn_busca_usuario');
+    const tbodyUsuarios = document.getElementById('tbody_usuarios');
+
+    if (inputBuscaUsuario && tbodyUsuarios) {
+        const linhasUsuarios = Array.from(tbodyUsuarios.querySelectorAll('tr[data-user-row]'));
+
+        function filtrarUsuarios() {
+            const termo = inputBuscaUsuario.value.trim().toLowerCase();
+            let algumVisivel = false;
+
+            linhasUsuarios.forEach(linha => {
+                const idUsuario = (linha.dataset.id || '').toLowerCase();
+                const nomeUsuario = linha.children[0].textContent.trim().toLowerCase();
+                const corresponde = termo === '' || idUsuario.includes(termo) || nomeUsuario.includes(termo);
+
+                linha.hidden = !corresponde;
+                if (corresponde) algumVisivel = true;
+            });
+
+            let linhaVazia = tbodyUsuarios.querySelector('#linha_usuario_vazia');
+
+            if (linhasUsuarios.length > 0 && !algumVisivel) {
+                if (!linhaVazia) {
+                    linhaVazia = document.createElement('tr');
+                    linhaVazia.id = 'linha_usuario_vazia';
+                    linhaVazia.innerHTML = '<td colspan="5" class="text-center text-muted">Nenhum funcionário encontrado.</td>';
+                    tbodyUsuarios.appendChild(linhaVazia);
+                }
+            } else if (linhaVazia) {
+                linhaVazia.remove();
+            }
+        }
+
+        inputBuscaUsuario.addEventListener('input', filtrarUsuarios);
+
+        if (btnBuscaUsuario) {
+            btnBuscaUsuario.addEventListener('click', filtrarUsuarios);
+        }
+    }
+
     // Modal de confirmação de exclusão
     const modalEl = document.getElementById('modal_confirm_delete');
     if (modalEl && typeof bootstrap !== 'undefined') {

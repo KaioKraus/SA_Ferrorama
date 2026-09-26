@@ -92,8 +92,8 @@ if (!$resultado) {
             <div class="card_usuarios">
                 <div class="barra_busca">
                     <div class="input-group dashboard-busca">
-                        <input type="text" id="input_busca_sensor" class="form-control dashboard-input" placeholder="Buscar por ID ou Nome" aria-label="Buscar por ID ou Nome">
-                        <button class="btn dashboard-btn-busca" id="btn_busca_sensor" type="button" aria-label="Buscar">
+                        <input type="text" id="input_busca_usuario" class="form-control dashboard-input" placeholder="Buscar por ID ou Nome" aria-label="Buscar por ID ou Nome">
+                        <button class="btn dashboard-btn-busca" id="btn_busca_usuario" type="button" aria-label="Buscar funcionário">
                             <i class="bi bi-search"></i>
                         </button>
                     </div>
@@ -112,7 +112,7 @@ if (!$resultado) {
                             <th>Ações</th>
                         </tr>
                     </thead>
-<tbody>
+<tbody id="tbody_usuarios">
 
     <?php if (mysqli_num_rows($resultado) > 0): ?>
 
@@ -137,7 +137,7 @@ if (!$resultado) {
             }
             ?>
 
-            <tr>
+            <tr data-user-row data-id="<?= htmlspecialchars($usuario['usuario_id'], ENT_QUOTES, 'UTF-8') ?>">
 
                 <td>
                     <?= htmlspecialchars($usuario['nome']) ?>

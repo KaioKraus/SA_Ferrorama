@@ -1,10 +1,21 @@
 <?php
-session_start();
-include __DIR__ . '/validar_acesso.php';
-$usuarioNome = $_SESSION['usuario_nome'] ?? 'Usuário';
-header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-header('Pragma: no-cache');
-header('Expires: 0');
+require_once "../infra/conexao.php";
+
+$sql = "SELECT 
+            u.usuario_id,
+            u.nome,
+            u.email,
+            u.cpf,
+            c.nome AS cargo
+        FROM usuarios u
+        LEFT JOIN Cargos c ON u.cargo_id = c.id
+        ORDER BY u.usuario_id DESC";
+
+$resultado = mysqli_query($conexao, $sql);
+
+if (!$resultado) {
+    die("Erro ao buscar usuários: " . mysqli_error($conexao));
+}
 ?>
 
 <!DOCTYPE html>
@@ -101,56 +112,77 @@ header('Expires: 0');
                             <th>Ações</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>Nome do usuário</td>
-                            <td>usuario@gmail.com</td>
-                            <td>999.999.999-99</td>
-                            <td><span class="badge_admin">Administrador</span></td>
-                            <td>
-                                <?php if ($usuarioEhAdministrador): ?>
-                                <button class="btn_edit"><i class="bi bi-pencil-square"></i></button>
-                                <button class="btn_delete ms-4"><i class="bi bi-trash"></i></button>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Nome do usuário</td>
-                            <td>usuario@gmail.com</td>
-                            <td>999.999.999-99</td>
-                            <td><span class="badge_funcionario">Funcionário</span></td>
-                            <td>
-                                <?php if ($usuarioEhAdministrador): ?>
-                                <button class="btn_edit"><i class="bi bi-pencil-square"></i></button>
-                                <button class="btn_delete ms-4"><i class="bi bi-trash"></i></button>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Nome do usuário</td>
-                            <td>usuario@gmail.com</td>
-                            <td>999.999.999-99</td>
-                            <td><span class="badge_funcionario">Funcionário</span></td>
-                            <td>
-                                <?php if ($usuarioEhAdministrador): ?>
-                                <button class="btn_edit"><i class="bi bi-pencil-square"></i></button>
-                                <button class="btn_delete ms-4"><i class="bi bi-trash"></i></button>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Nome do usuário</td>
-                            <td>usuario@gmail.com</td>
-                            <td>999.999.999-99</td>
-                            <td><span class="badge_funcionario">Funcionário</span></td>
-                            <td>
-                                <?php if ($usuarioEhAdministrador): ?>
-                                <button class="btn_edit"><i class="bi bi-pencil-square"></i></button>
-                                <button class="btn_delete ms-4"><i class="bi bi-trash"></i></button>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                    </tbody>
+<tbody>
+
+    <?php if (mysqli_num_rows($resultado) > 0): ?>
+
+        <?php while ($usuario = mysqli_fetch_assoc($resultado)): ?>
+
+            <?php
+            $cargo = $usuario['cargo'] ?? 'Sem permissão';
+
+            if (stripos($cargo, 'admin') !== false) {
+                $classe_cargo = 'badge_admin';
+            } else {
+                $classe_cargo = 'badge_funcionario';
+            }
+
+            $cpf = $usuario['cpf'];
+
+            if (strlen($cpf) === 11) {
+                $cpf = substr($cpf, 0, 3) . '.' .
+                       substr($cpf, 3, 3) . '.' .
+                       substr($cpf, 6, 3) . '-' .
+                       substr($cpf, 9, 2);
+            }
+            ?>
+
+            <tr>
+
+                <td>
+                    <?= htmlspecialchars($usuario['nome']) ?>
+                </td>
+
+                <td>
+                    <?= htmlspecialchars($usuario['email']) ?>
+                </td>
+
+                <td>
+                    <?= htmlspecialchars($cpf) ?>
+                </td>
+
+                <td>
+                    <span class="<?= $classe_cargo ?>">
+                        <?= htmlspecialchars($cargo) ?>
+                    </span>
+                </td>
+
+                <td>
+                    <button class="btn_edit">
+                        <i class="bi bi-pencil-square"></i>
+                        Edit
+                    </button>
+
+                    <button class="btn_delete ms-4">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </td>
+
+            </tr>
+
+        <?php endwhile; ?>
+
+    <?php else: ?>
+
+        <tr>
+            <td colspan="5" class="text-center">
+                Nenhum usuário cadastrado.
+            </td>
+        </tr>
+
+    <?php endif; ?>
+
+</tbody>
                 </table>
             </div>
         </section>

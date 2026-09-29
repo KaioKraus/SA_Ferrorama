@@ -99,6 +99,7 @@ header('Expires: 0');
                             <th>Nome</th>
                             <th>Localização</th>
                             <th>Tipo de dado</th>
+                            <th>Status</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -108,6 +109,7 @@ header('Expires: 0');
                             <td>Sensor de Temperatura A1</td>
                             <td>Trem - ID 5823</td>
                             <td>Temperatura</td>
+                            <td><span class="trens-card-status ativo">Ativo</span></td>
                             <td>
                                 <?php if ($usuarioEhAdministrador): ?>
                                 <button class="btn_edit"><i class="bi bi-pencil-square"></i></button>
@@ -120,6 +122,7 @@ header('Expires: 0');
                             <td>Sensor de Vibração B2</td>
                             <td>Rota 1 (Estação Norte → Estação Sul)</td>
                             <td>Vibração</td>
+                            <td><span class="trens-card-status inativo">Inativo</span></td>
                             <td>
                                 <?php if ($usuarioEhAdministrador): ?>
                                 <button class="btn_edit"><i class="bi bi-pencil-square"></i></button>
@@ -132,6 +135,7 @@ header('Expires: 0');
                             <td>Sensor de Velocidade C3</td>
                             <td>Trem - ID 5823</td>
                             <td>Velocidade</td>
+                            <td><span class="trens-card-status ativo">Ativo</span></td>
                             <td>
                                 <?php if ($usuarioEhAdministrador): ?>
                                 <button class="btn_edit"><i class="bi bi-pencil-square"></i></button>
@@ -144,6 +148,7 @@ header('Expires: 0');
                             <td>Sensor de Pressão D4</td>
                             <td>Rota 2 (Estação Norte → Estação Sul)</td>
                             <td>Pressão</td>
+                            <td><span class="trens-card-status inativo">Inativo</span></td>
                             <td>
                                 <?php if ($usuarioEhAdministrador): ?>
                                 <button class="btn_edit"><i class="bi bi-pencil-square"></i></button>
@@ -202,6 +207,14 @@ header('Expires: 0');
                                     <option value="umidade">Umidade</option>
                                     <option value="energia">Energia</option>
                                     <option value="outro">Outro</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="input_status_sensor" class="fw-bold d-block text-center mb-2">Status da transmissão</label>
+                                <select required id="input_status_sensor" class="form-select">
+                                    <option value="Ativo" selected>Ativo</option>
+                                    <option value="Inativo">Inativo</option>
                                 </select>
                             </div>
 

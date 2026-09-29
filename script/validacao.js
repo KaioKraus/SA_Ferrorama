@@ -71,6 +71,7 @@ if (input_telefone) {
 const form_cadastro_sensor = document.getElementById("form_cadastro_sensor");
 const mensagem_cadastro_sensor = document.getElementById("mensagem_cadastro_sensor");
 const select_localizacao_sensor = document.getElementById("input_localizacao_sensor");
+const select_status_sensor = document.getElementById("input_status_sensor");
 const vinculo_trem_radio = document.getElementById("vinculo_trem");
 const vinculo_rota_radio = document.getElementById("vinculo_rota");
 
@@ -281,10 +282,11 @@ if (form_cadastro_sensor) {
         const nome_sensor = document.getElementById("input_nome_sensor").value.trim();
         const localizacao_sensor = select_localizacao_sensor.value;
         const tipo_sensor = document.getElementById("input_tipo_sensor").value;
+        const status_sensor = select_status_sensor ? select_status_sensor.value : "Ativo";
 
         mensagem_cadastro_sensor.innerHTML = "";
 
-        if (!nome_sensor || !localizacao_sensor || !tipo_sensor) {
+        if (!nome_sensor || !localizacao_sensor || !tipo_sensor || !status_sensor) {
             mensagem_cadastro_sensor.innerHTML = "<div class='text-danger fw-bold'>Preencha todos os campos!</div>";
             return;
         }
@@ -300,10 +302,13 @@ if (form_cadastro_sensor) {
             return;
         }
 
-        mensagem_cadastro_sensor.innerHTML = "<div class='text-success fw-bold'>Sensor cadastrado com sucesso!</div>";
+        mensagem_cadastro_sensor.innerHTML = "<div class='text-success fw-bold'>Sensor cadastrado com sucesso! Status: " + status_sensor + ".</div>";
 
         setTimeout(() => {
             form_cadastro_sensor.reset();
+            if (select_status_sensor) {
+                select_status_sensor.value = 'Ativo';
+            }
             preencher_select_localizacao(opcoes_localizacao_trem);
             mensagem_cadastro_sensor.innerHTML = "";
             const modal_element = document.getElementById('modal_cadastro_sensor');
@@ -311,7 +316,7 @@ if (form_cadastro_sensor) {
                 const modal = bootstrap.Modal.getOrCreateInstance(modal_element);
                 modal.hide();
             }
-        });
+        }, 1200);
     });
 }
 

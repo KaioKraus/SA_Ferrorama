@@ -28,7 +28,8 @@ CREATE TABLE sensores(
 	sensor_id INT AUTO_INCREMENT PRIMARY KEY,
 	nome_sensor VARCHAR(155) NOT NULL,
 	localizacao VARCHAR(155) NOT NULL,
-	tipo_dado VARCHAR(155) NOT NULL
+	tipo_dado VARCHAR(155) NOT NULL,
+	status VARCHAR(20) NOT NULL DEFAULT 'Ativo'
 );
 
 CREATE TABLE valor_sensor(

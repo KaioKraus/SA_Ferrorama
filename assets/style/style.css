@@ -759,6 +759,29 @@ h3 {
     border-color: #878787;
 }
 
+.sensor-status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 90px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.sensor-status-badge.ativo {
+    background-color: #d8f5d0;
+    color: #1d5f25;
+    border: 1px solid #4f9c52;
+}
+
+.sensor-status-badge.inativo {
+    background-color: #ececec;
+    color: #4a4a4a;
+    border: 1px solid #8a8a8a;
+}
+
 .trens-card-acoes {
     display: flex;
     align-items: center;

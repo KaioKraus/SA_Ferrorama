@@ -162,6 +162,9 @@ if (!$resultado) {
                 </td>
 
                 <td>
+                    <button class="btn_edit">
+                        <i class="bi bi-pencil-square"></i>
+                    </button>
 
                     <button class="btn_delete ms-4">
                         <i class="bi bi-trash"></i>

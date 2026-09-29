@@ -96,8 +96,7 @@ header('Expires: 0');
                             <th>Ponto de Partida</th>
                             <th>Destino</th>
                             <th>Nome</th>
-                            <th>Horario de Inicio</th>
-                            <th>Horario de Término</th>
+                            <th>Status</th>
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -107,8 +106,7 @@ header('Expires: 0');
                             <td>Estação Norte</td>
                             <td>Estação Sul</td>
                             <td>Rota 1</td>
-                            <td>08:00</td>
-                            <td>09:00</td>
+                            <td><span class="trens-card-status ativo">Ativo</span></td>
                             <td>
                                 <?php if ($usuarioEhAdministrador): ?>
                                 <button class="btn_edit"><i class="bi bi-pencil-square"></i></button>
@@ -124,8 +122,7 @@ header('Expires: 0');
                             <td>Estação Norte</td>
                             <td>Estação Sul</td>
                             <td>Rota 2</td>
-                            <td>10:00</td>
-                            <td>11:00</td>
+                            <td><span class="trens-card-status inativo">Inativo</span></td>
                             <td>
                                 <?php if ($usuarioEhAdministrador): ?>
                                 <button class="btn_edit"><i class="bi bi-pencil-square"></i></button>

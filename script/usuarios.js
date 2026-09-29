@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 } catch (err) {
                     console.error('Resposta inválida do servidor:', text);
-                    mensagemDiv.innerHTML = '<div class="alert alert-danger">Erro do servidor: <pre style="white-space:pre-wrap">' + text + '</pre></div>';
+                    mensagemDiv.innerHTML = '<div class="alert alert-danger">Erro do servidor. Verifique os dados e tente novamente.</div>';
                 }
             })
             .catch(error => {

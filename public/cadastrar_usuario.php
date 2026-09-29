@@ -2,9 +2,9 @@
 session_start();
 include "../infra/conexao.php";
 
-// Habilitar exibição de erros para depuração (remover em produção)
-ini_set('display_errors', '1');
-ini_set('display_startup_errors', '1');
+// Mantém erros em log, mas sem expor mensagens de PHP na interface
+ini_set('display_errors', '0');
+ini_set('display_startup_errors', '0');
 error_reporting(E_ALL);
 
 header('Content-Type: application/json');
@@ -113,49 +113,70 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($id > 0) {
         // Atualização de usuário
         if (!empty($senha)) {
-            // atualiza senha também
             $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
+
             if ($cargo_id === null) {
                 $sql = "UPDATE usuarios SET nome = ?, telefone = ?, cpf = ?, email = ?, senha = ?, cargo_id = NULL WHERE usuario_id = ?";
                 if ($stmt = mysqli_prepare($conexao, $sql)) {
-                    mysqli_stmt_bind_param($stmt, 'ssssi', $nome, $telefone, $cpf, $email, $senha_hash, $id);
+                    mysqli_stmt_bind_param($stmt, 'sssssi', $nome, $telefone, $cpf, $email, $senha_hash, $id);
+
+                    if (mysqli_stmt_execute($stmt)) {
+                        echo json_encode(['success' => true, 'message' => 'Usuário atualizado com sucesso!']);
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Erro ao atualizar usuário: ' . mysqli_error($conexao)]);
+                    }
+
+                    mysqli_stmt_close($stmt);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Erro ao preparar atualização: ' . mysqli_error($conexao)]);
                 }
             } else {
                 $sql = "UPDATE usuarios SET nome = ?, telefone = ?, cpf = ?, email = ?, senha = ?, cargo_id = ? WHERE usuario_id = ?";
                 if ($stmt = mysqli_prepare($conexao, $sql)) {
                     mysqli_stmt_bind_param($stmt, 'sssssii', $nome, $telefone, $cpf, $email, $senha_hash, $cargo_id, $id);
-                }
-            }
-                if (mysqli_stmt_execute($stmt)) {
-                    echo json_encode(['success' => true, 'message' => 'Usuário atualizado com sucesso!']);
+
+                    if (mysqli_stmt_execute($stmt)) {
+                        echo json_encode(['success' => true, 'message' => 'Usuário atualizado com sucesso!']);
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Erro ao atualizar usuário: ' . mysqli_error($conexao)]);
+                    }
+
+                    mysqli_stmt_close($stmt);
                 } else {
-                    echo json_encode(['success' => false, 'message' => 'Erro ao atualizar usuário: ' . mysqli_error($conexao)]);
+                    echo json_encode(['success' => false, 'message' => 'Erro ao preparar atualização: ' . mysqli_error($conexao)]);
                 }
-                mysqli_stmt_close($stmt);
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Erro ao preparar atualização: ' . mysqli_error($conexao)]);
             }
         } else {
-            // não altera a senha
-            $sql = "UPDATE usuarios SET nome = ?, telefone = ?, cpf = ?, email = ?, cargo_id = ? WHERE usuario_id = ?";
             if ($cargo_id === null) {
                 $sql = "UPDATE usuarios SET nome = ?, telefone = ?, cpf = ?, email = ?, cargo_id = NULL WHERE usuario_id = ?";
                 if ($stmt = mysqli_prepare($conexao, $sql)) {
                     mysqli_stmt_bind_param($stmt, 'ssssi', $nome, $telefone, $cpf, $email, $id);
+
+                    if (mysqli_stmt_execute($stmt)) {
+                        echo json_encode(['success' => true, 'message' => 'Usuário atualizado com sucesso!']);
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Erro ao atualizar usuário: ' . mysqli_error($conexao)]);
+                    }
+
+                    mysqli_stmt_close($stmt);
+                } else {
+                    echo json_encode(['success' => false, 'message' => 'Erro ao preparar atualização: ' . mysqli_error($conexao)]);
                 }
             } else {
+                $sql = "UPDATE usuarios SET nome = ?, telefone = ?, cpf = ?, email = ?, cargo_id = ? WHERE usuario_id = ?";
                 if ($stmt = mysqli_prepare($conexao, $sql)) {
                     mysqli_stmt_bind_param($stmt, 'ssssii', $nome, $telefone, $cpf, $email, $cargo_id, $id);
-                }
-            }
-                if (mysqli_stmt_execute($stmt)) {
-                    echo json_encode(['success' => true, 'message' => 'Usuário atualizado com sucesso!']);
+
+                    if (mysqli_stmt_execute($stmt)) {
+                        echo json_encode(['success' => true, 'message' => 'Usuário atualizado com sucesso!']);
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Erro ao atualizar usuário: ' . mysqli_error($conexao)]);
+                    }
+
+                    mysqli_stmt_close($stmt);
                 } else {
-                    echo json_encode(['success' => false, 'message' => 'Erro ao atualizar usuário: ' . mysqli_error($conexao)]);
+                    echo json_encode(['success' => false, 'message' => 'Erro ao preparar atualização: ' . mysqli_error($conexao)]);
                 }
-                mysqli_stmt_close($stmt);
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Erro ao preparar atualização: ' . mysqli_error($conexao)]);
             }
         }
     } else {

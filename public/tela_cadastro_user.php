@@ -1,5 +1,9 @@
 <?php
+session_start();
+include __DIR__ . '/validar_acesso.php';
 require_once "../infra/conexao.php";
+
+$usuarioNome = $_SESSION['usuario_nome'] ?? 'Usuário';
 
 $sql = "SELECT 
             u.usuario_id,

@@ -9,7 +9,7 @@ CREATE TABLE trens(
 	horario_chegada DATETIME NOT NULL
 );
 
-CREATE TABLE rotas(
+CREATE TABLE rotas(a
 	rota_id INT AUTO_INCREMENT PRIMARY KEY,
 	dias_semana DATE NOT NULL,
 	horario_partida DATETIME NOT NULL,

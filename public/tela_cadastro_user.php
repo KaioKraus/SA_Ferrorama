@@ -10,6 +10,7 @@ $sql = "SELECT
             u.nome,
             u.email,
             u.cpf,
+            u.telefone,
             c.nome AS cargo
         FROM usuarios u
         LEFT JOIN Cargos c ON u.cargo_id = c.id
@@ -112,6 +113,7 @@ if (!$resultado) {
                             <th>Nome</th>
                             <th>E-mail</th>
                             <th>CPF</th>
+                            <th>Telefone</th>
                             <th>Permissão</th>
                             <th>Ações</th>
                         </tr>
@@ -132,12 +134,19 @@ if (!$resultado) {
             }
 
             $cpf = $usuario['cpf'];
+            $telefone = $usuario['telefone'] ?? '';
 
             if (strlen($cpf) === 11) {
                 $cpf = substr($cpf, 0, 3) . '.' .
                        substr($cpf, 3, 3) . '.' .
                        substr($cpf, 6, 3) . '-' .
                        substr($cpf, 9, 2);
+            }
+
+            if (strlen($telefone) === 11) {
+                $telefone = '(' . substr($telefone, 0, 2) . ') ' .
+                           substr($telefone, 2, 5) . '-' .
+                           substr($telefone, 7, 4);
             }
             ?>
 
@@ -153,6 +162,10 @@ if (!$resultado) {
 
                 <td>
                     <?= htmlspecialchars($cpf) ?>
+                </td>
+
+                <td>
+                    <?= htmlspecialchars($telefone) ?>
                 </td>
 
                 <td>
@@ -178,7 +191,7 @@ if (!$resultado) {
     <?php else: ?>
 
         <tr>
-            <td colspan="5" class="text-center">
+            <td colspan="6" class="text-center">
                 Nenhum usuário cadastrado.
             </td>
         </tr>

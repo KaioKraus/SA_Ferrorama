@@ -6,45 +6,53 @@ $usuarioEmail = $_SESSION['usuario_email'] ?? '';
 $usuarioId = $_SESSION['usuario_id'] ?? 0;
 ?>
 
+
 <!-- Modal: Editar Perfil (incluir em todas as páginas) -->
-<div class="modal fade" id="modalEditarPerfil" tabindex="-1" aria-labelledby="modalEditarPerfilLabel" aria-hidden="true">
+<div class="modal fade" id="modal_editar_perfil" tabindex="-1" aria-labelledby="modal_editar_perfil_label" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form method="POST" action="editar_usuario.php" id="formEditarPerfil">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalEditarPerfilLabel">Editar perfil</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                </div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 
-                <div class="modal-body">
+            <form method="POST" action="editar_usuario.php" id="form_editar_perfil">
+                <div class="perfil_modal_body">
                     <input type="hidden" name="id" value="<?= htmlspecialchars($usuarioId, ENT_QUOTES) ?>">
+                    <input type="hidden" name="nome" value="<?= htmlspecialchars($usuarioNome ?: 'Administrador', ENT_QUOTES) ?>">
+                    <input type="hidden" name="email" value="<?= htmlspecialchars($usuarioEmail ?: 'admin@teste.com', ENT_QUOTES) ?>">
 
-                    <div class="mb-3">
-                        <label for="nome_display" class="form-label">Nome</label>
-                        <input type="text" class="form-control" id="nome_display" value="<?= htmlspecialchars($usuarioNome, ENT_QUOTES) ?>" disabled>
-                        <input type="hidden" name="nome" value="<?= htmlspecialchars($usuarioNome, ENT_QUOTES) ?>">
+                    <div class="perfil_header_row">
+                        <div class="perfil_card">
+                            <h5 class="perfil_card_title" id="modal_editar_perfil_label">Perfil</h5>
+
+                            <div class="perfil_main">
+                                <div class="perfil_avatar">FOTO</div>
+
+                                <div class="perfil_data">
+                                    <div class="perfil_row"><span class="perfil_label">Nome:</span> <?= htmlspecialchars($usuarioNome ?: 'Administrador', ENT_QUOTES) ?></div>
+                                    <div class="perfil_row"><span class="perfil_label">Email:</span> <?= htmlspecialchars($usuarioEmail ?: 'admin@teste.com', ENT_QUOTES) ?></div>
+                                    <div class="perfil_row"><span class="perfil_label">Permissão:</span> administrador</div>
+                                    <div class="perfil_row"><span class="perfil_label">Telefone:</span> (99) 99999-9999</div>
+                                    <div class="perfil_row"><span class="perfil_label">CPF:</span> 999.999.999-99</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="email_display" class="form-label">E-mail</label>
-                        <input type="email" class="form-control" id="email_display" value="<?= htmlspecialchars($usuarioEmail, ENT_QUOTES) ?>" disabled>
-                        <input type="hidden" name="email" value="<?= htmlspecialchars($usuarioEmail, ENT_QUOTES) ?>">
+                    <div class="perfil_editar">
+                        <div class="perfil_editar_title">Editar Senha</div>
+
+                        <div class="perfil_input_wrap">
+                            <input type="password" class="perfil_input" id="senha" name="senha" placeholder="Nova Senha">
+                        </div>
+
+                        <div class="perfil_input_wrap">
+                            <input type="password" class="perfil_input" id="confirmar_senha" name="confirmar_senha" placeholder="Confirmar Senha">
+                        </div>
                     </div>
 
-                    <div class="mb-3">
-                        <label for="senha" class="form-label">Nova senha</label>
-                        <input type="password" class="form-control" id="senha" name="senha" placeholder="Digite uma nova senha">
+                    <div class="perfil_actions">
+                        <button type="button" class="perfil_btn perfil_btn_cancelar" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="perfil_btn perfil_btn_salvar">Salvar</button>
                     </div>
-
-                    <div class="mb-3">
-                        <label for="confirmar_senha" class="form-label">Confirmar senha</label>
-                        <input type="password" class="form-control" id="confirmar_senha" name="confirmar_senha" placeholder="Repita a senha">
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Salvar alterações</button>
                 </div>
             </form>
         </div>
@@ -53,11 +61,12 @@ $usuarioId = $_SESSION['usuario_id'] ?? 0;
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    var form = document.getElementById('formEditarPerfil');
+    var form = document.getElementById('form_editar_perfil');
     if (!form) return;
     form.addEventListener('submit', function (e) {
         var senha = document.getElementById('senha').value || '';
         var confirmar = document.getElementById('confirmar_senha').value || '';
+
         if (senha || confirmar) {
             if (senha.length < 8) {
                 e.preventDefault();
@@ -67,6 +76,12 @@ document.addEventListener('DOMContentLoaded', function () {
             if (senha !== confirmar) {
                 e.preventDefault();
                 alert('As senhas não coincidem.');
+                return;
+            }
+
+            var confirmarSenha = confirm('Deseja realmente alterar sua senha?');
+            if (!confirmarSenha) {
+                e.preventDefault();
                 return;
             }
         }

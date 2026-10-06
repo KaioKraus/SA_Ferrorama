@@ -419,6 +419,197 @@ h3 {
     color: #333333 !important;
 }
 
+/* Modal: Editar Perfil */
+#modal_editar_perfil .modal-dialog {
+    max-width: 620px;
+    margin: 1.25rem auto;
+}
+
+#modal_editar_perfil .modal-content {
+    position: relative;
+    background: #e4e5e4;
+    border: 1px solid rgba(24, 30, 29, 0.12);
+    border-radius: 18px;
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.14);
+    overflow: hidden;
+}
+
+#modal_editar_perfil .perfil_modal_body {
+    padding: 24px 22px 18px;
+    background: #e4e5e4;
+}
+
+#modal_editar_perfil .perfil_header_row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 16px;
+}
+
+#modal_editar_perfil .perfil_card {
+    flex: 1;
+    min-width: 0;
+}
+
+#modal_editar_perfil .perfil_card_title {
+    font-size: 2.15rem;
+    font-weight: 700;
+    color: #1d1d1d;
+    margin: 0 0 14px;
+    line-height: 1.1;
+}
+
+#modal_editar_perfil .perfil_main {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 12px;
+    min-height: 145px;
+}
+
+#modal_editar_perfil .perfil_avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: #bfbfbf;
+    color: #2d2d2d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    border: 1px solid rgba(24, 30, 29, 0.12);
+    flex-shrink: 0;
+}
+
+#modal_editar_perfil .perfil_data {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 1.06rem;
+    color: #1d1d1d;
+    min-width: 0;
+}
+
+#modal_editar_perfil .perfil_data .perfil_row {
+    display: flex;
+    gap: 6px;
+    line-height: 1.45;
+    flex-wrap: wrap;
+}
+
+#modal_editar_perfil .perfil_data .perfil_label {
+    font-weight: 700;
+    color: #1d1d1d;
+}
+
+
+#modal_editar_perfil .perfil_editar {
+    margin-top: 8px;
+    padding-top: 8px;
+}
+
+#modal_editar_perfil .perfil_editar_title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 18px;
+}
+
+#modal_editar_perfil .perfil_input_wrap {
+    margin-bottom: 16px;
+}
+
+#modal_editar_perfil .perfil_input {
+    width: 100%;
+    height: 48px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(20, 20, 20, 0.42);
+    background: rgba(255, 255, 255, 0.7);
+    font-size: 1.05rem;
+    color: #1a1a1a;
+    outline: none;
+    box-sizing: border-box;
+}
+
+#modal_editar_perfil .perfil_input::placeholder {
+    color: rgba(24, 24, 24, 0.6);
+}
+
+#modal_editar_perfil .perfil_input:focus {
+    border-color: #0c5a5d;
+    box-shadow: 0 0 0 0.2rem rgba(12, 90, 93, 0.12);
+}
+
+#modal_editar_perfil .perfil_actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 14px;
+    margin-top: 18px;
+}
+
+#modal_editar_perfil .perfil_btn {
+    min-width: 136px;
+    height: 48px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.08rem;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+#modal_editar_perfil .perfil_btn_cancelar {
+    background: rgba(0, 0, 0, 0.12);
+    color: #1b1b1b;
+}
+
+#modal_editar_perfil .perfil_btn_salvar {
+    background: #0f4a4b;
+    color: #ffffff;
+    box-shadow: 0 8px 16px rgba(15, 74, 75, 0.18);
+}
+
+#modal_editar_perfil .perfil_btn_salvar:hover {
+    background: #0c3d3e;
+}
+
+#modal_editar_perfil .btn-close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    width: 1.1rem;
+    height: 1.1rem;
+    padding: 0.3rem;
+    opacity: 0.7;
+    z-index: 2;
+    filter: none;
+    background-size: 0.9rem;
+    box-sizing: content-box;
+}
+
+#modal_editar_perfil .btn-close:hover {
+    opacity: 1;
+}
+
+@media (max-width: 700px) {
+    #modal_editar_perfil .perfil_header_row {
+        flex-direction: column;
+    }
+
+    #modal_editar_perfil .status_box {
+        width: 100%;
+        min-width: unset;
+    }
+
+    #modal_editar_perfil .perfil_main {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
 #navModal .modal-body a.nav-active {
     color: #0A3D3D !important;
     /* cor do nav1_mobile */

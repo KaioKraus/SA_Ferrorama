@@ -91,7 +91,7 @@ if (!$resultado) {
                 </div>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="logout.php">Sair</a></li>
-                    <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalEditarPerfil">Editar</button></li>
+                    <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal_editar_perfil">Editar</button></li>
                 </ul>
             </div>
         </nav>

@@ -77,13 +77,22 @@ header('Expires: 0');
 
         <section class="conteudo">
             <div class="card_usuarios">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="input-group dashboard-busca" style="max-width:420px;">
-                        <input type="text" class="form-control dashboard-input" placeholder="Buscar por ID ou Nome" aria-label="Buscar por ID ou Nome">
-                        <button class="btn dashboard-btn-busca" type="button" aria-label="Buscar">
+                <div class="barra_busca mb-3">
+                    <div class="input-group dashboard-busca">
+                        <input id="filtroRotas" type="text" class="form-control dashboard-input" placeholder="Buscar por ponto de partida ou destino" aria-label="Buscar por ponto de partida ou destino">
+                        <button class="btn dashboard-btn-busca" type="button" aria-label="Buscar rota">
                             <i class="bi bi-search"></i>
                         </button>
                     </div>
+
+                    <div class="filtro_busca">
+                        <select id="campoFiltroRota" class="form-select filtro_busca_select" aria-label="Filtrar por campo da rota">
+                            <option value="todos" selected>Todos os campos</option>
+                            <option value="ponto_partida">Ponto de Partida</option>
+                            <option value="destino">Destino</option>
+                        </select>
+                    </div>
+
                     <?php if ($usuarioEhAdministrador): ?>
                     <button class="btn trens-btn-add" data-bs-toggle="modal" data-bs-target="#modalAddRota"> Adicionar
                     </button>

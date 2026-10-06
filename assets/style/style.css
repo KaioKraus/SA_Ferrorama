@@ -239,7 +239,14 @@ h3 {
 .barra_busca {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     margin-bottom: 30px;
+    gap: 20px;
+}
+
+.barra_busca_filtro {
+    display: flex;
+    align-items: center;
     gap: 45px;
 }
 

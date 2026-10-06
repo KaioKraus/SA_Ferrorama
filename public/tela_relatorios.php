@@ -79,18 +79,20 @@ header('Expires: 0');
      <section class="conteudo">
             <div class="card_relatorios">
                 <div class="barra_busca">
-                    <div class="input-group dashboard-busca">
-                        <input id="input_busca_relatorio" type="text" class="form-control dashboard-input" placeholder="Buscar por ID, Data, Trem ou Falha" aria-label="Buscar por ID, Data, Trem ou Falha">
-                        <button id="btn_busca_relatorio" class="btn dashboard-btn-busca" type="button" aria-label="Buscar">
-                            <i class="bi bi-search"></i>
-                        </button>
+                    <div class="barra_busca_filtro">
+                        <div class="input-group dashboard-busca">
+                            <input id="input_busca_relatorio" type="text" class="form-control dashboard-input" placeholder="Buscar por ID, Data, Trem ou Falha" aria-label="Buscar por ID, Data, Trem ou Falha">
+                            <button id="btn_busca_relatorio" class="btn dashboard-btn-busca" type="button" aria-label="Buscar">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                        <div class="filtro_busca">
+                            <select class="form-select filtro_busca_select" aria-label="Filtrar por tipo de falha">
+                                <option selected>Tipo de Falha</option>
+                            </select>
+                        </div>
                     </div>
-
-                    <div class="filtro_busca">
-                        <select class="form-select filtro_busca_select" aria-label="Filtrar por tipo de falha">
-                            <option selected>Tipo de Falha</option>
-                        </select>
-                    </div>
+                    
                 </div>
                 <table class="table">
                     <thead>

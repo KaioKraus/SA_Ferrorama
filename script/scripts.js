@@ -38,8 +38,6 @@ if (input_busca_sensor && tbody_sensores) {
         }
     }
  
-    input_busca_sensor.addEventListener("input", filtrar_sensores);
- 
     if (btn_busca_sensor) {
         btn_busca_sensor.addEventListener("click", filtrar_sensores);
     }

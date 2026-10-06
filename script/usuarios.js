@@ -33,8 +33,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        inputBuscaUsuario.addEventListener('input', filtrarUsuarios);
-
         if (btnBuscaUsuario) {
             btnBuscaUsuario.addEventListener('click', filtrarUsuarios);
         }

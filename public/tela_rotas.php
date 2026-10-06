@@ -78,26 +78,40 @@ header('Expires: 0');
         <section class="conteudo">
             <div class="card_usuarios">
                 <div class="barra_busca mb-3">
-                    <div class="input-group dashboard-busca">
-                        <input id="filtroRotas" type="text" class="form-control dashboard-input" placeholder="Buscar por ponto de partida ou destino" aria-label="Buscar por ponto de partida ou destino">
-                        <button class="btn dashboard-btn-busca" type="button" aria-label="Buscar rota">
-                            <i class="bi bi-search"></i>
-                        </button>
-                    </div>
+                    
 
-                    <div class="filtro_busca">
-                        <select id="campoFiltroRota" class="form-select filtro_busca_select" aria-label="Filtrar por campo da rota">
-                            <option value="todos" selected>Todos os campos</option>
-                            <option value="ponto_partida">Ponto de Partida</option>
-                            <option value="destino">Destino</option>
-                        </select>
+                    <div class="barra_busca_filtro">
+
+                        <div class="input-group dashboard-busca">
+                            <input id="filtroRotas" type="text" class="form-control dashboard-input" placeholder="Buscar por ponto de partida ou destino" aria-label="Buscar por ponto de partida ou destino">
+                            <button class="btn dashboard-btn-busca" type="button" aria-label="Buscar rota">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+
+                        <div class="filtro_busca">
+                            <select id="campoFiltroRota" class="form-select filtro_busca_select" aria-label="Filtrar por ponto de partida">
+                                <option value="ponto_partida" selected>Ponto de partida</option>
+                                <option value="destino">Destino</option>
+                            </select>
+                        </div>
+                        <div class="filtro_busca">
+                            <select id="campoFiltroDestino" class="form-select filtro_busca_select" aria-label="Filtrar por destino">
+                                <option value="destino" selected>Destino</option>
+                                <option value="ponto_partida">Ponto de partida</option>
+                            </select>
+                        </div>
                     </div>
 
                     <?php if ($usuarioEhAdministrador): ?>
-                    <button class="btn trens-btn-add" data-bs-toggle="modal" data-bs-target="#modalAddRota"> Adicionar
-                    </button>
-                    <?php endif; ?>
+                <div class="mb-3">
+                    <button class="btn trens-btn-add" data-bs-toggle="modal" data-bs-target="#modalAddRota">Adicionar</button>
                 </div>
+                <?php endif; ?>
+                    
+                </div>
+
+                
                 <table class="table">
                     <thead>
                         <tr>

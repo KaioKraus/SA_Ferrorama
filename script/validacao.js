@@ -140,10 +140,6 @@ function atualizarBuscaRelatorios() {
     });
 }
 
-if (input_busca_relatorio) {
-    input_busca_relatorio.addEventListener("input", atualizarBuscaRelatorios);
-}
-
 if (btn_busca_relatorio) {
     btn_busca_relatorio.addEventListener("click", atualizarBuscaRelatorios);
 }

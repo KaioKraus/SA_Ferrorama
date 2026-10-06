@@ -86,7 +86,11 @@ header('Expires: 0');
                         </button>
                     </div>
 
-                   
+                    <div class="filtro_busca">
+                        <select class="form-select filtro_busca_select" aria-label="Filtrar por tipo de falha">
+                            <option selected>Tipo de Falha</option>
+                        </select>
+                    </div>
                 </div>
                 <table class="table">
                     <thead>
@@ -265,7 +269,7 @@ header('Expires: 0');
         </div>
     </div>
 
-    <script src="../script/validacao.js"></script>
+    <script src="../script/validacao.js?v=20261006"></script>
     <!-- Modal: Navegação (para telas pequenas) -->
     <div class="modal fade" id="navModal" tabindex="-1" aria-labelledby="navModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-top">

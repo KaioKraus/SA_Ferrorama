@@ -2,6 +2,9 @@
 session_start();
 include __DIR__ . '/validar_acesso.php';
 require_once "../infra/conexao.php";
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
+header('Expires: 0');
 
 $usuarioNome = $_SESSION['usuario_nome'] ?? 'Usuário';
 
@@ -301,7 +304,7 @@ if (!$resultado) {
         </div>
     </div>
 
-    <script src="../script/validacao.js"></script>
+    <script src="../script/validacao.js?v=20261006"></script>
     <!-- Modal: Navegação (para telas pequenas) -->
     <div class="modal fade" id="navModal" tabindex="-1" aria-labelledby="navModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-top">
@@ -327,8 +330,8 @@ if (!$resultado) {
     </div>
     <?php include __DIR__ . '/_modal_perfil.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../script/nav.js"></script>
-    <script src="../script/usuarios.js"></script>
+    <script src="../script/nav.js?v=20261006"></script>
+    <script src="../script/usuarios.js?v=20261006"></script>
 </body>
 
 </html>

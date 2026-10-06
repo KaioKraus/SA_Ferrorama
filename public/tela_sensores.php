@@ -277,11 +277,11 @@ header('Expires: 0');
 
     <?php include __DIR__ . '/_modal_perfil.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../script/nav.js"></script>
-    <script src="../script/sensores.js"></script>
+    <script src="../script/nav.js?v=20261006"></script>
+    <script src="../script/sensores.js?v=20261006"></script>
 
-    <script src="../script/validacao.js"></script>
-    <script src="../script/scripts.js"></script>
+    <script src="../script/validacao.js?v=20261006"></script>
+    <script src="../script/scripts.js?v=20261006"></script>
 </body>
 
 </html>

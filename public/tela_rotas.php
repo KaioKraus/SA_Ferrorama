@@ -104,7 +104,7 @@ header('Expires: 0');
                     </div>
 
                     <?php if ($usuarioEhAdministrador): ?>
-                <div class="mb-3">
+                <div>
                     <button class="btn trens-btn-add" data-bs-toggle="modal" data-bs-target="#modalAddRota">Adicionar</button>
                 </div>
                 <?php endif; ?>

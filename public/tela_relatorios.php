@@ -86,7 +86,11 @@ header('Expires: 0');
                         </button>
                     </div>
 
-                   
+                    <div class="filtro_busca">
+                        <select class="form-select filtro_busca_select" aria-label="Filtrar por tipo de falha">
+                            <option selected>Tipo de Falha</option>
+                        </select>
+                    </div>
                 </div>
                 <table class="table">
                     <thead>

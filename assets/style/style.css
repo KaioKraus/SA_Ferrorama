@@ -238,8 +238,20 @@ h3 {
 
 .barra_busca {
     display: flex;
-    justify-content: space-between;
+    align-items: center;
     margin-bottom: 30px;
+    gap: 45px;
+}
+
+.filtro_busca {
+    display: flex;
+    align-items: center;
+    min-width: 220px;
+}
+
+.filtro_busca_select:focus {
+    border-color: #7a7a7a;
+    box-shadow: none;
 }
 
 .input_buscar {

@@ -1,6 +1,4 @@
 <?php
-// Modal de edição de perfil reutilizável
-session_start();
 $usuarioNome = $_SESSION['usuario_nome'] ?? '';
 $usuarioEmail = $_SESSION['usuario_email'] ?? '';
 $usuarioId = $_SESSION['usuario_id'] ?? 0;

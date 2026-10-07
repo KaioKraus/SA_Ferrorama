@@ -4,16 +4,16 @@ USE celestial_steel_db;
 CREATE TABLE trens(
 	trem_id INT AUTO_INCREMENT PRIMARY KEY,
 	nome_trem VARCHAR(155) NOT NULL,
-	dias_semana DATE NOT NULL,
-	horario_partida DATETIME NOT NULL,
-	horario_chegada DATETIME NOT NULL
+	dias_semana VARCHAR(50) NOT NULL,
+	horario_partida TIME NOT NULL,
+	horario_chegada TIME NOT NULL
 );
 
 CREATE TABLE rotas(
 	rota_id INT AUTO_INCREMENT PRIMARY KEY,
-	dias_semana DATE NOT NULL,
-	horario_partida DATETIME NOT NULL,
-	horario_chegada DATETIME NOT NULL
+	dias_semana VARCHAR(50) NOT NULL,
+	horario_partida TIME NOT NULL,
+	horario_chegada TIME NOT NULL
 );
 
 CREATE TABLE rotas_trens (

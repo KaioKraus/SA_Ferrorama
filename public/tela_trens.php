@@ -423,46 +423,58 @@ header('Expires: 0');
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body px-5 pt-4 pb-4">
-                        <form>
+                        <form id="form_cadastro_trem" method="POST">
                             <div class="mb-3">
-                                <input type="text" class="form-control" placeholder="Nome">
+                                <input type="text" id="input_nome_trem" name="nome_trem" class="form-control" placeholder="Nome" required>
                             </div>
 
                             <div class="row mb-3">
                                 <div class="col pe-2">
-                                    <input type="text" class="form-control" placeholder="Local de Partida">
+                                    <input type="text" id="input_partida_trem" name="partida" class="form-control" placeholder="Local de Partida" required>
                                 </div>
                                 <div class="col ps-2">
-                                    <input type="text" class="form-control" placeholder="Local de Chegada">
+                                    <input type="text" id="input_chegada_trem" name="chegada" class="form-control" placeholder="Local de Chegada" required>
                                 </div>
                             </div>
 
-                            <div class="d-flex justify-content-center gap-2 mb-4 mt-4">
-                                <input type="checkbox" class="btn-check" id="btn-d" autocomplete="off">
+                            <div class="row mb-3">
+                                <div class="col pe-2">
+                                    <label class="form-label small text-dark mb-1">Horário de partida</label>
+                                    <input type="time" id="input_hora_partida_trem" name="horario_partida" class="form-control" required>
+                                </div>
+                                <div class="col ps-2">
+                                    <label class="form-label small text-dark mb-1">Horário de chegada</label>
+                                    <input type="time" id="input_hora_chegada_trem" name="horario_chegada" class="form-control" required>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-center gap-2 mb-4 mt-4 flex-wrap">
+                                <input type="checkbox" class="btn-check" id="btn-d" name="dias_semana[]" value="Domingo" autocomplete="off">
                                 <label class="btn btn-outline-secondary rounded-circle btn_dia" for="btn-d">D</label>
 
-                                <input type="checkbox" class="btn-check" id="btn-s1" autocomplete="off">
+                                <input type="checkbox" class="btn-check" id="btn-s1" name="dias_semana[]" value="Segunda" autocomplete="off">
                                 <label class="btn btn-outline-secondary rounded-circle btn_dia" for="btn-s1">S</label>
 
-                                <input type="checkbox" class="btn-check" id="btn-t" autocomplete="off">
+                                <input type="checkbox" class="btn-check" id="btn-t" name="dias_semana[]" value="Terça" autocomplete="off">
                                 <label class="btn btn-outline-secondary rounded-circle btn_dia" for="btn-t">T</label>
 
-                                <input type="checkbox" class="btn-check" id="btn-q1" autocomplete="off">
+                                <input type="checkbox" class="btn-check" id="btn-q1" name="dias_semana[]" value="Quarta" autocomplete="off">
                                 <label class="btn btn-outline-secondary rounded-circle btn_dia" for="btn-q1">Q</label>
 
-                                <input type="checkbox" class="btn-check" id="btn-q2" autocomplete="off">
+                                <input type="checkbox" class="btn-check" id="btn-q2" name="dias_semana[]" value="Quinta" autocomplete="off">
                                 <label class="btn btn-outline-secondary rounded-circle btn_dia" for="btn-q2">Q</label>
 
-                                <input type="checkbox" class="btn-check" id="btn-s2" autocomplete="off">
+                                <input type="checkbox" class="btn-check" id="btn-s2" name="dias_semana[]" value="Sexta" autocomplete="off">
                                 <label class="btn btn-outline-secondary rounded-circle btn_dia" for="btn-s2">S</label>
 
-                                <input type="checkbox" class="btn-check" id="btn-s3" autocomplete="off">
+                                <input type="checkbox" class="btn-check" id="btn-s3" name="dias_semana[]" value="Sábado" autocomplete="off">
                                 <label class="btn btn-outline-secondary rounded-circle btn_dia" for="btn-s3">S</label>
                             </div>
 
                             <div class="text-center">
-                                <button type="button" class="btn btn_adicionar">Adicionar</button>
+                                <button type="submit" class="btn btn_adicionar">Adicionar</button>
                             </div>
+                            <div id="mensagem_cadastro_trem" class="mt-3"></div>
                         </form>
                     </div>
                 </div>

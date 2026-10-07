@@ -1,4 +1,10 @@
 /*Formatação*/
+:root {
+    --shadow-card: 0 0 14px rgba(0, 0, 0, 0.2);
+    --shadow-card-hover: 0 0 18px rgba(0, 0, 0, 0.24);
+    --shadow-modal: 0 10px 24px rgba(0, 0, 0, 0.15);
+}
+
 * {
     padding: 0;
     margin: 0;
@@ -232,8 +238,18 @@ h3 {
     background-color: #D9D9D9;
     border-radius: 20px;
     padding: 30px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-card);
     min-height: 80vh;
+}
+
+.card_usuarios,
+.card_relatorios,
+.card_gerar_relatorios,
+.dashboard-painel,
+.trens-painel,
+.trens-card-trem,
+.relatorio-card {
+    box-shadow: var(--shadow-card);
 }
 
 .barra_busca {
@@ -379,7 +395,11 @@ h3 {
 
 .modal-content {
     border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-modal);
+}
+
+.shadow {
+    box-shadow: var(--shadow-modal) !important;
 }
 
 .modal-title {
@@ -449,7 +469,7 @@ h3 {
     background: #e4e5e4;
     border: 1px solid rgba(24, 30, 29, 0.12);
     border-radius: 18px;
-    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.14);
+    box-shadow: var(--shadow-modal);
     overflow: hidden;
 }
 
@@ -798,7 +818,7 @@ h3 {
     background-color: #D9D9D9;
     border: 1px solid #b6c0bd;
     border-radius: 17px;
-    box-shadow: 0 0 14px rgba(0, 0, 0, 0.28);
+    box-shadow: var(--shadow-card);
     overflow: hidden;
 }
 
@@ -922,7 +942,7 @@ h3 {
     padding: 10px;
     background-color: #f3f3f3;
     border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-card);
     display: flex;
     flex-direction: column;
 }
@@ -1179,7 +1199,7 @@ h3 {
 .card_gerar_relatorios {
     background-color: #D9D9D9;
     border-radius: 14px;
-    box-shadow: 0 8px 24px rgba(7, 39, 39, 0.06);
+    box-shadow: var(--shadow-card);
     padding: 24px;
 }
 
@@ -1221,7 +1241,7 @@ h3 {
 .btn-detalhes-relatorio:hover {
     background: #599967;
     color: #D9D9D9;
-    box-shadow: 0 8px 20px rgba(89, 153, 103, 0.14);
+    box-shadow: var(--shadow-card-hover);
 }
 
 .btn.btn-outline-primary.btn-detalhes-relatorio,
@@ -1237,7 +1257,7 @@ h3 {
     background: #599967 !important;
     color: #ffffff !important;
     border-color: #599967 !important;
-    box-shadow: 0 8px 20px rgba(89, 153, 103, 0.14) !important;
+    box-shadow: var(--shadow-card-hover) !important;
 }
 
 
@@ -1259,7 +1279,7 @@ h3 {
     background: #fff;
     border-radius: 12px;
     padding: 16px;
-    box-shadow: 0 8px 20px rgba(7, 39, 39, 0.04);
+    box-shadow: var(--shadow-card);
     display: flex;
     flex-direction: column;
     gap: 12px;

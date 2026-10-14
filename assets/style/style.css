@@ -408,6 +408,175 @@ h3 {
     color: #000000;
 }
 
+.modal-cadastro-trem {
+    max-width: 650px;
+}
+
+.modal-cadastro-ferroviario {
+    border: 1px solid rgba(0,0,0,0.12) !important;
+    border-radius: 14px !important;
+    box-shadow: none !important;
+    background-color: #f4f4f4 !important;
+}
+
+.modal-cadastro-ferroviario .modal-header {
+    padding: 1.3rem 1.5rem 0.5rem;
+    border-bottom: none !important;
+}
+
+.modal-cadastro-ferroviario .modal-body {
+    padding: 0 1.5rem 1.5rem;
+}
+
+.modal-fechar {
+    position: absolute;
+    right: 18px;
+    top: 18px;
+    opacity: 0.85;
+    font-size: 1.5rem;
+}
+
+.modal-title {
+    font-size: 2.05rem !important;
+    line-height: 1.2;
+    font-weight: 800 !important;
+    color: #111 !important;
+}
+
+.modal-field-wrapper {
+    margin-bottom: 1rem;
+}
+
+.modal-field-label {
+    display: block;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #111;
+    margin: 0 0 0.5rem;
+}
+
+.modal-input {
+    height: 44px !important;
+    border: 1.5px solid #6e6e6e !important;
+    border-radius: 10px !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+    padding: 0.5rem 0.9rem !important;
+    font-size: 1.05rem !important;
+}
+
+.modal-select {
+    appearance: auto;
+    background-image: none !important;
+    padding-right: 2.5rem !important;
+}
+
+.modal-btn-adicionar {
+    min-width: 200px !important;
+    height: 48px !important;
+    padding: 0 1.4rem !important;
+    border-radius: 12px !important;
+    background-color: #0a5e57 !important;
+    border: none !important;
+    color: #ffffff !important;
+    font-size: 1.1rem !important;
+    font-weight: 800 !important;
+    box-shadow: none !important;
+}
+
+.modal-btn-adicionar:hover {
+    background-color: #0a4c48 !important;
+    color: #ffffff !important;
+}
+
+.modal-dados-trem {
+    max-width: 1180px;
+}
+
+.modal-dados-trem-content {
+    background: #f2f2f2 !important;
+    border: 1px solid rgba(17, 17, 17, 0.08) !important;
+    border-radius: 18px !important;
+    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.12) !important;
+}
+
+.modal-dados-trem-header {
+    position: relative;
+    padding: 1rem 1.25rem 0.5rem;
+    border-bottom: none !important;
+}
+
+.modal-dados-trem-header .modal-title {
+    font-size: 2rem;
+    line-height: 1.2;
+    color: #111;
+    margin-top: 0.1rem;
+    font-weight: 800;
+}
+
+.modal-dados-trem-close {
+    position: absolute;
+    right: 18px;
+    top: 16px;
+    opacity: 0.7;
+    filter: grayscale(1);
+}
+
+.modal-dados-trem-body {
+    padding: 0 1.5rem 1.5rem;
+    background: #f2f2f2;
+}
+
+.dados-trem-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.1rem 1.5rem;
+}
+
+.dados-trem-grid-3campos {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+.dados-trem-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.dados-trem-field label {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #111;
+    margin: 0;
+}
+
+.dados-trem-field input,
+.dados-trem-field select {
+    height: 46px;
+    width: 100%;
+    border: 1px solid #cfcfcf;
+    border-radius: 9px;
+    background: #f6f6f6;
+    color: #111;
+    padding: 0.75rem 0.9rem;
+    font-size: 1.02rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.dados-trem-field input:focus,
+.dados-trem-field select:focus {
+    border-color: #3d8dcc;
+    box-shadow: 0 0 0 0.2rem rgba(61, 141, 204, 0.12);
+    outline: none;
+    background: #ffffff;
+}
+
+.dados-trem-field-full {
+    margin-top: 0.5rem;
+    width: 100%;
+}
 
 #navModal .modal-content,
 .modal-content {

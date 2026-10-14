@@ -1,10 +1,20 @@
 <?php
 session_start();
 include __DIR__ . '/validar_acesso.php';
+require_once __DIR__ . '/../infra/conexao.php';
+
 $usuarioNome = $_SESSION['usuario_nome'] ?? 'Usuário';
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Expires: 0');
+
+$usuarios = [];
+$resultadoUsuarios = mysqli_query($conexao, "SELECT usuario_id, nome FROM usuarios ORDER BY nome ASC");
+if ($resultadoUsuarios) {
+    while ($usuario = mysqli_fetch_assoc($resultadoUsuarios)) {
+        $usuarios[] = $usuario;
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -416,63 +426,45 @@ header('Expires: 0');
         </section>
 
         <div class="modal fade" id="modal_cadastro" tabindex="-1" aria-labelledby="label_modal_cadastro" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content modal-ferroviario">
+            <div class="modal-dialog modal-dialog-centered modal-cadastro-trem">
+                <div class="modal-content modal-ferroviario modal-cadastro-ferroviario">
                     <div class="modal-header border-0 pb-0">
                         <h5 class="modal-title w-100 text-center fw-bold text-dark" id="label_modal_cadastro">Cadastro Ferroviário</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close modal-fechar" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body px-5 pt-4 pb-4">
+                    <div class="modal-body px-4 pt-2 pb-4">
                         <form id="form_cadastro_trem" method="POST">
-                            <div class="mb-3">
-                                <input type="text" id="input_nome_trem" name="nome_trem" class="form-control" placeholder="Nome" required>
+                            <input type="hidden" name="nome_trem" value="Trem sem nome">
+                            <input type="hidden" name="partida" value="Estação Norte">
+                            <input type="hidden" name="chegada" value="Estação Sul">
+                            <input type="hidden" name="horario_partida" value="06:00">
+                            <input type="hidden" name="horario_chegada" value="08:00">
+                            <input type="hidden" name="dias_semana[]" value="Segunda">
+                            <input type="hidden" name="dias_semana[]" value="Quarta">
+                            <input type="hidden" name="dias_semana[]" value="Sexta">
+
+                            <div class="modal-field-wrapper">
+                                <label for="input_id_trem" class="modal-field-label">ID</label>
+                                <input type="text" id="input_id_trem" name="id_trem" class="form-control modal-input" required>
                             </div>
 
-                            <div class="row mb-3">
-                                <div class="col pe-2">
-                                    <input type="text" id="input_partida_trem" name="partida" class="form-control" placeholder="Local de Partida" required>
-                                </div>
-                                <div class="col ps-2">
-                                    <input type="text" id="input_chegada_trem" name="chegada" class="form-control" placeholder="Local de Chegada" required>
-                                </div>
+                            <div class="modal-field-wrapper">
+                                <label for="input_nome_trem" class="modal-field-label">Nome</label>
+                                <input type="text" id="input_nome_trem" name="nome_trem_visivel" class="form-control modal-input" required>
                             </div>
 
-                            <div class="row mb-3">
-                                <div class="col pe-2">
-                                    <label class="form-label small text-dark mb-1">Horário de partida</label>
-                                    <input type="time" id="input_hora_partida_trem" name="horario_partida" class="form-control" required>
-                                </div>
-                                <div class="col ps-2">
-                                    <label class="form-label small text-dark mb-1">Horário de chegada</label>
-                                    <input type="time" id="input_hora_chegada_trem" name="horario_chegada" class="form-control" required>
-                                </div>
+                            <div class="modal-field-wrapper mb-4">
+                                <label for="input_responsavel_trem" class="modal-field-label">Responsável</label>
+                                <select id="input_responsavel_trem" name="responsavel_trem" class="form-select modal-input modal-select" required>
+                                    <option value="" selected disabled></option>
+                                    <?php foreach ($usuarios as $usuario): ?>
+                                        <option value="<?= (int) $usuario['usuario_id']; ?>"><?= htmlspecialchars($usuario['nome']); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
 
-                            <div class="d-flex justify-content-center gap-2 mb-4 mt-4 flex-wrap">
-                                <input type="checkbox" class="btn-check" id="btn-d" name="dias_semana[]" value="Domingo" autocomplete="off">
-                                <label class="btn btn-outline-secondary rounded-circle btn_dia" for="btn-d">D</label>
-
-                                <input type="checkbox" class="btn-check" id="btn-s1" name="dias_semana[]" value="Segunda" autocomplete="off">
-                                <label class="btn btn-outline-secondary rounded-circle btn_dia" for="btn-s1">S</label>
-
-                                <input type="checkbox" class="btn-check" id="btn-t" name="dias_semana[]" value="Terça" autocomplete="off">
-                                <label class="btn btn-outline-secondary rounded-circle btn_dia" for="btn-t">T</label>
-
-                                <input type="checkbox" class="btn-check" id="btn-q1" name="dias_semana[]" value="Quarta" autocomplete="off">
-                                <label class="btn btn-outline-secondary rounded-circle btn_dia" for="btn-q1">Q</label>
-
-                                <input type="checkbox" class="btn-check" id="btn-q2" name="dias_semana[]" value="Quinta" autocomplete="off">
-                                <label class="btn btn-outline-secondary rounded-circle btn_dia" for="btn-q2">Q</label>
-
-                                <input type="checkbox" class="btn-check" id="btn-s2" name="dias_semana[]" value="Sexta" autocomplete="off">
-                                <label class="btn btn-outline-secondary rounded-circle btn_dia" for="btn-s2">S</label>
-
-                                <input type="checkbox" class="btn-check" id="btn-s3" name="dias_semana[]" value="Sábado" autocomplete="off">
-                                <label class="btn btn-outline-secondary rounded-circle btn_dia" for="btn-s3">S</label>
-                            </div>
-
-                            <div class="text-center">
-                                <button type="submit" class="btn btn_adicionar">Adicionar</button>
+                            <div class="text-center mt-2">
+                                <button type="submit" class="btn btn_adicionar modal-btn-adicionar">Adicionar</button>
                             </div>
                             <div id="mensagem_cadastro_trem" class="mt-3"></div>
                         </form>
@@ -481,62 +473,42 @@ header('Expires: 0');
             </div>
         </div>
         <div class="modal fade" id="modal_monitoramento" tabindex="-1" aria-labelledby="label_modal_monitoramento" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content border-0 rounded-4 shadow">
-
-                    <!-- HEADER -->
-                    <div class="modal-header border-0 pb-0 px-4 pt-4">
-                        <h4 class="modal-title w-100 text-center fw-bold">
-                            Monitoramento em Tempo Real
+            <div class="modal-dialog modal-dialog-centered modal-dados-trem">
+                <div class="modal-content modal-dados-trem-content">
+                    <div class="modal-header modal-dados-trem-header">
+                        <h4 class="modal-title w-100 text-center fw-bold" id="label_modal_monitoramento">
+                            Dados do Trem
                         </h4>
 
                         <button type="button"
-                            class="btn-close position-absolute end-0 top-0 m-4"
+                            class="btn-close modal-dados-trem-close"
                             data-bs-dismiss="modal"
                             aria-label="Close">
                         </button>
-
                     </div>
 
-                    <!-- BODY -->
-                    <div class="modal-body px-5 pb-4">
+                    <div class="modal-body modal-dados-trem-body">
+                        <div class="dados-trem-grid dados-trem-grid-3campos">
+                            <div class="dados-trem-field dados-trem-field-full">
+                                <label>ID do Trem</label>
+                                <input id="modal_trem_id" type="text" readonly>
+                            </div>
 
-                        <!-- IMAGEM -->
-                        <div class="text-center mb-5">
-                            <img
-                                src="../assets/img/trilho.png" alt="" class="img-fluid"
-                                alt="Mapa Ferroviário"
-                                class="img-fluid rounded"
-                                style="max-height: 350px; background: #f2f2f2;">
+                            <div class="dados-trem-field dados-trem-field-full">
+                                <label>Nome</label>
+                                <input id="modal_trem_nome" type="text" readonly>
+                            </div>
+
+                            <div class="dados-trem-field dados-trem-field-full">
+                                <label>Responsável</label>
+                                <select id="modal_trem_responsavel" class="form-select">
+                                    <option value="">Selecione o responsável</option>
+                                    <?php foreach ($usuarios as $usuario): ?>
+                                        <option value="<?= (int) $usuario['usuario_id']; ?>"><?= htmlspecialchars($usuario['nome']); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
                         </div>
-
-                        <div class="row text-center align-items-center">
-
-                            <div class="col-md-3 mb-3 mb-md-0">
-                                <span class="fw-bold fs-5">Velocidade:</span>
-                                <span class="fs-5"> 999km/h</span>
-                            </div>
-
-                            <div class="col-md-3 mb-3 mb-md-0">
-                                <span class="fw-bold fs-5">Temperatura:</span>
-                                <span class="fs-5"> 99,99C°</span>
-                            </div>
-
-                            <div class="col-md-3 mb-3 mb-md-0">
-                                <span class="fw-bold fs-5">Status:</span>
-
-                                <span class="badge rounded-pill bg-success fs-6 px-3 py-2">
-                                    Normal
-                                </span>
-                            </div>
-
-                            <div class="col-md-3">
-                                <span class="fw-bold fs-5">Consumo:</span>
-                                <span class="fs-5"> 99,99kWh</span>
-                            </div>
-
-                        </div>
-
                     </div>
                 </div>
             </div>

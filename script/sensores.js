@@ -11,9 +11,16 @@ document.addEventListener('DOMContentLoaded', function () {
             let algumVisivel = false;
 
             linhasSensores.forEach(linha => {
-                const idSensor = (linha.querySelector('td') || {}).textContent.trim().toLowerCase();
+                const idSensor = (linha.children[0] || {}).textContent.trim().toLowerCase();
                 const nomeSensor = (linha.children[1] || {}).textContent.trim().toLowerCase();
-                const corresponde = termo === '' || idSensor.includes(termo) || nomeSensor.includes(termo);
+                const localizacaoSensor = (linha.children[2] || {}).textContent.trim().toLowerCase();
+                const tipoDadoSensor = (linha.children[3] || {}).textContent.trim().toLowerCase();
+
+                const corresponde = termo === '' ||
+                    idSensor.includes(termo) ||
+                    nomeSensor.includes(termo) ||
+                    localizacaoSensor.includes(termo) ||
+                    tipoDadoSensor.includes(termo);
 
                 linha.hidden = !corresponde;
                 if (corresponde) algumVisivel = true;

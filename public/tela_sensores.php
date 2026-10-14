@@ -82,7 +82,7 @@ header('Expires: 0');
             <div class="card_usuarios">
                 <div class="barra_busca">
                     <div class="input-group dashboard-busca">
-                        <input type="text" id="input_busca_sensor" class="form-control dashboard-input" placeholder="Buscar por ID ou Nome" aria-label="Buscar por ID ou Nome">
+                        <input type="text" id="input_busca_sensor" class="form-control dashboard-input" placeholder="Buscar por ID, nome, localização ou tipo de dado" aria-label="Buscar por ID, nome, localização ou tipo de dado">
                         <button class="btn dashboard-btn-busca" id="btn_busca_sensor" type="button" aria-label="Buscar">
                             <i class="bi bi-search"></i>
                         </button>

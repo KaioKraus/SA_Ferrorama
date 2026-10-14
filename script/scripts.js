@@ -15,10 +15,16 @@ if (input_busca_sensor && tbody_sensores) {
         let algum_visivel = false;
  
         linhas_sensores.forEach(linha => {
-            const id_sensor = linha.children[0].textContent.trim().toLowerCase();
-            const nome_sensor = linha.children[1].textContent.trim().toLowerCase();
+            const id_sensor = (linha.children[0] || {}).textContent.trim().toLowerCase();
+            const nome_sensor = (linha.children[1] || {}).textContent.trim().toLowerCase();
+            const localizacao_sensor = (linha.children[2] || {}).textContent.trim().toLowerCase();
+            const tipo_dado_sensor = (linha.children[3] || {}).textContent.trim().toLowerCase();
  
-            const corresponde = termo === "" || id_sensor.includes(termo) || nome_sensor.includes(termo);
+            const corresponde = termo === "" ||
+                id_sensor.includes(termo) ||
+                nome_sensor.includes(termo) ||
+                localizacao_sensor.includes(termo) ||
+                tipo_dado_sensor.includes(termo);
  
             linha.style.display = corresponde ? "" : "none";
             if (corresponde) algum_visivel = true;
@@ -30,7 +36,7 @@ if (input_busca_sensor && tbody_sensores) {
             if (!linha_vazia) {
                 linha_vazia = document.createElement("tr");
                 linha_vazia.id = "linha_sensor_vazia";
-                linha_vazia.innerHTML = "<td colspan='5' class='text-center text-muted'>Nenhum sensor encontrado.</td>";
+                linha_vazia.innerHTML = "<td colspan='6' class='text-center text-muted'>Nenhum sensor encontrado.</td>";
                 tbody_sensores.appendChild(linha_vazia);
             }
         } else if (linha_vazia) {
@@ -41,4 +47,6 @@ if (input_busca_sensor && tbody_sensores) {
     if (btn_busca_sensor) {
         btn_busca_sensor.addEventListener("click", filtrar_sensores);
     }
+
+    input_busca_sensor.addEventListener("input", filtrar_sensores);
 }

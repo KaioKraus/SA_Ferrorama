@@ -83,22 +83,19 @@ header('Expires: 0');
                     <div class="barra_busca_filtro">
 
                         <div class="input-group dashboard-busca">
-                            <input id="filtroRotas" type="text" class="form-control dashboard-input" placeholder="Buscar por ponto de partida ou destino" aria-label="Buscar por ponto de partida ou destino">
+                            <input id="filtroRotas" type="text" class="form-control dashboard-input" placeholder="Buscar por nome ou estação" aria-label="Buscar por nome ou estação">
                             <button class="btn dashboard-btn-busca" type="button" aria-label="Buscar rota">
                                 <i class="bi bi-search"></i>
                             </button>
                         </div>
 
                         <div class="filtro_busca">
-                            <select id="campoFiltroRota" class="form-select filtro_busca_select" aria-label="Filtrar por ponto de partida">
-                                <option value="ponto_partida" selected>Ponto de partida</option>
-                                <option value="destino">Destino</option>
-                            </select>
-                        </div>
-                        <div class="filtro_busca">
-                            <select id="campoFiltroDestino" class="form-select filtro_busca_select" aria-label="Filtrar por destino">
-                                <option value="destino" selected>Destino</option>
+                            <select id="campoFiltroRota" class="form-select filtro_busca_select" aria-label="Filtrar rotas">
+                                <option value="todos" selected>Todos</option>
+                                <option value="nome_rota">Nome da rota</option>
                                 <option value="ponto_partida">Ponto de partida</option>
+                                <option value="destino">Destino</option>
+                                <option value="estacao">Estação</option>
                             </select>
                         </div>
                     </div>

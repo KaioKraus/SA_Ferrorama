@@ -10,11 +10,20 @@ document.addEventListener('DOMContentLoaded', function () {
         linhasRotas.forEach(function (linha) {
             const pontoPartida = (linha.cells[1]?.textContent || '').toLowerCase();
             const destino = (linha.cells[2]?.textContent || '').toLowerCase();
+            const nomeRota = (linha.cells[3]?.textContent || '').toLowerCase();
+            const estacao = `${pontoPartida} ${destino}`.trim();
 
             const corresponde = !termo || (
-                (campo === 'todos' && (pontoPartida.includes(termo) || destino.includes(termo))) ||
+                (campo === 'todos' && (
+                    pontoPartida.includes(termo) ||
+                    destino.includes(termo) ||
+                    nomeRota.includes(termo) ||
+                    estacao.includes(termo)
+                )) ||
+                (campo === 'nome_rota' && nomeRota.includes(termo)) ||
                 (campo === 'ponto_partida' && pontoPartida.includes(termo)) ||
-                (campo === 'destino' && destino.includes(termo))
+                (campo === 'destino' && destino.includes(termo)) ||
+                (campo === 'estacao' && estacao.includes(termo))
             );
 
             linha.style.display = corresponde ? '' : 'none';

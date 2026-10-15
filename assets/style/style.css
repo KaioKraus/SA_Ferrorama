@@ -1371,6 +1371,66 @@ h3 {
     display: block;
 }
 
+.route-modal-body {
+    padding: 0 1.5rem 2rem;
+}
+
+.route-modal-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.8fr) minmax(220px, 0.95fr);
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.route-visual {
+    width: 100%;
+    min-height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+.route-track-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+    object-fit: contain;
+    filter: none;
+}
+
+.route-info-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 0.5rem 0;
+    color: #0d0d0d;
+    font-size: 1.05rem;
+}
+
+.route-info-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 0.2rem;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+.route-info-row span {
+    font-weight: 700;
+    min-width: 0;
+    margin-right: 0;
+}
+
+.route-info-row strong {
+    font-weight: 600;
+    margin-left: 0;
+}
+
 .card_gerar_relatorios .card-text {
     margin-bottom: 20px;
     color: #333;

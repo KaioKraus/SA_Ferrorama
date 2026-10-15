@@ -1,4 +1,46 @@
 document.addEventListener('DOMContentLoaded', function () {
+    const rotasDb = Array.isArray(window.rotasDb) ? window.rotasDb : [];
+
+    function preencherModalRota(rota) {
+        const rotaIdEl = document.getElementById('modal_rota_id');
+        const rotaTremEl = document.getElementById('modal_rota_trem');
+        const rotaStatusEl = document.getElementById('modal_rota_status');
+        const rotaPartidaEl = document.getElementById('modal_rota_partida');
+        const rotaDestinoEl = document.getElementById('modal_rota_destino');
+        const rotaDistanciaEl = document.getElementById('modal_rota_distancia');
+        const rotaDuracaoEl = document.getElementById('modal_rota_duracao');
+        const rotaDataEl = document.getElementById('modal_rota_data');
+
+        const rotaAtual = rota || {};
+
+        if (rotaIdEl) rotaIdEl.textContent = rotaAtual.rota_id ?? '';
+        if (rotaTremEl) rotaTremEl.textContent = rotaAtual.nome_trem ?? rotaAtual.trem_id ?? '';
+        if (rotaStatusEl) rotaStatusEl.textContent = rotaAtual.status ?? '';
+        if (rotaPartidaEl) rotaPartidaEl.textContent = rotaAtual.ponto_partida ?? '';
+        if (rotaDestinoEl) rotaDestinoEl.textContent = rotaAtual.ponto_chegada ?? '';
+        if (rotaDistanciaEl) rotaDistanciaEl.textContent = rotaAtual.distancia ?? '';
+        if (rotaDuracaoEl) rotaDuracaoEl.textContent = rotaAtual.duracao ?? '';
+        if (rotaDataEl) rotaDataEl.textContent = rotaAtual.data_criacao ?? '';
+    }
+
+    const modalMonitoramento = document.getElementById('modal_monitoramento');
+    if (modalMonitoramento) {
+        modalMonitoramento.addEventListener('show.bs.modal', function (event) {
+            const botao = event.relatedTarget;
+            const rotaId = botao && botao.dataset ? botao.dataset.rotaId : null;
+
+            let rotaSelecionada = null;
+
+            if (rotaId) {
+                rotaSelecionada = rotasDb.find(function (rota) {
+                    return String(rota.rota_id) === String(rotaId);
+                }) || null;
+            }
+
+            preencherModalRota(rotaSelecionada);
+        });
+    }
+
     const filtroRotas = document.getElementById('filtroRotas');
     const campoFiltroRota = document.getElementById('campoFiltroRota');
     const linhasRotas = document.querySelectorAll('.table tbody tr');

@@ -61,4 +61,88 @@ document.addEventListener('DOMContentLoaded', function () {
 
         modal.show();
     });
+
+
+    // Formulário de cadastro de rota
+    const formCadastroRota = document.getElementById('form_cadastro_rota');
+    if (formCadastroRota) {
+        formCadastroRota.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const mensagemDiv = document.getElementById('mensagem_cadastro_rota');
+            mensagemDiv.innerHTML = '<div class="spinner-border spinner-border-sm text-primary" role="status"><span class="visually-hidden">Carregando...</span></div>';
+
+            // Coleta os dados do formulário
+            const pontoPartida = document.querySelector('select[name="ponto_partida"]').value.trim();
+            const pontoChegada = document.querySelector('select[name="ponto_chegada"]').value.trim();
+            const nome = document.querySelector('input[name="nome"]').value.trim();
+            const tremId = document.querySelector('select[name="trem_id"]').value.trim();
+            const descricao = document.querySelector('textarea[name="descricao"]').value.trim();
+            
+            // Verifica qual status está selecionado
+            let status = 'Ativo';
+            if (document.getElementById('status_manutencao') && document.getElementById('status_manutencao').checked) {
+                status = 'Manutenção';
+            } else if (document.getElementById('status_inativo') && document.getElementById('status_inativo').checked) {
+                status = 'Inativo';
+            }
+
+            // Cria o FormData
+            const formData = new FormData();
+            formData.append('ponto_partida', pontoPartida);
+            formData.append('ponto_chegada', pontoChegada);
+            formData.append('nome', nome);
+            formData.append('trem_id', tremId);
+            formData.append('descricao', descricao);
+            formData.append('status', status);
+
+            // Envia via fetch
+            fetch('cadastrar_rota.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(async response => {
+                const text = await response.text();
+                try {
+                    const data = JSON.parse(text);
+                    if (data.success) {
+                        mensagemDiv.innerHTML = '<div class="alert alert-success" style="background-color: #d1e7dd; border-radius: 8px; border: none;">' + data.message + '</div>';
+                        formCadastroRota.reset();
+                        // Fecha o modal após 2 segundos e recarrega a página
+                        setTimeout(() => {
+                            const modalCadastro = bootstrap.Modal.getInstance(document.getElementById('modalAddRota'));
+                            if (modalCadastro) {
+                                modalCadastro.hide();
+                            }
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        mensagemDiv.innerHTML = '<div class="alert alert-danger" style="border-radius: 8px;">' + data.message + '</div>';
+                    }
+                } catch (err) {
+                    console.error('Resposta inválida do servidor:', text);
+                    mensagemDiv.innerHTML = '<div class="alert alert-danger" style="border-radius: 8px;">Erro do servidor. Verifique os dados e tente novamente.</div>';
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                mensagemDiv.innerHTML = '<div class="alert alert-danger" style="border-radius: 8px;">Erro ao processar requisição</div>';
+            });
+        });
+    }
+
+    // Limpar mensagem ao abrir o modal novamente
+    const modalAddRota = document.getElementById('modalAddRota');
+    if (modalAddRota) {
+        modalAddRota.addEventListener('show.bs.modal', function () {
+            const mensagemDiv = document.getElementById('mensagem_cadastro_rota');
+            if (mensagemDiv) {
+                mensagemDiv.innerHTML = '';
+            }
+            const form = document.getElementById('form_cadastro_rota');
+            if (form) {
+                form.reset();
+            }
+        });
+    }
 });

@@ -1,27 +1,35 @@
 <?php
 session_start();
 include __DIR__ . '/validar_acesso.php';
+require_once "../infra/conexao.php";
 $usuarioNome = $_SESSION['usuario_nome'] ?? 'Usuário';
-header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-header('Pragma: no-cache');
-header('Expires: 0');
+
+$sql_trens = "SELECT trem_id, nome_trem FROM trens ORDER BY nome_trem ASC";
+$resultado_trens = mysqli_query($conexao, $sql_trens);
+
+$sql_estacoes = "SELECT nome_estacao AS estacao FROM estacoes WHERE status = 'Ativo' ORDER BY nome_estacao ASC";
+$resultado_estacoes = mysqli_query($conexao, $sql_estacoes);
+
+$estacoes = [];
+if ($resultado_estacoes) {
+    while ($row = mysqli_fetch_assoc($resultado_estacoes)) {
+        $estacoes[] = $row['estacao'];
+    }
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../assets/style/style.css">
+    <title>Celestial Steel - Rotas</title>
 </head>
-
 <body>
-    <!--Main-->
     <main>
-
         <nav class="nav1_mobile">
             <button class="hamburger-btn" data-bs-toggle="modal" data-bs-target="#navModal" aria-label="Abrir menu">
                 <i class="bi bi-list"></i>
@@ -78,44 +86,50 @@ header('Expires: 0');
         <section class="conteudo">
             <div class="card_usuarios">
                 <div class="barra_busca mb-3">
-                    
-
                     <div class="barra_busca_filtro">
-
                         <div class="input-group dashboard-busca">
-                            <input id="filtroRotas" type="text" class="form-control dashboard-input" placeholder="Buscar por nome ou estação" aria-label="Buscar por nome ou estação">
-                            <button class="btn dashboard-btn-busca" type="button" aria-label="Buscar rota">
+                            <input type="text" class="form-control dashboard-input" placeholder="Buscar por ID">
+                            <button class="btn dashboard-btn-busca" type="button">
                                 <i class="bi bi-search"></i>
                             </button>
                         </div>
 
                         <div class="filtro_busca">
-                            <select id="campoFiltroRota" class="form-select filtro_busca_select" aria-label="Filtrar rotas">
-                                <option value="todos" selected>Todos</option>
-                                <option value="nome_rota">Nome da rota</option>
-                                <option value="ponto_partida">Ponto de partida</option>
-                                <option value="destino">Destino</option>
-                                <option value="estacao">Estação</option>
+                            <select class="form-select filtro_busca_select">
+                                <option selected>Ponto de Partida</option>
+                                <option>Estação Norte</option>
+                                <option>Estação Sul</option>
+                                <option>Estação Leste</option>
+                                <option>Estação Oeste</option>
+                            </select>
+                        </div>
+
+                        <div class="filtro_busca">
+                            <select class="form-select filtro_busca_select">
+                                <option selected>Destino</option>
+                                <option>Estação Norte</option>
+                                <option>Estação Sul</option>
+                                <option>Estação Leste</option>
+                                <option>Estação Oeste</option>
                             </select>
                         </div>
                     </div>
 
                     <?php if ($usuarioEhAdministrador): ?>
-                <div>
-                    <button class="btn trens-btn-add" data-bs-toggle="modal" data-bs-target="#modalAddRota">Adicionar</button>
-                </div>
-                <?php endif; ?>
-                    
+                    <div>
+                        <button class="btn trens-btn-add" data-bs-toggle="modal" data-bs-target="#modalAddRota">Adicionar</button>
+                    </div>
+                    <?php endif; ?>
                 </div>
 
-                
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Id</th>
-                            <th>Ponto de Partida</th>
-                            <th>Destino</th>
+                            <th>ID</th>
                             <th>Nome</th>
+                            <th>Ponto de partida</th>
+                            <th>Destino</th>
+                            <th>Trem</th>
                             <th>Status</th>
                             <th>Ações</th>
                         </tr>
@@ -123,89 +137,150 @@ header('Expires: 0');
                     <tbody>
                         <tr>
                             <td>99999</td>
-                            <td>Estação Norte</td>
-                            <td>Estação Sul</td>
-                            <td>Rota 1</td>
+                            <td>Nome da rota</td>
+                            <td>Estação norte</td>
+                            <td>Estação sul</td>
+                            <td>Nome do Trem</td>
                             <td><span class="trens-card-status ativo">Ativo</span></td>
                             <td>
-                                <?php if ($usuarioEhAdministrador): ?>
-                                <button class="btn_edit"><i class="bi bi-pencil-square"></i></button>
-                                <button class="btn_delete mx-2"><i class="bi bi-trash"></i></button>
-                                <?php endif; ?>
-                                <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
-                                    <i class="bi bi-info-lg"></i>
-                                </button>
+                                <button class="btn_edit" type="button" aria-label="Editar rota"><i class="bi bi-pencil-square"></i></button>
+                                <button class="btn_delete mx-2" type="button" data-bs-toggle="modal" data-bs-target="#modal_confirm_delete" data-id="99999" aria-label="Excluir rota"><i class="bi bi-trash"></i></button>
+                                <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Informações da rota"><i class="bi bi-info-lg"></i></button>
                             </td>
                         </tr>
                         <tr>
-                            <td>99999</td>
-                            <td>Estação Norte</td>
-                            <td>Estação Sul</td>
-                            <td>Rota 2</td>
+                            <td>99998</td>
+                            <td>Nome da rota</td>
+                            <td>Estação norte</td>
+                            <td>Estação sul</td>
+                            <td>Nome do Trem</td>
                             <td><span class="trens-card-status inativo">Inativo</span></td>
                             <td>
-                                <?php if ($usuarioEhAdministrador): ?>
-                                <button class="btn_edit"><i class="bi bi-pencil-square"></i></button>
-                                <button class="btn_delete mx-2"><i class="bi bi-trash"></i></button>
-                                <?php endif; ?>
-                                <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
-                                    <i class="bi bi-info-lg"></i>
-                                </button>
+                                <button class="btn_edit" type="button" aria-label="Editar rota"><i class="bi bi-pencil-square"></i></button>
+                                <button class="btn_delete mx-2" type="button" data-bs-toggle="modal" data-bs-target="#modal_confirm_delete" data-id="99998" aria-label="Excluir rota"><i class="bi bi-trash"></i></button>
+                                <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Informações da rota"><i class="bi bi-info-lg"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>99997</td>
+                            <td>Nome da rota</td>
+                            <td>Estação norte</td>
+                            <td>Estação sul</td>
+                            <td>Nome do Trem</td>
+                            <td><span class="trens-card-status manutencao">Manutenção</span></td>
+                            <td>
+                                <button class="btn_edit" type="button" aria-label="Editar rota"><i class="bi bi-pencil-square"></i></button>
+                                <button class="btn_delete mx-2" type="button" data-bs-toggle="modal" data-bs-target="#modal_confirm_delete" data-id="99997" aria-label="Excluir rota"><i class="bi bi-trash"></i></button>
+                                <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Informações da rota"><i class="bi bi-info-lg"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>99996</td>
+                            <td>Nome da rota</td>
+                            <td>Estação norte</td>
+                            <td>Estação sul</td>
+                            <td>Nome do Trem</td>
+                            <td><span class="trens-card-status ativo">Ativo</span></td>
+                            <td>
+                                <button class="btn_edit" type="button" aria-label="Editar rota"><i class="bi bi-pencil-square"></i></button>
+                                <button class="btn_delete mx-2" type="button" data-bs-toggle="modal" data-bs-target="#modal_confirm_delete" data-id="99996" aria-label="Excluir rota"><i class="bi bi-trash"></i></button>
+                                <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Informações da rota"><i class="bi bi-info-lg"></i></button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
-                <!-- Modal: Adicionar Rota (igual a Usuários) -->
-                <div class="modal fade" id="modalAddRota" tabindex="-1" aria-labelledby="modalAddRotaLabel" aria-hidden="true">
+
+                <div class="modal fade" id="modalAddRota" tabindex="-1">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content" style="border-radius: 15px; border: none;">
                             <div class="modal-header border-0 pb-0">
-                                <h5 class="modal-title w-100 text-center text-dark" id="modalAddRotaLabel">Adicionar Rota</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="position: absolute; right: 20px; top: 20px;"></button>
+                                <h5 class="modal-title w-100 text-center text-dark">Cadastro de Rota</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" style="position: absolute; right: 20px; top: 20px;"></button>
                             </div>
                             <div class="modal-body px-5 pt-4 pb-4">
-                                <form class="w-100" action="tela_rotas.php" method="post">
+                                <form method="POST" action="cadastrar_rota.php" id="form_cadastro_rota">
                                     <div class="row mb-4">
                                         <div class="col pe-2">
                                             <div class="input-field">
-                                                <input required autocomplete="off" type="text" name="ponto_partida" class="form-control" />
-                                                <label>Ponto de Partida</label>
+                                                <select required name="ponto_partida" class="form-select">
+                                                    <option value=""></option>
+                                                    <?php if (count($estacoes) > 0): ?>
+                                                        <?php foreach($estacoes as $estacao): ?>
+                                                            <option value="<?= htmlspecialchars($estacao) ?>"><?= htmlspecialchars($estacao) ?></option>
+                                                        <?php endforeach; ?>
+                                                    <?php endif; ?>
+                                                </select>
+                                                <label>Ponto de partida</label>
                                             </div>
                                         </div>
                                         <div class="col ps-2">
                                             <div class="input-field">
-                                                <input required autocomplete="off" type="text" name="destino" class="form-control" />
-                                                <label>Destino</label>
+                                                <select required name="ponto_chegada" class="form-select">
+                                                    <option value=""></option>
+                                                    <?php if (count($estacoes) > 0): ?>
+                                                        <?php foreach($estacoes as $estacao): ?>
+                                                            <option value="<?= htmlspecialchars($estacao) ?>"><?= htmlspecialchars($estacao) ?></option>
+                                                        <?php endforeach; ?>
+                                                    <?php endif; ?>
+                                                </select>
+                                                <label>Ponto de chegada</label>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="row mb-4">
-                                        <div class="col-12">
+                                        <div class="col">
                                             <div class="input-field">
-                                                <input required autocomplete="off" type="text" name="nome_rota" class="form-control nome-rota-input" />
-                                                <label>Nome da Rota</label>
+                                                <input required type="text" name="nome" class="form-control" minlength="3">
+                                                <label>Nome</label>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="row mb-4">
-                                        <div class="col pe-2">
+                                        <div class="col">
                                             <div class="input-field">
-                                                <input required type="time" name="horario_inicio" class="form-control" />
-                                                <label>Horário de Início</label>
+                                                <select required name="trem_id" class="form-select">
+                                                    <option value=""></option>
+                                                    <?php 
+                                                    if ($resultado_trens && mysqli_num_rows($resultado_trens) > 0):
+                                                        while($trem = mysqli_fetch_assoc($resultado_trens)): 
+                                                    ?>
+                                                        <option value="<?= $trem['trem_id'] ?>"><?= htmlspecialchars($trem['nome_trem']) ?></option>
+                                                    <?php 
+                                                        endwhile;
+                                                    endif; 
+                                                    ?>
+                                                </select>
+                                                <label>Trem</label>
                                             </div>
                                         </div>
-                                        <div class="col ps-2">
+                                    </div>
+
+                                    <div class="row mb-4">
+                                        <div class="col">
                                             <div class="input-field">
-                                                <input required type="time" name="horario_termino" class="form-control" />
-                                                <label>Horário de Término</label>
+                                                <textarea name="descricao" class="form-control" rows="3" style="resize: none;" placeholder=" "></textarea>
+                                                <label>Descrição</label>
                                             </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-center mb-5 mt-4">
+                                        <div class="toggle-container-status">
+                                            <input type="radio" name="status" id="status_ativo" value="Ativo" checked>
+                                            <label for="status_ativo">Ativo</label>
+                                            <input type="radio" name="status" id="status_manutencao" value="Manutenção">
+                                            <label for="status_manutencao">Manutenção</label>
+                                            <input type="radio" name="status" id="status_inativo" value="Inativo">
+                                            <label for="status_inativo">Inativo</label>
+                                            <div class="slider-status"></div>
                                         </div>
                                     </div>
 
                                     <div class="text-center">
-                                        <button type="submit" class="btn btn_adicionar">Adicionar</button>
+                                        <button type="submit" class="btn btn_adicionar px-5">Adicionar</button>
+                                        <div id="mensagem_cadastro_rota" class="mt-3"></div>
                                     </div>
                                 </form>
                             </div>
@@ -277,7 +352,6 @@ header('Expires: 0');
             </div>
         </div>
 
-
     </main>
 
     <!-- Modal: Navegação (para telas pequenas) -->
@@ -304,6 +378,7 @@ header('Expires: 0');
         </div>
     </div>
 
+
     <div class="modal fade" id="modal_confirm_delete" tabindex="-1" aria-labelledby="label_modal_confirm_delete" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -327,8 +402,8 @@ header('Expires: 0');
 
     <?php include __DIR__ . '/_modal_perfil.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../script/validacao.js"></script>
     <script src="../script/nav.js"></script>
     <script src="../script/rotas.js"></script>
 </body>
-
 </html>

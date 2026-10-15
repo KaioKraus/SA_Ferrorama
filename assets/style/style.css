@@ -409,31 +409,45 @@ h3 {
 }
 
 .modal-cadastro-trem {
-    max-width: 650px;
+    max-width: 480px;
 }
 
 .modal-cadastro-ferroviario {
-    border: 1px solid rgba(0,0,0,0.12) !important;
-    border-radius: 14px !important;
-    box-shadow: none !important;
-    background-color: #f4f4f4 !important;
+    border: 1px solid rgba(17, 17, 17, 0.12) !important;
+    border-radius: 18px !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.14) !important;
+    background-color: rgba(246, 246, 246, 0.96) !important;
+    overflow: hidden;
 }
 
 .modal-cadastro-ferroviario .modal-header {
-    padding: 1.3rem 1.5rem 0.5rem;
+    position: relative;
+    padding: 1.6rem 1.4rem 0.5rem;
     border-bottom: none !important;
 }
 
 .modal-cadastro-ferroviario .modal-body {
-    padding: 0 1.5rem 1.5rem;
+    padding: 0.35rem 1.45rem 1.5rem;
 }
 
 .modal-fechar {
     position: absolute;
     right: 18px;
     top: 18px;
-    opacity: 0.85;
-    font-size: 1.5rem;
+    width: 24px;
+    height: 24px;
+    opacity: 1;
+    padding: 0;
+    border: none;
+    background: transparent;
+    filter: brightness(0) saturate(100%);
+}
+
+.modal-fechar:focus,
+.modal-fechar:active,
+.modal-fechar:hover {
+    box-shadow: none;
+    opacity: 1;
 }
 
 .modal-title {
@@ -457,7 +471,7 @@ h3 {
 
 .modal-input {
     height: 44px !important;
-    border: 1.5px solid #6e6e6e !important;
+    border: 1.5px solid rgba(17, 17, 17, 0.5) !important;
     border-radius: 10px !important;
     background-color: #ffffff !important;
     color: #000000 !important;
@@ -472,38 +486,70 @@ h3 {
     padding-right: 2.5rem !important;
 }
 
-.modal-btn-adicionar {
+.modal-cadastro-ferroviario .modal-btn-adicionar,
+.modal-cadastro-ferroviario .modal-btn-adicionar:hover,
+.modal-cadastro-ferroviario .modal-btn-adicionar:focus,
+.modal-cadastro-ferroviario .modal-btn-adicionar:active {
     min-width: 200px !important;
-    height: 48px !important;
-    padding: 0 1.4rem !important;
+    width: 100% !important;
+    max-width: 220px !important;
+    height: 46px !important;
+    padding: 0 1.25rem !important;
     border-radius: 12px !important;
     background-color: #0a5e57 !important;
     border: none !important;
     color: #ffffff !important;
-    font-size: 1.1rem !important;
+    font-size: 1.05rem !important;
     font-weight: 800 !important;
     box-shadow: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-.modal-btn-adicionar:hover {
+.modal-cadastro-ferroviario .modal-btn-adicionar:hover {
     background-color: #0a4c48 !important;
     color: #ffffff !important;
+    transform: translateY(-1px);
+}
+
+#btn_salvar_trem {
+    min-width: 200px !important;
+    width: 100% !important;
+    max-width: 220px !important;
+    height: 46px !important;
+    padding: 0 1.25rem !important;
+    border-radius: 12px !important;
+    background-color: #0a5e57 !important;
+    border: none !important;
+    color: #ffffff !important;
+    font-size: 1.05rem !important;
+    font-weight: 800 !important;
+    box-shadow: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
 }
 
 .modal-dados-trem {
-    max-width: 1180px;
+    max-width: 480px;
+    border-radius: 18px !important;
 }
 
 .modal-dados-trem-content {
-    background: #f2f2f2 !important;
-    border: 1px solid rgba(17, 17, 17, 0.08) !important;
+    background: rgba(246, 246, 246, 0.96) !important;
+    border: 1px solid rgba(17, 17, 17, 0.12) !important;
     border-radius: 18px !important;
-    box-shadow: 0 12px 26px rgba(0, 0, 0, 0.12) !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.14) !important;
+    overflow: hidden;
 }
 
 .modal-dados-trem-header {
     position: relative;
-    padding: 1rem 1.25rem 0.5rem;
+    padding: 1.6rem 1.4rem 0.5rem;
     border-bottom: none !important;
 }
 
@@ -518,14 +564,19 @@ h3 {
 .modal-dados-trem-close {
     position: absolute;
     right: 18px;
-    top: 16px;
-    opacity: 0.7;
-    filter: grayscale(1);
+    top: 18px;
+    width: 24px;
+    height: 24px;
+    opacity: 1;
+    border: none;
+    background: transparent;
+    filter: brightness(0) saturate(100%);
+    padding: 0;
 }
 
 .modal-dados-trem-body {
-    padding: 0 1.5rem 1.5rem;
-    background: #f2f2f2;
+    padding: 0.35rem 1.45rem 1.5rem;
+    background: rgba(246, 246, 246, 0.96);
 }
 
 .dados-trem-grid {
@@ -546,7 +597,7 @@ h3 {
 }
 
 .dados-trem-field label {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     font-weight: 700;
     color: #111;
     margin: 0;
@@ -554,23 +605,32 @@ h3 {
 
 .dados-trem-field input,
 .dados-trem-field select {
-    height: 46px;
+    height: 44px;
     width: 100%;
-    border: 1px solid #cfcfcf;
-    border-radius: 9px;
-    background: #f6f6f6;
+    border: 1.5px solid rgba(17, 17, 17, 0.5) !important;
+    border-radius: 10px;
+    background: #ffffff !important;
     color: #111;
-    padding: 0.75rem 0.9rem;
-    font-size: 1.02rem;
+    padding: 0.5rem 0.9rem;
+    font-size: 1.05rem;
+    box-shadow: none !important;
     transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
 .dados-trem-field input:focus,
 .dados-trem-field select:focus {
-    border-color: #3d8dcc;
-    box-shadow: 0 0 0 0.2rem rgba(61, 141, 204, 0.12);
+    border-color: rgba(17, 17, 17, 0.5) !important;
+    box-shadow: none !important;
     outline: none;
-    background: #ffffff;
+    background: #ffffff !important;
+}
+
+.dados-trem-field input:disabled,
+.dados-trem-field select:disabled {
+    background: #ffffff !important;
+    color: #111 !important;
+    cursor: default !important;
+    opacity: 1 !important;
 }
 
 .dados-trem-field-full {
@@ -836,8 +896,11 @@ h3 {
     border-radius: 15px;
 }
 
-.modal-ferroviario .modal-title {
-    font-size: 1.25rem;
+.modal-ferroviario .modal-title,
+.modal-cadastro-ferroviario .modal-title {
+    font-size: 2rem !important;
+    font-weight: 800 !important;
+    color: #111 !important;
 }
 
 .btn_dia {

@@ -472,7 +472,7 @@ if ($resultadoUsuarios) {
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="modal_monitoramento" tabindex="-1" aria-labelledby="label_modal_monitoramento" aria-hidden="true">
+        <div class="modal fade" id="modal_monitoramento" tabindex="-1" aria-labelledby="label_modal_monitoramento" aria-hidden="true" data-is-admin="<?= $usuarioEhAdministrador ? '1' : '0'; ?>">
             <div class="modal-dialog modal-dialog-centered modal-dados-trem">
                 <div class="modal-content modal-dados-trem-content">
                     <div class="modal-header modal-dados-trem-header">
@@ -488,27 +488,39 @@ if ($resultadoUsuarios) {
                     </div>
 
                     <div class="modal-body modal-dados-trem-body">
-                        <div class="dados-trem-grid dados-trem-grid-3campos">
-                            <div class="dados-trem-field dados-trem-field-full">
-                                <label>ID do Trem</label>
-                                <input id="modal_trem_id" type="text" readonly>
+                        <form id="form_editar_trem" method="POST" action="editar_trem.php">
+                            <input type="hidden" name="trem_id" id="modal_trem_id_hidden" value="">
+
+                            <div class="dados-trem-grid dados-trem-grid-3campos">
+                                <div class="dados-trem-field dados-trem-field-full">
+                                    <label>ID do Trem</label>
+                                    <input id="modal_trem_id" type="text" readonly>
+                                </div>
+
+                                <div class="dados-trem-field dados-trem-field-full">
+                                    <label>Nome</label>
+                                    <input id="modal_trem_nome" name="nome_trem" type="text" <?= $usuarioEhAdministrador ? '' : 'readonly'; ?>>
+                                </div>
+
+                                <div class="dados-trem-field dados-trem-field-full">
+                                    <label>Responsável</label>
+                                    <select id="modal_trem_responsavel" name="responsavel_id" class="form-select" <?= $usuarioEhAdministrador ? '' : 'disabled'; ?> aria-disabled="<?= $usuarioEhAdministrador ? 'false' : 'true'; ?>">
+                                        <option value="">Selecione o responsável</option>
+                                        <?php foreach ($usuarios as $usuario): ?>
+                                            <option value="<?= (int) $usuario['usuario_id']; ?>"><?= htmlspecialchars($usuario['nome']); ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
                             </div>
 
-                            <div class="dados-trem-field dados-trem-field-full">
-                                <label>Nome</label>
-                                <input id="modal_trem_nome" type="text" readonly>
-                            </div>
+                            <?php if ($usuarioEhAdministrador): ?>
+                                <div class="text-center mt-4">
+                                    <button type="submit" id="btn_salvar_trem" class="btn btn_adicionar modal-btn-adicionar">Salvar alterações</button>
+                                </div>
+                            <?php endif; ?>
 
-                            <div class="dados-trem-field dados-trem-field-full">
-                                <label>Responsável</label>
-                                <select id="modal_trem_responsavel" class="form-select">
-                                    <option value="">Selecione o responsável</option>
-                                    <?php foreach ($usuarios as $usuario): ?>
-                                        <option value="<?= (int) $usuario['usuario_id']; ?>"><?= htmlspecialchars($usuario['nome']); ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                        </div>
+                            <div id="mensagem_editar_trem" class="mt-3"></div>
+                        </form>
                     </div>
                 </div>
             </div>

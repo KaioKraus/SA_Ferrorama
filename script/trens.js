@@ -1,11 +1,50 @@
 document.addEventListener('DOMContentLoaded', function () {
     var deleteModalEl = document.getElementById('modal_confirm_delete');
     var bsModal = deleteModalEl && typeof bootstrap !== 'undefined' ? new bootstrap.Modal(deleteModalEl) : null;
+    var modalMonitoramento = document.getElementById('modal_monitoramento');
+    var isAdmin = modalMonitoramento && modalMonitoramento.dataset.isAdmin === '1';
+
+    document.querySelectorAll('.btn_edit').forEach(function (btn) {
+        btn.setAttribute('data-bs-toggle', 'modal');
+        btn.setAttribute('data-bs-target', '#modal_monitoramento');
+        btn.setAttribute('aria-label', 'Editar trem');
+    });
+
+    document.querySelectorAll('.trens-card-acao').forEach(function (btn) {
+        btn.style.display = 'none';
+    });
+
+    function configurarPermissaoModal() {
+        var nomeEl = document.getElementById('modal_trem_nome');
+        var responsavelEl = document.getElementById('modal_trem_responsavel');
+        var btnSalvar = document.getElementById('btn_salvar_trem');
+        var mensagem = document.getElementById('mensagem_editar_trem');
+
+        if (nomeEl) {
+            nomeEl.readOnly = !isAdmin;
+            nomeEl.disabled = !isAdmin;
+        }
+
+        if (responsavelEl) {
+            responsavelEl.disabled = !isAdmin;
+            responsavelEl.setAttribute('aria-disabled', isAdmin ? 'false' : 'true');
+        }
+
+        if (btnSalvar) {
+            btnSalvar.hidden = !isAdmin;
+        }
+
+        if (mensagem) {
+            mensagem.textContent = '';
+            mensagem.innerHTML = '';
+        }
+    }
 
     function preencherModalTrem(card) {
         if (!card) return;
 
         var idEl = document.getElementById('modal_trem_id');
+        var hiddenIdEl = document.getElementById('modal_trem_id_hidden');
         var nomeEl = document.getElementById('modal_trem_nome');
         var partidaEl = document.getElementById('modal_trem_partida');
         var chegadaEl = document.getElementById('modal_trem_chegada');
@@ -26,6 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var responsavel = card.dataset.responsavel || '';
 
         if (idEl) idEl.value = id;
+        if (hiddenIdEl) hiddenIdEl.value = id;
         if (nomeEl) nomeEl.value = nome;
         if (partidaEl) partidaEl.value = partida;
         if (chegadaEl) chegadaEl.value = chegada;
@@ -35,20 +75,80 @@ document.addEventListener('DOMContentLoaded', function () {
         if (statusEl) statusEl.value = status;
 
         if (responsavelEl) {
+            responsavelEl.disabled = !isAdmin;
+            responsavelEl.setAttribute('aria-disabled', isAdmin ? 'false' : 'true');
             if (responsavel) {
                 responsavelEl.value = responsavel;
             } else {
                 responsavelEl.selectedIndex = 0;
             }
         }
+
+        configurarPermissaoModal();
     }
 
-    var modalMonitoramento = document.getElementById('modal_monitoramento');
     if (modalMonitoramento) {
         modalMonitoramento.addEventListener('show.bs.modal', function (event) {
             var botao = event.relatedTarget;
             var card = botao ? botao.closest('.trens-card-trem') : null;
             preencherModalTrem(card);
+        });
+    }
+
+    var formEditarTrem = document.getElementById('form_editar_trem');
+    if (formEditarTrem) {
+        formEditarTrem.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            if (!isAdmin) {
+                return;
+            }
+
+            var mensagem = document.getElementById('mensagem_editar_trem');
+            if (mensagem) {
+                mensagem.innerHTML = '<div class="alert alert-info py-2 mb-0">Enviando alterações...</div>';
+            }
+
+            var formData = new FormData(formEditarTrem);
+
+            fetch('editar_trem.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(async function (response) {
+                var text = await response.text();
+                try {
+                    var data = JSON.parse(text);
+                    if (data.success) {
+                        if (mensagem) {
+                            mensagem.innerHTML = '<div class="alert alert-success py-2 mb-0">' + (data.message || 'Dados atualizados com sucesso.') + '</div>';
+                        }
+                        setTimeout(function () {
+                            var modalInstance = bootstrap.Modal.getInstance(modalMonitoramento);
+                            if (modalInstance) {
+                                modalInstance.hide();
+                            }
+                            location.reload();
+                        }, 900);
+                        return;
+                    }
+
+                    if (mensagem) {
+                        mensagem.innerHTML = '<div class="alert alert-danger py-2 mb-0">' + (data.message || 'Erro ao atualizar o trem.') + '</div>';
+                    }
+                } catch (err) {
+                    console.error('Resposta inválida do servidor:', text);
+                    if (mensagem) {
+                        mensagem.innerHTML = '<div class="alert alert-danger py-2 mb-0">Erro ao processar a resposta do servidor.</div>';
+                    }
+                }
+            })
+            .catch(function (error) {
+                console.error('Erro ao salvar trem:', error);
+                if (mensagem) {
+                    mensagem.innerHTML = '<div class="alert alert-danger py-2 mb-0">Erro ao enviar os dados do trem.</div>';
+                }
+            });
         });
     }
 

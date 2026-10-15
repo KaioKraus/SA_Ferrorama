@@ -10,10 +10,32 @@ $resultado_trens = mysqli_query($conexao, $sql_trens);
 $sql_estacoes = "SELECT nome_estacao AS estacao FROM estacoes WHERE status = 'Ativo' ORDER BY nome_estacao ASC";
 $resultado_estacoes = mysqli_query($conexao, $sql_estacoes);
 
+$sql_rotas = "SELECT r.rota_id, r.nome, r.ponto_partida, r.ponto_chegada, r.descricao, r.status, r.trem_id, t.nome_trem
+    FROM rotas r
+    LEFT JOIN trens t ON t.trem_id = r.trem_id
+    ORDER BY r.rota_id ASC";
+$resultado_rotas = mysqli_query($conexao, $sql_rotas);
+
 $estacoes = [];
 if ($resultado_estacoes) {
     while ($row = mysqli_fetch_assoc($resultado_estacoes)) {
         $estacoes[] = $row['estacao'];
+    }
+}
+
+$rotasBanco = [];
+if ($resultado_rotas) {
+    while ($row = mysqli_fetch_assoc($resultado_rotas)) {
+        $rotasBanco[] = [
+            'rota_id' => $row['rota_id'] ?? '',
+            'nome' => $row['nome'] ?? '',
+            'ponto_partida' => $row['ponto_partida'] ?? '',
+            'ponto_chegada' => $row['ponto_chegada'] ?? '',
+            'descricao' => $row['descricao'] ?? '',
+            'status' => $row['status'] ?? '',
+            'trem_id' => $row['trem_id'] ?? '',
+            'nome_trem' => $row['nome_trem'] ?? '',
+        ];
     }
 }
 ?>
@@ -135,58 +157,39 @@ if ($resultado_estacoes) {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>99999</td>
-                            <td>Nome da rota</td>
-                            <td>Estação norte</td>
-                            <td>Estação sul</td>
-                            <td>Nome do Trem</td>
-                            <td><span class="trens-card-status ativo">Ativo</span></td>
-                            <td>
-                                <button class="btn_edit" type="button" aria-label="Editar rota"><i class="bi bi-pencil-square"></i></button>
-                                <button class="btn_delete mx-2" type="button" data-bs-toggle="modal" data-bs-target="#modal_confirm_delete" data-id="99999" aria-label="Excluir rota"><i class="bi bi-trash"></i></button>
-                                <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Informações da rota"><i class="bi bi-info-lg"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>99998</td>
-                            <td>Nome da rota</td>
-                            <td>Estação norte</td>
-                            <td>Estação sul</td>
-                            <td>Nome do Trem</td>
-                            <td><span class="trens-card-status inativo">Inativo</span></td>
-                            <td>
-                                <button class="btn_edit" type="button" aria-label="Editar rota"><i class="bi bi-pencil-square"></i></button>
-                                <button class="btn_delete mx-2" type="button" data-bs-toggle="modal" data-bs-target="#modal_confirm_delete" data-id="99998" aria-label="Excluir rota"><i class="bi bi-trash"></i></button>
-                                <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Informações da rota"><i class="bi bi-info-lg"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>99997</td>
-                            <td>Nome da rota</td>
-                            <td>Estação norte</td>
-                            <td>Estação sul</td>
-                            <td>Nome do Trem</td>
-                            <td><span class="trens-card-status manutencao">Manutenção</span></td>
-                            <td>
-                                <button class="btn_edit" type="button" aria-label="Editar rota"><i class="bi bi-pencil-square"></i></button>
-                                <button class="btn_delete mx-2" type="button" data-bs-toggle="modal" data-bs-target="#modal_confirm_delete" data-id="99997" aria-label="Excluir rota"><i class="bi bi-trash"></i></button>
-                                <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Informações da rota"><i class="bi bi-info-lg"></i></button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>99996</td>
-                            <td>Nome da rota</td>
-                            <td>Estação norte</td>
-                            <td>Estação sul</td>
-                            <td>Nome do Trem</td>
-                            <td><span class="trens-card-status ativo">Ativo</span></td>
-                            <td>
-                                <button class="btn_edit" type="button" aria-label="Editar rota"><i class="bi bi-pencil-square"></i></button>
-                                <button class="btn_delete mx-2" type="button" data-bs-toggle="modal" data-bs-target="#modal_confirm_delete" data-id="99996" aria-label="Excluir rota"><i class="bi bi-trash"></i></button>
-                                <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Informações da rota"><i class="bi bi-info-lg"></i></button>
-                            </td>
-                        </tr>
+                        <?php if (!empty($rotasBanco)): ?>
+                            <?php foreach ($rotasBanco as $rota): ?>
+                                <?php
+                                $statusClasse = 'ativo';
+                                if (isset($rota['status'])) {
+                                    $statusNormalizado = strtolower(trim((string) $rota['status']));
+                                    if ($statusNormalizado === 'inativo') {
+                                        $statusClasse = 'inativo';
+                                    } elseif ($statusNormalizado === 'manutenção' || $statusNormalizado === 'manutencao' || $statusNormalizado === 'manutenção') {
+                                        $statusClasse = 'manutencao';
+                                    }
+                                }
+                                $nomeTrem = $rota['nome_trem'] ?? 'Trem não informado';
+                                ?>
+                                <tr data-rota-id="<?= (int) ($rota['rota_id'] ?? 0); ?>">
+                                    <td><?= htmlspecialchars((string) ($rota['rota_id'] ?? '')) ?></td>
+                                    <td><?= htmlspecialchars((string) ($rota['nome'] ?? '')) ?></td>
+                                    <td><?= htmlspecialchars((string) ($rota['ponto_partida'] ?? '')) ?></td>
+                                    <td><?= htmlspecialchars((string) ($rota['ponto_chegada'] ?? '')) ?></td>
+                                    <td><?= htmlspecialchars((string) $nomeTrem) ?></td>
+                                    <td><span class="trens-card-status <?= htmlspecialchars($statusClasse) ?>"><?= htmlspecialchars((string) ($rota['status'] ?? '')) ?: 'Sem status' ?></span></td>
+                                    <td>
+                                        <button class="btn_edit" type="button" aria-label="Editar rota"><i class="bi bi-pencil-square"></i></button>
+                                        <button class="btn_delete mx-2" type="button" data-bs-toggle="modal" data-bs-target="#modal_confirm_delete" data-id="<?= (int) ($rota['rota_id'] ?? 0); ?>" aria-label="Excluir rota"><i class="bi bi-trash"></i></button>
+                                        <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" data-rota-id="<?= (int) ($rota['rota_id'] ?? 0); ?>" aria-label="Informações da rota"><i class="bi bi-info-lg"></i></button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="7" class="text-center text-muted">Nenhuma rota cadastrada.</td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
 
@@ -309,44 +312,23 @@ if ($resultado_estacoes) {
                     </div>
 
                     <!-- BODY -->
-                    <div class="modal-body px-5 pb-4">
+                    <div class="modal-body route-modal-body">
+                        <div class="route-modal-layout">
+                            <div class="route-visual" aria-label="Visualização da rota">
+                                <img src="../assets/img/trilho.png" alt="Imagem de trilho" class="route-track-image">
+                            </div>
 
-                        <!-- IMAGEM -->
-                        <div class="text-center mb-5">
-                            <img
-                                src="../assets/img/trilho.png" alt="" class="img-fluid"
-                                alt="Mapa Ferroviário"
-                                class="img-fluid rounded"
-                                style="max-height: 350px; background: #f2f2f2;">
+                            <div class="route-info-panel">
+                                <div class="route-info-row"><span>ID:</span> <strong id="modal_rota_id"></strong></div>
+                                <div class="route-info-row"><span>Trem:</span> <strong id="modal_rota_trem"></strong></div>
+                                <div class="route-info-row"><span>Status:</span> <strong id="modal_rota_status"></strong></div>
+                                <div class="route-info-row"><span>Partida:</span> <strong id="modal_rota_partida"></strong></div>
+                                <div class="route-info-row"><span>Destino:</span> <strong id="modal_rota_destino"></strong></div>
+                                <div class="route-info-row"><span>Distância:</span> <strong id="modal_rota_distancia"></strong></div>
+                                <div class="route-info-row"><span>Duração:</span> <strong id="modal_rota_duracao"></strong></div>
+                                <div class="route-info-row"><span>Data de criação:</span> <strong id="modal_rota_data"></strong></div>
+                            </div>
                         </div>
-
-                        <div class="row text-center align-items-center">
-
-                            <div class="col-md-3 mb-3 mb-md-0">
-                                <span class="fw-bold fs-5">Velocidade:</span>
-                                <span class="fs-5"> 999km/h</span>
-                            </div>
-
-                            <div class="col-md-3 mb-3 mb-md-0">
-                                <span class="fw-bold fs-5">Temperatura:</span>
-                                <span class="fs-5"> 99,99C°</span>
-                            </div>
-
-                            <div class="col-md-3 mb-3 mb-md-0">
-                                <span class="fw-bold fs-5">Status:</span>
-
-                                <span class="badge rounded-pill bg-success fs-6 px-3 py-2">
-                                    Normal
-                                </span>
-                            </div>
-
-                            <div class="col-md-3">
-                                <span class="fw-bold fs-5">Consumo:</span>
-                                <span class="fs-5"> 99,99kWh</span>
-                            </div>
-
-                        </div>
-
                     </div>
                 </div>
             </div>
@@ -401,6 +383,9 @@ if ($resultado_estacoes) {
     </div>
 
     <?php include __DIR__ . '/_modal_perfil.php'; ?>
+    <script>
+        window.rotasDb = <?php echo json_encode($rotasBanco, JSON_HEX_TAG | JSON_UNESCAPED_UNICODE); ?>;
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../script/validacao.js"></script>
     <script src="../script/nav.js"></script>

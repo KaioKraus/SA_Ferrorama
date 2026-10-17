@@ -15,6 +15,17 @@ if ($resultadoUsuarios) {
         $usuarios[] = $usuario;
     }
 }
+
+$trens = [];
+$resultadoTrens = mysqli_query($conexao, "SELECT trem_id, nome_trem, responsavel_id FROM trens ORDER BY trem_id ASC");
+if (!$resultadoTrens) {
+    error_log('Erro ao consultar trens: ' . mysqli_error($conexao));
+    http_response_code(500);
+    die('Não foi possível carregar os trens cadastrados.');
+}
+while ($trem = mysqli_fetch_assoc($resultadoTrens)) {
+    $trens[] = $trem;
+}
 ?>
 
 <!DOCTYPE html>
@@ -92,7 +103,7 @@ if ($resultadoUsuarios) {
             </div>
         </nav>
 
-        <section class="trens-conteudo">
+        <section class="conteudo trens-conteudo">
             <div class="trens-painel">
                 <div class="trens-topo d-flex align-items-center justify-content-between">
                     <div class="input-group trens-busca">
@@ -109,317 +120,47 @@ if ($resultadoUsuarios) {
 
                 <div class="trens-lista">
                     <div class="row trens-grid">
-                        <div class="col">
-                            <article class="trens-card-trem">
-                                <div class="trens-card-cabecalho">
-                                    <div class="trens-card-header-row">
-                                        <span class="trens-card-status ativo">Ativo</span>
-                                        <div class="trens-card-acoes">
-                                            <?php if ($usuarioEhAdministrador): ?>
-                                            <button class="btn_edit" type="button" aria-label="Editar trem">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </button>
-                                            <button class="btn_delete" type="button" data-id="5823" aria-label="Excluir trem">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                            <?php endif; ?>
-                                            <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
-                                                <i class="bi bi-info-lg"></i>
-                                            </button>
+                        <?php if (empty($trens)): ?>
+                            <div class="col-12">
+                                <p class="text-center py-4 mb-0">Nenhum trem cadastrado.</p>
+                            </div>
+                        <?php else: ?>
+                            <?php foreach ($trens as $trem): ?>
+                                <?php
+                                $tremId = (int) $trem['trem_id'];
+                                $nomeTrem = htmlspecialchars((string) $trem['nome_trem'], ENT_QUOTES, 'UTF-8');
+                                $responsavelId = (int) $trem['responsavel_id'];
+                                $statusTrem = 'Inativo';
+                                ?>
+                                <div class="col">
+                                    <article class="trens-card-trem" data-id="<?= $tremId; ?>" data-nome="<?= $nomeTrem; ?>" data-responsavel="<?= $responsavelId; ?>" data-status="<?= $statusTrem; ?>">
+                                        <div class="trens-card-cabecalho">
+                                            <div class="trens-card-header-row">
+                                                <span class="trens-card-status inativo"><?= $statusTrem; ?></span>
+                                                <div class="trens-card-acoes">
+                                                    <?php if ($usuarioEhAdministrador): ?>
+                                                        <button class="btn_edit" type="button" aria-label="Editar trem">
+                                                            <i class="bi bi-pencil-square"></i>
+                                                        </button>
+                                                        <button class="btn_delete" type="button" data-id="<?= $tremId; ?>" aria-label="Excluir trem">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    <?php endif; ?>
+                                                    <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
+                                                        <i class="bi bi-info-lg"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="trens-card-id">
+                                                <strong>ID: <?= $tremId; ?></strong>
+                                            </div>
+                                            <p class="trens-card-nome">Nome: <?= $nomeTrem; ?></p>
                                         </div>
-                                    </div>
-                                    <div class="trens-card-id">
-                                        <strong>ID: 5823</strong>
-                                    </div>
-                                    <p class="trens-card-nome">Nome:Nome do Trem</p>
+                                        <img src="../assets/img/trem_card.png" alt="Trem" class="trens-card-img">
+                                    </article>
                                 </div>
-                                <img src="../assets/img/trem_card.png" alt="Trem" class="trens-card-img">
-                            </article>
-                        </div>
-
-                        <div class="col">
-                            <article class="trens-card-trem">
-                                <div class="trens-card-cabecalho">
-                                    <div class="trens-card-header-row">
-                                        <span class="trens-card-status inativo">Inativo</span>
-                                        <div class="trens-card-acoes">
-                                            <?php if ($usuarioEhAdministrador): ?>
-                                            <button class="btn_edit" type="button" aria-label="Editar trem">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </button>
-                                            <button class="btn_delete" type="button" data-id="5824" aria-label="Excluir trem">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                            <?php endif; ?>
-                                            <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
-                                                <i class="bi bi-info-lg"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="trens-card-id">
-                                        <strong>ID: 5824</strong>
-                                    </div>
-                                    <p class="trens-card-nome">Nome:Nome do Trem</p>
-                                </div>
-                                <img src="../assets/img/trem_card.png" alt="Trem" class="trens-card-img">
-                            </article>
-                        </div>
-
-                        <div class="col">
-                            <article class="trens-card-trem">
-                                <div class="trens-card-cabecalho">
-                                    <div class="trens-card-header-row">
-                                        <span class="trens-card-status ativo">Ativo</span>
-                                        <div class="trens-card-acoes">
-                                            <?php if ($usuarioEhAdministrador): ?>
-                                            <button class="btn_edit" type="button" aria-label="Editar trem">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </button>
-                                            <button class="btn_delete" type="button" data-id="5825" aria-label="Excluir trem">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                            <?php endif; ?>
-                                            <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
-                                                <i class="bi bi-info-lg"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="trens-card-id">
-                                        <strong>ID: 5825</strong>
-                                    </div>
-                                    <p class="trens-card-nome">Nome:Nome do Trem</p>
-                                </div>
-                                <img src="../assets/img/trem_card.png" alt="Trem" class="trens-card-img">
-                            </article>
-                        </div>
-
-                        <div class="col">
-                            <article class="trens-card-trem">
-                                <div class="trens-card-cabecalho">
-                                    <div class="trens-card-header-row">
-                                        <span class="trens-card-status inativo">Inativo</span>
-                                        <div class="trens-card-acoes">
-                                            <?php if ($usuarioEhAdministrador): ?>
-                                            <button class="btn_edit" type="button" aria-label="Editar trem">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </button>
-                                            <button class="btn_delete" type="button" data-id="5826" aria-label="Excluir trem">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                            <?php endif; ?>
-                                            <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
-                                                <i class="bi bi-info-lg"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="trens-card-id">
-                                        <strong>ID: 5826</strong>
-                                    </div>
-                                    <p class="trens-card-nome">Nome:Nome do Trem</p>
-                                </div>
-                                <img src="../assets/img/trem_card.png" alt="Trem" class="trens-card-img">
-                            </article>
-                        </div>
-
-                        <div class="col">
-                            <article class="trens-card-trem">
-                                <div class="trens-card-cabecalho">
-                                    <div class="trens-card-header-row">
-                                        <span class="trens-card-status ativo">Ativo</span>
-                                        <div class="trens-card-acoes">
-                                            <?php if ($usuarioEhAdministrador): ?>
-                                            <button class="btn_edit" type="button" aria-label="Editar trem">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </button>
-                                            <button class="btn_delete" type="button" data-id="5827" aria-label="Excluir trem">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                            <?php endif; ?>
-                                            <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
-                                                <i class="bi bi-info-lg"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="trens-card-id">
-                                        <strong>ID: 5827</strong>
-                                    </div>
-                                    <p class="trens-card-nome">Nome:Nome do Trem</p>
-                                </div>
-                                <img src="../assets/img/trem_card.png" alt="Trem" class="trens-card-img">
-                            </article>
-                        </div>
-
-                        <div class="col">
-                            <article class="trens-card-trem">
-                                <div class="trens-card-cabecalho">
-                                    <div class="trens-card-header-row">
-                                        <span class="trens-card-status inativo">Inativo</span>
-                                        <div class="trens-card-acoes">
-                                            <?php if ($usuarioEhAdministrador): ?>
-                                            <button class="btn_edit" type="button" aria-label="Editar trem">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </button>
-                                            <button class="btn_delete" type="button" data-id="5828" aria-label="Excluir trem">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                            <?php endif; ?>
-                                            <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
-                                                <i class="bi bi-info-lg"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="trens-card-id">
-                                        <strong>ID: 5828</strong>
-                                    </div>
-                                    <p class="trens-card-nome">Nome:Nome do Trem</p>
-                                </div>
-                                <img src="../assets/img/trem_card.png" alt="Trem" class="trens-card-img">
-                            </article>
-                        </div>
-
-                        <div class="col">
-                            <article class="trens-card-trem">
-                                <div class="trens-card-cabecalho">
-                                    <div class="trens-card-header-row">
-                                        <span class="trens-card-status ativo">Ativo</span>
-                                        <div class="trens-card-acoes">
-                                            <?php if ($usuarioEhAdministrador): ?>
-                                            <button class="btn_edit" type="button" aria-label="Editar trem">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </button>
-                                            <button class="btn_delete" type="button" data-id="5829" aria-label="Excluir trem">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                            <?php endif; ?>
-                                            <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
-                                                <i class="bi bi-info-lg"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="trens-card-id">
-                                        <strong>ID: 5829</strong>
-                                    </div>
-                                    <p class="trens-card-nome">Nome:Nome do Trem</p>
-                                </div>
-                                <img src="../assets/img/trem_card.png" alt="Trem" class="trens-card-img">
-                            </article>
-                        </div>
-
-                        <div class="col">
-                            <article class="trens-card-trem">
-                                <div class="trens-card-cabecalho">
-                                    <div class="trens-card-header-row">
-                                        <span class="trens-card-status inativo">Inativo</span>
-                                        <div class="trens-card-acoes">
-                                            <?php if ($usuarioEhAdministrador): ?>
-                                            <button class="btn_edit" type="button" aria-label="Editar trem">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </button>
-                                            <button class="btn_delete" type="button" data-id="5830" aria-label="Excluir trem">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                            <?php endif; ?>
-                                            <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
-                                                <i class="bi bi-info-lg"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="trens-card-id">
-                                        <strong>ID: 5830</strong>
-                                    </div>
-                                    <p class="trens-card-nome">Nome:Nome do Trem</p>
-                                </div>
-                                <img src="../assets/img/trem_card.png" alt="Trem" class="trens-card-img">
-                            </article>
-                        </div>
-
-                        <div class="col">
-                            <article class="trens-card-trem">
-                                <div class="trens-card-cabecalho">
-                                    <div class="trens-card-header-row">
-                                        <span class="trens-card-status ativo">Ativo</span>
-                                        <div class="trens-card-acoes">
-                                            <?php if ($usuarioEhAdministrador): ?>
-                                            <button class="btn_edit" type="button" aria-label="Editar trem">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </button>
-                                            <button class="btn_delete" type="button" data-id="5831" aria-label="Excluir trem">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                            <?php endif; ?>
-                                            <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
-                                                <i class="bi bi-info-lg"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="trens-card-id">
-                                        <strong>ID: 5831</strong>
-                                    </div>
-                                    <p class="trens-card-nome">Nome:Nome do Trem</p>
-                                </div>
-                                <img src="../assets/img/trem_card.png" alt="Trem" class="trens-card-img">
-                            </article>
-                        </div>
-
-                        <div class="col">
-                            <article class="trens-card-trem">
-                                <div class="trens-card-cabecalho">
-                                    <div class="trens-card-header-row">
-                                        <span class="trens-card-status inativo">Inativo</span>
-                                        <div class="trens-card-acoes">
-                                            <?php if ($usuarioEhAdministrador): ?>
-                                            <?php if ($usuarioEhAdministrador): ?>
-                                            <button class="btn_edit" type="button" aria-label="Editar trem">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </button>
-                                            <button class="btn_delete" type="button" data-id="5832" aria-label="Excluir trem">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                            <?php endif; ?>
-                                            <?php endif; ?>
-                                            <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
-                                                <i class="bi bi-info-lg"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="trens-card-id">
-                                        <strong>ID: 5832</strong>
-                                    </div>
-                                    <p class="trens-card-nome">Nome:Nome do Trem</p>
-                                </div>
-                                <img src="../assets/img/trem_card.png" alt="Trem" class="trens-card-img">
-                            </article>
-                        </div>
-
-                        <div class="col">
-                            <article class="trens-card-trem">
-                                <div class="trens-card-cabecalho">
-                                    <div class="trens-card-header-row">
-                                        <span class="trens-card-status ativo">Ativo</span>
-                                        <div class="trens-card-acoes">
-                                            <?php if ($usuarioEhAdministrador): ?>
-                                            <?php if ($usuarioEhAdministrador): ?>
-                                            <button class="btn_edit" type="button" aria-label="Editar trem">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </button>
-                                            <button class="btn_delete" type="button" data-id="5833" aria-label="Excluir trem">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                            <?php endif; ?>
-                                            <?php endif; ?>
-                                            <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
-                                                <i class="bi bi-info-lg"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="trens-card-id">
-                                        <strong>ID: 5833</strong>
-                                    </div>
-                                    <p class="trens-card-nome">Nome:Nome do Trem</p>
-                                </div>
-                                <img src="../assets/img/trem_card.png" alt="Trem" class="trens-card-img">
-                            </article>
-                        </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>

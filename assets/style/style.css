@@ -1054,13 +1054,16 @@ h3 {
 
 
 /* Dashboard e Trens */
-.dashboard-conteudo,
-.trens-conteudo {
+.dashboard-conteudo {
     flex-grow: 1;
     height: 100vh;
     padding: 102px 90px 80px 104px;
     background-color: #CFD8D6;
     overflow: hidden;
+}
+
+.trens-conteudo {
+    box-sizing: border-box;
 }
 
 .dashboard-painel,
@@ -1074,8 +1077,12 @@ h3 {
     overflow: hidden;
 }
 
-.dashboard-topo,
 .trens-topo {
+    height: 92px;
+    padding: 25px 34px;
+}
+
+.dashboard-topo {
     height: 92px;
     padding: 25px 34px 25px 65px;
 }
@@ -1143,7 +1150,7 @@ h3 {
 
 .trens-lista {
     height: calc(100% - 92px);
-    padding: 29px 22px 31px 66px;
+    padding: 29px 26px 31px 34px;
     overflow-y: scroll;
     scrollbar-color: #3f704d #ffffff;
     scrollbar-width: thin;
@@ -1178,8 +1185,11 @@ h3 {
     width: 100%;
 }
 
-.dashboard-grid>.col,
-.trens-grid>.col {
+.trens-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.dashboard-grid>.col {
     width: 100%;
     max-width: 240px;
     padding: 0;
@@ -1187,9 +1197,17 @@ h3 {
     justify-self: center;
 }
 
+.trens-grid>.col {
+    width: 100%;
+    max-width: none;
+    padding: 0;
+    margin-top: 0;
+    justify-self: stretch;
+}
+
 .trens-card-trem {
     width: 100%;
-    max-width: 240px;
+    max-width: none;
     height: 310px;
     padding: 10px;
     background-color: #f3f3f3;
@@ -1721,8 +1739,7 @@ h3 {
     }
 
     .conteudo,
-    .dashboard-conteudo,
-    .trens-conteudo {
+    .dashboard-conteudo {
         width: 100%;
         height: auto;
         min-height: 100vh;
@@ -1843,8 +1860,7 @@ h3 {
     }
 
     .conteudo,
-    .dashboard-conteudo,
-    .trens-conteudo {
+    .dashboard-conteudo {
         padding: 74px 12px 18px;
     }
 

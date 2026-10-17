@@ -10,11 +10,31 @@ $resultado_trens = mysqli_query($conexao, $sql_trens);
 $sql_estacoes = "SELECT nome_estacao AS estacao FROM estacoes WHERE status = 'Ativo' ORDER BY nome_estacao ASC";
 $resultado_estacoes = mysqli_query($conexao, $sql_estacoes);
 
+$statusParametro = $_GET['status'] ?? '';
+$statusFiltro = is_string($statusParametro) ? trim($statusParametro) : '';
+$statusPermitidos = ['Ativo', 'Manutenção', 'Inativo'];
+if (!in_array($statusFiltro, $statusPermitidos, true)) {
+    $statusFiltro = '';
+}
+
 $sql_rotas = "SELECT r.rota_id, r.nome, r.ponto_partida, r.ponto_chegada, r.descricao, r.status, r.trem_id, t.nome_trem
     FROM rotas r
     LEFT JOIN trens t ON t.trem_id = r.trem_id
+    WHERE (? = '' OR r.status = ?)
     ORDER BY r.rota_id ASC";
-$resultado_rotas = mysqli_query($conexao, $sql_rotas);
+$stmt_rotas = mysqli_prepare($conexao, $sql_rotas);
+if (!$stmt_rotas) {
+    error_log('Erro ao preparar consulta de rotas: ' . mysqli_error($conexao));
+    http_response_code(500);
+    die('Não foi possível carregar as rotas.');
+}
+mysqli_stmt_bind_param($stmt_rotas, 'ss', $statusFiltro, $statusFiltro);
+if (!mysqli_stmt_execute($stmt_rotas)) {
+    error_log('Erro ao consultar rotas: ' . mysqli_stmt_error($stmt_rotas));
+    http_response_code(500);
+    die('Não foi possível carregar as rotas.');
+}
+$resultado_rotas = mysqli_stmt_get_result($stmt_rotas);
 
 $estacoes = [];
 if ($resultado_estacoes) {
@@ -38,6 +58,7 @@ if ($resultado_rotas) {
         ];
     }
 }
+mysqli_stmt_close($stmt_rotas);
 ?>
 
 <!DOCTYPE html>
@@ -177,7 +198,14 @@ if ($resultado_rotas) {
                                     <td><?= htmlspecialchars((string) ($rota['ponto_partida'] ?? '')) ?></td>
                                     <td><?= htmlspecialchars((string) ($rota['ponto_chegada'] ?? '')) ?></td>
                                     <td><?= htmlspecialchars((string) $nomeTrem) ?></td>
-                                    <td><span class="trens-card-status <?= htmlspecialchars($statusClasse) ?>"><?= htmlspecialchars((string) ($rota['status'] ?? '')) ?: 'Sem status' ?></span></td>
+                                    <td>
+                                        <a class="trens-card-status rota-status-filtro <?= htmlspecialchars($statusClasse); ?><?= $statusFiltro === ($rota['status'] ?? '') ? ' filtro-selecionado' : ''; ?>"
+                                            href="<?= $statusFiltro === ($rota['status'] ?? '') ? 'tela_rotas.php' : '?status=' . rawurlencode((string) ($rota['status'] ?? '')); ?>"
+                                            <?= $statusFiltro === ($rota['status'] ?? '') ? 'aria-current="true"' : ''; ?>
+                                            aria-label="<?= $statusFiltro === ($rota['status'] ?? '') ? 'Remover filtro de status ' : 'Filtrar rotas com status '; ?><?= htmlspecialchars((string) ($rota['status'] ?? '')) ?: 'Sem status'; ?>">
+                                            <?= htmlspecialchars((string) ($rota['status'] ?? '')) ?: 'Sem status' ?>
+                                        </a>
+                                    </td>
                                     <td>
                                         <button class="btn_edit" type="button" aria-label="Editar rota"><i class="bi bi-pencil-square"></i></button>
                                         <button class="btn_delete mx-2" type="button" data-bs-toggle="modal" data-bs-target="#modal_confirm_delete" data-id="<?= (int) ($rota['rota_id'] ?? 0); ?>" aria-label="Excluir rota"><i class="bi bi-trash"></i></button>
@@ -187,7 +215,7 @@ if ($resultado_rotas) {
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="7" class="text-center text-muted">Nenhuma rota cadastrada.</td>
+                                <td colspan="7" class="text-center text-muted"><?= $statusFiltro !== '' ? 'Nenhuma rota encontrada com esse status.' : 'Nenhuma rota cadastrada.'; ?></td>
                             </tr>
                         <?php endif; ?>
                     </tbody>

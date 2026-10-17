@@ -1247,6 +1247,33 @@ h3 {
     line-height: 1.2;
 }
 
+a.trens-card-status {
+    text-decoration: none !important;
+    cursor: pointer;
+}
+
+a.trens-card-status.ativo {
+    color: #1b4d1b !important;
+}
+
+a.trens-card-status.inativo {
+    color: #4a4a4a !important;
+}
+
+a.trens-card-status.manutencao {
+    color: #54691a !important;
+}
+
+a.trens-card-status:hover,
+a.trens-card-status.filtro-selecionado {
+    box-shadow: 0 0 0 2px rgba(7, 39, 39, 0.2);
+}
+
+a.trens-card-status:focus-visible {
+    outline: 2px solid #072727;
+    outline-offset: 2px;
+}
+
 .trens-card-status.ativo {
     background-color: #a9e79d;
     color: #1b4d1b;
@@ -2187,7 +2214,7 @@ h3 {
 .trens-card-status.manutencao {
     background-color: #F1F585;
     border-color: #797D00;
-    color: #000;
+    color: #474715;
 }
 
 @media (max-width: 768px) {

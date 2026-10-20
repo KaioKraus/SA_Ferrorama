@@ -16,8 +16,26 @@ if ($resultadoUsuarios) {
     }
 }
 
+$termoBusca = isset($_GET['q']) ? trim((string) $_GET['q']) : '';
 $trens = [];
-$resultadoTrens = mysqli_query($conexao, "SELECT trem_id, nome_trem, responsavel_id FROM trens ORDER BY trem_id ASC");
+
+if ($termoBusca === '') {
+    $resultadoTrens = mysqli_query($conexao, "SELECT trem_id, nome_trem, responsavel_id FROM trens ORDER BY trem_id ASC");
+} else {
+    $sqlBusca = 'SELECT trem_id, nome_trem, responsavel_id FROM trens WHERE CAST(trem_id AS CHAR) LIKE ? OR nome_trem LIKE ? ORDER BY trem_id ASC';
+    $stmt = mysqli_prepare($conexao, $sqlBusca);
+    if ($stmt === false) {
+        error_log('Erro ao preparar busca de trens: ' . mysqli_error($conexao));
+        http_response_code(500);
+        die('Não foi possível buscar os trens.');
+    }
+
+    $filtro = '%' . $termoBusca . '%';
+    mysqli_stmt_bind_param($stmt, 'ss', $filtro, $filtro);
+    mysqli_stmt_execute($stmt);
+    $resultadoTrens = mysqli_stmt_get_result($stmt);
+}
+
 if (!$resultadoTrens) {
     error_log('Erro ao consultar trens: ' . mysqli_error($conexao));
     http_response_code(500);
@@ -106,12 +124,12 @@ while ($trem = mysqli_fetch_assoc($resultadoTrens)) {
         <section class="conteudo trens-conteudo">
             <div class="trens-painel">
                 <div class="trens-topo d-flex align-items-center justify-content-between">
-                    <div class="input-group trens-busca">
-                        <input id="input_busca_trem" type="text" class="form-control trens-input" placeholder="Buscar por ID ou Nome" aria-label="Buscar por ID ou Nome">
-                        <button id="btn_busca_trem" class="btn trens-btn-busca" type="button" aria-label="Buscar">
+                    <form method="GET" action="tela_trens.php" class="input-group trens-busca" autocomplete="off">
+                        <input id="input_busca_trem" name="q" type="text" class="form-control trens-input" value="<?= htmlspecialchars($termoBusca, ENT_QUOTES, 'UTF-8'); ?>" placeholder="Buscar por ID ou Nome" aria-label="Buscar por ID ou Nome">
+                        <button id="btn_busca_trem" class="btn trens-btn-busca" type="submit" aria-label="Buscar">
                             <i class="bi bi-search"></i>
                         </button>
-                    </div>
+                    </form>
 
                     <?php if ($usuarioEhAdministrador): ?>
                     <button class="btn trens-btn-add" type="button" data-bs-toggle="modal" data-bs-target="#modal_cadastro">Adicionar</button>

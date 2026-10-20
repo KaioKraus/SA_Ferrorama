@@ -44,18 +44,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    if (inputBuscaTrem && trensGrid) {
-        inputBuscaTrem.addEventListener('input', function () {
-            buscarTrens(inputBuscaTrem.value);
-        });
-
-        if (btnBuscaTrem) {
-            btnBuscaTrem.addEventListener('click', function () {
-                buscarTrens(inputBuscaTrem.value);
-            });
-        }
-    }
-
     configurarCartoesTrens();
 
     function configurarPermissaoModal() {

@@ -41,43 +41,63 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    const filtroRotas = document.getElementById('filtroRotas');
-    const campoFiltroRota = document.getElementById('campoFiltroRota');
-    const linhasRotas = document.querySelectorAll('.table tbody tr');
+    const inputBuscaRota = document.getElementById('input_busca_rota');
+    const btnBuscaRota = document.getElementById('btn_busca_rota');
+    const filtroPartidaRota = document.getElementById('filtro_partida_rota');
+    const filtroDestinoRota = document.getElementById('filtro_destino_rota');
+    const linhasRotas = Array.from(document.querySelectorAll('.table tbody tr[data-rota-id]'));
+    const tbodyRotas = document.querySelector('.table tbody');
 
-    const aplicarFiltroRotas = function () {
-        const termo = (filtroRotas ? filtroRotas.value.trim().toLowerCase() : '');
-        const campo = campoFiltroRota ? campoFiltroRota.value : 'todos';
+    function aplicarFiltroRotas() {
+        const termo = (inputBuscaRota ? inputBuscaRota.value.trim().toLowerCase() : '');
+        const partidaSelecionada = filtroPartidaRota ? filtroPartidaRota.value : '';
+        const destinoSelecionado = filtroDestinoRota ? filtroDestinoRota.value : '';
+
+        let algumVisivel = false;
 
         linhasRotas.forEach(function (linha) {
-            const pontoPartida = (linha.cells[1]?.textContent || '').toLowerCase();
-            const destino = (linha.cells[2]?.textContent || '').toLowerCase();
-            const nomeRota = (linha.cells[3]?.textContent || '').toLowerCase();
-            const estacao = `${pontoPartida} ${destino}`.trim();
+            const idRota = (linha.cells[0] ? linha.cells[0].textContent.trim().toLowerCase() : '');
+            const nomeRota = (linha.cells[1] ? linha.cells[1].textContent.trim().toLowerCase() : '');
+            const pontoPartida = (linha.cells[2] ? linha.cells[2].textContent.trim() : '');
+            const destinoRota = (linha.cells[3] ? linha.cells[3].textContent.trim() : '');
 
-            const corresponde = !termo || (
-                (campo === 'todos' && (
-                    pontoPartida.includes(termo) ||
-                    destino.includes(termo) ||
-                    nomeRota.includes(termo) ||
-                    estacao.includes(termo)
-                )) ||
-                (campo === 'nome_rota' && nomeRota.includes(termo)) ||
-                (campo === 'ponto_partida' && pontoPartida.includes(termo)) ||
-                (campo === 'destino' && destino.includes(termo)) ||
-                (campo === 'estacao' && estacao.includes(termo))
-            );
+            const correspondeTermo = termo === '' || idRota.includes(termo) || nomeRota.includes(termo);
+            const correspondePartida = partidaSelecionada === '' || pontoPartida === partidaSelecionada;
+            const correspondeDestino = destinoSelecionado === '' || destinoRota === destinoSelecionado;
+            const corresponde = correspondeTermo && correspondePartida && correspondeDestino;
 
             linha.style.display = corresponde ? '' : 'none';
+            if (corresponde) algumVisivel = true;
         });
-    };
 
-    if (filtroRotas) {
-        filtroRotas.addEventListener('input', aplicarFiltroRotas);
+        const linhaVazia = tbodyRotas ? tbodyRotas.querySelector('#linha_rota_vazia') : null;
+
+        if (!algumVisivel) {
+            if (tbodyRotas && !linhaVazia) {
+                const linha = document.createElement('tr');
+                linha.id = 'linha_rota_vazia';
+                linha.innerHTML = '<td colspan="7" class="text-center text-muted">Nenhuma rota encontrada.</td>';
+                tbodyRotas.appendChild(linha);
+            }
+        } else if (linhaVazia) {
+            linhaVazia.remove();
+        }
     }
 
-    if (campoFiltroRota) {
-        campoFiltroRota.addEventListener('change', aplicarFiltroRotas);
+    if (inputBuscaRota) {
+        inputBuscaRota.addEventListener('input', aplicarFiltroRotas);
+    }
+
+    if (btnBuscaRota) {
+        btnBuscaRota.addEventListener('click', aplicarFiltroRotas);
+    }
+
+    if (filtroPartidaRota) {
+        filtroPartidaRota.addEventListener('change', aplicarFiltroRotas);
+    }
+
+    if (filtroDestinoRota) {
+        filtroDestinoRota.addEventListener('change', aplicarFiltroRotas);
     }
 
     const modalEl = document.getElementById('modal_confirm_delete');

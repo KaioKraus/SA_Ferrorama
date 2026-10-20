@@ -131,29 +131,29 @@ mysqli_stmt_close($stmt_rotas);
                 <div class="barra_busca mb-3">
                     <div class="barra_busca_filtro">
                         <div class="input-group dashboard-busca">
-                            <input type="text" class="form-control dashboard-input" placeholder="Buscar por ID">
-                            <button class="btn dashboard-btn-busca" type="button">
+                            <input id="input_busca_rota" type="text" class="form-control dashboard-input" placeholder="Buscar por ID ou Nome">
+                            <button id="btn_busca_rota" class="btn dashboard-btn-busca" type="button" aria-label="Buscar rota">
                                 <i class="bi bi-search"></i>
                             </button>
                         </div>
 
                         <div class="filtro_busca">
-                            <select class="form-select filtro_busca_select">
-                                <option selected>Ponto de Partida</option>
-                                <option>Estação Norte</option>
-                                <option>Estação Sul</option>
-                                <option>Estação Leste</option>
-                                <option>Estação Oeste</option>
+                            <select id="filtro_partida_rota" class="form-select filtro_busca_select">
+                                <option value="">Ponto de Partida</option>
+                                <option value="Estação Norte">Estação Norte</option>
+                                <option value="Estação Sul">Estação Sul</option>
+                                <option value="Estação Leste">Estação Leste</option>
+                                <option value="Estação Oeste">Estação Oeste</option>
                             </select>
                         </div>
 
                         <div class="filtro_busca">
-                            <select class="form-select filtro_busca_select">
-                                <option selected>Destino</option>
-                                <option>Estação Norte</option>
-                                <option>Estação Sul</option>
-                                <option>Estação Leste</option>
-                                <option>Estação Oeste</option>
+                            <select id="filtro_destino_rota" class="form-select filtro_busca_select">
+                                <option value="">Destino</option>
+                                <option value="Estação Norte">Estação Norte</option>
+                                <option value="Estação Sul">Estação Sul</option>
+                                <option value="Estação Leste">Estação Leste</option>
+                                <option value="Estação Oeste">Estação Oeste</option>
                             </select>
                         </div>
                     </div>

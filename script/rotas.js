@@ -1,5 +1,15 @@
 document.addEventListener('DOMContentLoaded', function () {
     const rotasDb = Array.isArray(window.rotasDb) ? window.rotasDb : [];
+    const avisoExclusaoRota = document.getElementById('aviso_exclusao_rota');
+
+    if (avisoExclusaoRota) {
+        window.setTimeout(function () {
+            avisoExclusaoRota.classList.remove('show');
+            window.setTimeout(function () {
+                avisoExclusaoRota.remove();
+            }, 150);
+        }, 5000);
+    }
 
     function preencherModalRota(rota) {
         const rotaIdEl = document.getElementById('modal_rota_id');

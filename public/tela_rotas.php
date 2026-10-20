@@ -180,6 +180,18 @@ mysqli_stmt_close($stmt_rotas);
                     <?php endif; ?>
                 </div>
 
+                <?php if (isset($_GET['deleted'])): ?>
+                    <div id="aviso_exclusao_rota" class="alert alert-success alert-dismissible fade show rota-delete-toast" role="status" aria-live="polite">
+                        Rota excluída com sucesso.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+                    </div>
+                <?php elseif (isset($_GET['error'])): ?>
+                    <div id="aviso_exclusao_rota" class="alert alert-danger alert-dismissible fade show rota-delete-toast" role="alert" aria-live="assertive">
+                        <?= $_GET['error'] === 'not_found' ? 'A rota não foi encontrada.' : 'Não foi possível excluir a rota. Verifique suas permissões e tente novamente.'; ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+                    </div>
+                <?php endif; ?>
+
                 <table class="table">
                     <thead>
                         <tr>
@@ -223,7 +235,9 @@ mysqli_stmt_close($stmt_rotas);
                                     </td>
                                     <td>
                                         <button class="btn_edit" type="button" aria-label="Editar rota"><i class="bi bi-pencil-square"></i></button>
-                                        <button class="btn_delete mx-2" type="button" data-bs-toggle="modal" data-bs-target="#modal_confirm_delete" data-id="<?= (int) ($rota['rota_id'] ?? 0); ?>" aria-label="Excluir rota"><i class="bi bi-trash"></i></button>
+                                        <?php if ($usuarioEhAdministrador): ?>
+                                            <button class="btn_delete mx-2" type="button" data-bs-toggle="modal" data-bs-target="#modal_confirm_delete" data-id="<?= (int) ($rota['rota_id'] ?? 0); ?>" aria-label="Excluir rota"><i class="bi bi-trash"></i></button>
+                                        <?php endif; ?>
                                         <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" data-rota-id="<?= (int) ($rota['rota_id'] ?? 0); ?>" aria-label="Informações da rota"><i class="bi bi-info-lg"></i></button>
                                     </td>
                                 </tr>
@@ -417,8 +431,12 @@ mysqli_stmt_close($stmt_rotas);
                 <div class="modal-footer">
                     <form id="form_delete_route" method="post" action="excluir_rota.php">
                         <input type="hidden" name="id" id="delete_route_id" value="">
+                        <input type="hidden" name="q" value="<?= htmlspecialchars($termoBusca, ENT_QUOTES, 'UTF-8'); ?>">
+                        <input type="hidden" name="status" value="<?= htmlspecialchars($statusFiltro, ENT_QUOTES, 'UTF-8'); ?>">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-danger">Excluir</button>
+                        <?php if ($usuarioEhAdministrador): ?>
+                            <button type="submit" class="btn btn-danger">Excluir</button>
+                        <?php endif; ?>
                     </form>
                 </div>
             </div>

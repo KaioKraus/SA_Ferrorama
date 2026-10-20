@@ -386,6 +386,15 @@ h3 {
     color: #ffffff;
 }
 
+.rota-delete-toast {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1080;
+    width: min(26rem, calc(100vw - 2rem));
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
 .btn_edit i,
 .btn_delete i,
 .trens-card-acao i {

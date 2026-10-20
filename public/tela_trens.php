@@ -107,8 +107,8 @@ while ($trem = mysqli_fetch_assoc($resultadoTrens)) {
             <div class="trens-painel">
                 <div class="trens-topo d-flex align-items-center justify-content-between">
                     <div class="input-group trens-busca">
-                        <input type="text" class="form-control trens-input" placeholder="Buscar por ID ou Nome" aria-label="Buscar por ID ou Nome">
-                        <button class="btn trens-btn-busca" type="button" aria-label="Buscar">
+                        <input id="input_busca_trem" type="text" class="form-control trens-input" placeholder="Buscar por ID ou Nome" aria-label="Buscar por ID ou Nome">
+                        <button id="btn_busca_trem" class="btn trens-btn-busca" type="button" aria-label="Buscar">
                             <i class="bi bi-search"></i>
                         </button>
                     </div>

@@ -3,16 +3,60 @@ document.addEventListener('DOMContentLoaded', function () {
     var bsModal = deleteModalEl && typeof bootstrap !== 'undefined' ? new bootstrap.Modal(deleteModalEl) : null;
     var modalMonitoramento = document.getElementById('modal_monitoramento');
     var isAdmin = modalMonitoramento && modalMonitoramento.dataset.isAdmin === '1';
+    var inputBuscaTrem = document.getElementById('input_busca_trem');
+    var btnBuscaTrem = document.getElementById('btn_busca_trem');
+    var trensGrid = document.querySelector('.trens-grid');
 
-    document.querySelectorAll('.btn_edit').forEach(function (btn) {
-        btn.setAttribute('data-bs-toggle', 'modal');
-        btn.setAttribute('data-bs-target', '#modal_monitoramento');
-        btn.setAttribute('aria-label', 'Editar trem');
-    });
+    function configurarCartoesTrens() {
+        document.querySelectorAll('.btn_edit').forEach(function (btn) {
+            btn.setAttribute('data-bs-toggle', 'modal');
+            btn.setAttribute('data-bs-target', '#modal_monitoramento');
+            btn.setAttribute('aria-label', 'Editar trem');
+        });
 
-    document.querySelectorAll('.trens-card-acao').forEach(function (btn) {
-        btn.style.display = 'none';
-    });
+        document.querySelectorAll('.trens-card-acao').forEach(function (btn) {
+            btn.style.display = 'none';
+        });
+    }
+
+    function buscarTrens(termo) {
+        if (!trensGrid) return;
+
+        var url = 'buscar_trens.php?q=' + encodeURIComponent(termo || '');
+
+        fetch(url, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(function (response) {
+            if (!response.ok) {
+                throw new Error('Erro ao buscar trens');
+            }
+            return response.text();
+        })
+        .then(function (html) {
+            trensGrid.innerHTML = html;
+            configurarCartoesTrens();
+        })
+        .catch(function () {
+            trensGrid.innerHTML = '<div class="col-12"><p class="text-center py-4 mb-0">Não foi possível carregar os trens.</p></div>';
+        });
+    }
+
+    if (inputBuscaTrem && trensGrid) {
+        inputBuscaTrem.addEventListener('input', function () {
+            buscarTrens(inputBuscaTrem.value);
+        });
+
+        if (btnBuscaTrem) {
+            btnBuscaTrem.addEventListener('click', function () {
+                buscarTrens(inputBuscaTrem.value);
+            });
+        }
+    }
+
+    configurarCartoesTrens();
 
     function configurarPermissaoModal() {
         var nomeEl = document.getElementById('modal_trem_nome');

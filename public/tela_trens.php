@@ -164,7 +164,7 @@ while ($trem = mysqli_fetch_assoc($resultadoTrens)) {
                                                             <i class="bi bi-trash"></i>
                                                         </button>
                                                     <?php endif; ?>
-                                                    <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
+                                                    <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_visualizar_trem" aria-label="Detalhes do trem">
                                                         <i class="bi bi-info-lg"></i>
                                                     </button>
                                                 </div>
@@ -280,6 +280,47 @@ while ($trem = mysqli_fetch_assoc($resultadoTrens)) {
 
                             <div id="mensagem_editar_trem" class="mt-3"></div>
                         </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="modal_visualizar_trem" tabindex="-1" aria-labelledby="label_modal_visualizar_trem" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dados-trem">
+                <div class="modal-content modal-dados-trem-content">
+                    <div class="modal-header modal-dados-trem-header">
+                        <h4 class="modal-title w-100 text-center fw-bold" id="label_modal_visualizar_trem">
+                            Dados do Trem
+                        </h4>
+
+                        <button type="button"
+                            class="btn-close modal-dados-trem-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">
+                        </button>
+                    </div>
+
+                    <div class="modal-body modal-dados-trem-body">
+                        <div class="dados-trem-grid dados-trem-grid-3campos">
+                            <div class="dados-trem-field dados-trem-field-full">
+                                <label>ID do Trem</label>
+                                <input id="visualizar_trem_id" type="text" readonly>
+                            </div>
+
+                            <div class="dados-trem-field dados-trem-field-full">
+                                <label>Nome</label>
+                                <input id="visualizar_trem_nome" type="text" readonly>
+                            </div>
+
+                            <div class="dados-trem-field dados-trem-field-full">
+                                <label>Responsável</label>
+                                <select id="visualizar_trem_responsavel" class="form-select" disabled aria-disabled="true">
+                                    <option value="">Selecione o responsável</option>
+                                    <?php foreach ($usuarios as $usuario): ?>
+                                        <option value="<?= (int) $usuario['usuario_id']; ?>"><?= htmlspecialchars($usuario['nome']); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

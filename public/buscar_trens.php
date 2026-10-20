@@ -62,7 +62,7 @@ foreach ($trens as $trem):
                                 <i class="bi bi-trash"></i>
                             </button>
                         <?php endif; ?>
-                        <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" aria-label="Detalhes do trem">
+                        <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_visualizar_trem" aria-label="Detalhes do trem">
                             <i class="bi bi-info-lg"></i>
                         </button>
                     </div>

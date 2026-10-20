@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var deleteModalEl = document.getElementById('modal_confirm_delete');
     var bsModal = deleteModalEl && typeof bootstrap !== 'undefined' ? new bootstrap.Modal(deleteModalEl) : null;
     var modalMonitoramento = document.getElementById('modal_monitoramento');
+    var modalVisualizarTrem = document.getElementById('modal_visualizar_trem');
     var isAdmin = modalMonitoramento && modalMonitoramento.dataset.isAdmin === '1';
     var inputBuscaTrem = document.getElementById('input_busca_trem');
     var btnBuscaTrem = document.getElementById('btn_busca_trem');
@@ -14,9 +15,6 @@ document.addEventListener('DOMContentLoaded', function () {
             btn.setAttribute('aria-label', 'Editar trem');
         });
 
-        document.querySelectorAll('.trens-card-acao').forEach(function (btn) {
-            btn.style.display = 'none';
-        });
     }
 
     function buscarTrens(termo) {
@@ -124,6 +122,26 @@ document.addEventListener('DOMContentLoaded', function () {
             var botao = event.relatedTarget;
             var card = botao ? botao.closest('.trens-card-trem') : null;
             preencherModalTrem(card);
+        });
+    }
+
+    if (modalVisualizarTrem) {
+        modalVisualizarTrem.addEventListener('show.bs.modal', function (event) {
+            var botao = event.relatedTarget;
+            var card = botao ? botao.closest('.trens-card-trem') : null;
+            if (!card) return;
+
+            var id = (card.querySelector('strong') && card.querySelector('strong').textContent.replace('ID:', '').trim()) || card.dataset.id || '';
+            var nome = (card.querySelector('.trens-card-nome') && card.querySelector('.trens-card-nome').textContent.replace(/^Nome\s*:\s*/i, '').trim()) || card.dataset.nome || '';
+            var idEl = document.getElementById('visualizar_trem_id');
+            var nomeEl = document.getElementById('visualizar_trem_nome');
+            var responsavelEl = document.getElementById('visualizar_trem_responsavel');
+
+            if (idEl) idEl.value = id;
+            if (nomeEl) nomeEl.value = nome;
+            if (responsavelEl) {
+                responsavelEl.value = card.dataset.responsavel || '';
+            }
         });
     }
 

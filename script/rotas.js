@@ -41,30 +41,24 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    const inputBuscaRota = document.getElementById('input_busca_rota');
-    const btnBuscaRota = document.getElementById('btn_busca_rota');
     const filtroPartidaRota = document.getElementById('filtro_partida_rota');
     const filtroDestinoRota = document.getElementById('filtro_destino_rota');
     const linhasRotas = Array.from(document.querySelectorAll('.table tbody tr[data-rota-id]'));
     const tbodyRotas = document.querySelector('.table tbody');
 
     function aplicarFiltroRotas() {
-        const termo = (inputBuscaRota ? inputBuscaRota.value.trim().toLowerCase() : '');
         const partidaSelecionada = filtroPartidaRota ? filtroPartidaRota.value : '';
         const destinoSelecionado = filtroDestinoRota ? filtroDestinoRota.value : '';
 
         let algumVisivel = false;
 
         linhasRotas.forEach(function (linha) {
-            const idRota = (linha.cells[0] ? linha.cells[0].textContent.trim().toLowerCase() : '');
-            const nomeRota = (linha.cells[1] ? linha.cells[1].textContent.trim().toLowerCase() : '');
             const pontoPartida = (linha.cells[2] ? linha.cells[2].textContent.trim() : '');
             const destinoRota = (linha.cells[3] ? linha.cells[3].textContent.trim() : '');
 
-            const correspondeTermo = termo === '' || idRota.includes(termo) || nomeRota.includes(termo);
             const correspondePartida = partidaSelecionada === '' || pontoPartida === partidaSelecionada;
             const correspondeDestino = destinoSelecionado === '' || destinoRota === destinoSelecionado;
-            const corresponde = correspondeTermo && correspondePartida && correspondeDestino;
+            const corresponde = correspondePartida && correspondeDestino;
 
             linha.style.display = corresponde ? '' : 'none';
             if (corresponde) algumVisivel = true;
@@ -82,14 +76,6 @@ document.addEventListener('DOMContentLoaded', function () {
         } else if (linhaVazia) {
             linhaVazia.remove();
         }
-    }
-
-    if (inputBuscaRota) {
-        inputBuscaRota.addEventListener('input', aplicarFiltroRotas);
-    }
-
-    if (btnBuscaRota) {
-        btnBuscaRota.addEventListener('click', aplicarFiltroRotas);
     }
 
     if (filtroPartidaRota) {

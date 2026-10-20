@@ -16,11 +16,14 @@ $statusPermitidos = ['Ativo', 'Manutenção', 'Inativo'];
 if (!in_array($statusFiltro, $statusPermitidos, true)) {
     $statusFiltro = '';
 }
+$termoBusca = isset($_GET['q']) && is_string($_GET['q']) ? trim($_GET['q']) : '';
+$filtroBusca = '%' . $termoBusca . '%';
 
 $sql_rotas = "SELECT r.rota_id, r.nome, r.ponto_partida, r.ponto_chegada, r.descricao, r.status, r.trem_id, t.nome_trem
     FROM rotas r
     LEFT JOIN trens t ON t.trem_id = r.trem_id
     WHERE (? = '' OR r.status = ?)
+    AND (? = '' OR r.nome LIKE ? OR r.ponto_partida LIKE ? OR r.ponto_chegada LIKE ?)
     ORDER BY r.rota_id ASC";
 $stmt_rotas = mysqli_prepare($conexao, $sql_rotas);
 if (!$stmt_rotas) {
@@ -28,7 +31,16 @@ if (!$stmt_rotas) {
     http_response_code(500);
     die('Não foi possível carregar as rotas.');
 }
-mysqli_stmt_bind_param($stmt_rotas, 'ss', $statusFiltro, $statusFiltro);
+mysqli_stmt_bind_param(
+    $stmt_rotas,
+    'ssssss',
+    $statusFiltro,
+    $statusFiltro,
+    $termoBusca,
+    $filtroBusca,
+    $filtroBusca,
+    $filtroBusca
+);
 if (!mysqli_stmt_execute($stmt_rotas)) {
     error_log('Erro ao consultar rotas: ' . mysqli_stmt_error($stmt_rotas));
     http_response_code(500);
@@ -130,12 +142,15 @@ mysqli_stmt_close($stmt_rotas);
             <div class="card_usuarios">
                 <div class="barra_busca mb-3">
                     <div class="barra_busca_filtro">
-                        <div class="input-group dashboard-busca">
-                            <input id="input_busca_rota" type="text" class="form-control dashboard-input" placeholder="Buscar por ID ou Nome">
-                            <button id="btn_busca_rota" class="btn dashboard-btn-busca" type="button" aria-label="Buscar rota">
+                        <form method="GET" action="tela_rotas.php" class="input-group dashboard-busca">
+                            <?php if ($statusFiltro !== ''): ?>
+                                <input type="hidden" name="status" value="<?= htmlspecialchars($statusFiltro, ENT_QUOTES, 'UTF-8'); ?>">
+                            <?php endif; ?>
+                            <input id="input_busca_rota" name="q" type="search" class="form-control dashboard-input" value="<?= htmlspecialchars($termoBusca, ENT_QUOTES, 'UTF-8'); ?>" placeholder="Buscar por nome ou estação" aria-label="Buscar por nome ou estação">
+                            <button id="btn_busca_rota" class="btn dashboard-btn-busca" type="submit" aria-label="Buscar rota">
                                 <i class="bi bi-search"></i>
                             </button>
-                        </div>
+                        </form>
 
                         <div class="filtro_busca">
                             <select id="filtro_partida_rota" class="form-select filtro_busca_select">
@@ -200,7 +215,7 @@ mysqli_stmt_close($stmt_rotas);
                                     <td><?= htmlspecialchars((string) $nomeTrem) ?></td>
                                     <td>
                                         <a class="trens-card-status rota-status-filtro <?= htmlspecialchars($statusClasse); ?><?= $statusFiltro === ($rota['status'] ?? '') ? ' filtro-selecionado' : ''; ?>"
-                                            href="<?= $statusFiltro === ($rota['status'] ?? '') ? 'tela_rotas.php' : '?status=' . rawurlencode((string) ($rota['status'] ?? '')); ?>"
+                                            href="<?= $statusFiltro === ($rota['status'] ?? '') ? 'tela_rotas.php' . ($termoBusca !== '' ? '?q=' . rawurlencode($termoBusca) : '') : '?status=' . rawurlencode((string) ($rota['status'] ?? '')) . ($termoBusca !== '' ? '&q=' . rawurlencode($termoBusca) : ''); ?>"
                                             <?= $statusFiltro === ($rota['status'] ?? '') ? 'aria-current="true"' : ''; ?>
                                             aria-label="<?= $statusFiltro === ($rota['status'] ?? '') ? 'Remover filtro de status ' : 'Filtrar rotas com status '; ?><?= htmlspecialchars((string) ($rota['status'] ?? '')) ?: 'Sem status'; ?>">
                                             <?= htmlspecialchars((string) ($rota['status'] ?? '')) ?: 'Sem status' ?>

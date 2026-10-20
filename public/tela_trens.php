@@ -192,24 +192,10 @@ while ($trem = mysqli_fetch_assoc($resultadoTrens)) {
                         <button type="button" class="btn-close modal-fechar" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body px-4 pt-2 pb-4">
-                        <form id="form_cadastro_trem" method="POST">
-                            <input type="hidden" name="nome_trem" value="Trem sem nome">
-                            <input type="hidden" name="partida" value="Estação Norte">
-                            <input type="hidden" name="chegada" value="Estação Sul">
-                            <input type="hidden" name="horario_partida" value="06:00">
-                            <input type="hidden" name="horario_chegada" value="08:00">
-                            <input type="hidden" name="dias_semana[]" value="Segunda">
-                            <input type="hidden" name="dias_semana[]" value="Quarta">
-                            <input type="hidden" name="dias_semana[]" value="Sexta">
-
-                            <div class="modal-field-wrapper">
-                                <label for="input_id_trem" class="modal-field-label">ID</label>
-                                <input type="text" id="input_id_trem" name="id_trem" class="form-control modal-input" required>
-                            </div>
-
+                        <form id="form_cadastro_trem" method="POST" action="cadastrar_trem.php">
                             <div class="modal-field-wrapper">
                                 <label for="input_nome_trem" class="modal-field-label">Nome</label>
-                                <input type="text" id="input_nome_trem" name="nome_trem_visivel" class="form-control modal-input" required>
+                                <input type="text" id="input_nome_trem" name="nome_trem" class="form-control modal-input" maxlength="155" required>
                             </div>
 
                             <div class="modal-field-wrapper mb-4">

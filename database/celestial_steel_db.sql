@@ -70,7 +70,7 @@ VALUES
 
 
 CREATE TABLE trens (
-    trem_id INT PRIMARY KEY,
+    trem_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nome_trem VARCHAR(155) NOT NULL,
     responsavel_id INT NOT NULL,
     FOREIGN KEY (responsavel_id) REFERENCES usuarios(usuario_id)

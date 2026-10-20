@@ -231,16 +231,13 @@ document.addEventListener('DOMContentLoaded', function () {
         formCadastroTrem.addEventListener('submit', function (event) {
             event.preventDefault();
 
-            var nomeVisivel = document.getElementById('input_nome_trem');
-            var nomeBackend = formCadastroTrem.querySelector('input[name="nome_trem"]');
-            if (nomeVisivel && nomeBackend) {
-                nomeBackend.value = nomeVisivel.value.trim() || 'Trem sem nome';
-            }
-
             var mensagem = document.getElementById('mensagem_cadastro_trem');
             if (mensagem) {
                 mensagem.innerHTML = '<div class="alert alert-info py-2 mb-0">Enviando cadastro...</div>';
             }
+
+            var botaoAdicionar = formCadastroTrem.querySelector('button[type="submit"]');
+            if (botaoAdicionar) botaoAdicionar.disabled = true;
 
             var formData = new FormData(formCadastroTrem);
 
@@ -272,11 +269,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (mensagem) {
                         mensagem.innerHTML = '<div class="alert alert-danger py-2 mb-0">' + (data.message || 'Erro ao cadastrar trem.') + '</div>';
                     }
+                    if (botaoAdicionar) botaoAdicionar.disabled = false;
                 } catch (err) {
                     console.error('Resposta inválida do servidor:', text);
                     if (mensagem) {
                         mensagem.innerHTML = '<div class="alert alert-danger py-2 mb-0">Erro do servidor. Verifique os dados e tente novamente.</div>';
                     }
+                    if (botaoAdicionar) botaoAdicionar.disabled = false;
                 }
             })
             .catch(function (error) {
@@ -284,6 +283,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (mensagem) {
                     mensagem.innerHTML = '<div class="alert alert-danger py-2 mb-0">Erro ao processar requisição.</div>';
                 }
+                if (botaoAdicionar) botaoAdicionar.disabled = false;
             });
         });
     }

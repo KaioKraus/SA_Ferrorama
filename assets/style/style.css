@@ -1165,6 +1165,36 @@ h3 {
     overflow: hidden;
 }
 
+.dashboard-painel {
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-scroll-wrapper {
+    flex: 1;
+    min-height: 0;
+    margin: 0 30px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-color: #3f704d #ffffff;
+    scrollbar-width: thin;
+    padding-right: 8px;
+}
+
+.dashboard-scroll-wrapper::-webkit-scrollbar {
+    width: 8px;
+}
+
+.dashboard-scroll-wrapper::-webkit-scrollbar-track {
+    background-color: #ffffff;
+    border-radius: 10px;
+}
+
+.dashboard-scroll-wrapper::-webkit-scrollbar-thumb {
+    background-color: #3f704d;
+    border-radius: 10px;
+}
+
 .trens-topo {
     height: 92px;
     padding: 25px 34px;
@@ -1173,6 +1203,7 @@ h3 {
 .dashboard-topo {
     height: 92px;
     padding: 25px 34px 25px 65px;
+    flex-shrink: 0;
 }
 
 .dashboard-busca,
@@ -1185,7 +1216,7 @@ h3 {
     display: flex;
     flex: 1;
     align-items: center;
-    gap: 12px;
+    gap: 45px;
 }
 
 .trens-filtro-responsavel {
@@ -1896,6 +1927,14 @@ a.trens-card-status:focus-visible {
         min-height: 420px;
     }
 
+    .dashboard-scroll-wrapper {
+        flex: initial;
+        min-height: auto;
+        margin: 0;
+        overflow: visible;
+        padding-right: 0;
+    }
+
     .dashboard-topo,
     .trens-topo {
         height: auto;
@@ -1927,6 +1966,7 @@ a.trens-card-status:focus-visible {
     .trens-filtros {
         flex-direction: column;
         align-items: stretch;
+        gap: 12px;
     }
 
     .trens-filtro-responsavel {

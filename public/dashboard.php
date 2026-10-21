@@ -83,7 +83,7 @@ header('Expires: 0');
                 <div class="dashboard-topo d-flex align-items-center justify-content-between">
                 </div>
 
-                <div>
+                <div class="dashboard-scroll-wrapper">
                     <div class="dashboard-graficos">
                         <section class="grafico-velocidade" aria-labelledby="titulo-grafico-velocidade">
                             <div class="grafico-velocidade-cabecalho">

@@ -3,6 +3,7 @@ session_start();
 include "../infra/conexao.php";
 
 $error = '';
+$animarLogin = false;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = filter_var(trim($_POST['email'] ?? ''), FILTER_VALIDATE_EMAIL);
     $senha = trim($_POST['senha'] ?? '');
@@ -25,8 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $_SESSION['usuario_nome'] = $user['nome'];
                         $_SESSION['usuario_email'] = strtolower(trim($user['email'] ?? ''));
                         $_SESSION['usuario_cargo_id'] = (int)($user['cargo_id'] ?? 0);
-                        header('Location: dashboard.php');
-                        exit;
+                        $animarLogin = true;
                     } else {
                         $error = 'Credenciais incorretas.';
                     }
@@ -58,9 +58,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Login</title>
 </head>
 
-<body class="body_login">
+<body class="body_login<?= $animarLogin ? ' login-animation-pending' : ''; ?>">
 
-    <form class="form1" method="post" action="">
+    <img src="../assets/img/logo.svg" alt="<?= $animarLogin ? '' : 'Celestial Steel'; ?>" class="logo-login<?= $animarLogin ? ' logo-login-animando' : ''; ?>"<?= $animarLogin ? ' aria-hidden="true"' : ''; ?>>
+
+    <form class="form1" method="post" action=""<?= $animarLogin ? ' aria-hidden="true" inert' : ''; ?>>
 
         <h1 class="h1_login">Login</h1>
 
@@ -96,6 +98,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <script src="../script/validacao.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <?php if ($animarLogin): ?>
+        <script>
+            const logoLoginAnimada = document.querySelector('.logo-login-animando');
+            let redirecionamentoFeito = false;
+            function abrirDashboard() {
+                if (redirecionamentoFeito) return;
+                redirecionamentoFeito = true;
+                window.location.replace('dashboard.php');
+            }
+
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                abrirDashboard();
+            } else {
+                logoLoginAnimada.addEventListener('animationend', abrirDashboard, { once: true });
+                window.setTimeout(abrirDashboard, 2400);
+            }
+        </script>
+    <?php endif; ?>
 </body>
 
 </html>

@@ -28,14 +28,29 @@ if ($responsavelSelecionado === false) {
 }
 $trens = [];
 
+$colunasTrens = mysqli_query($conexao, 'SHOW COLUMNS FROM trens');
+if ($colunasTrens === false) {
+    error_log('Erro ao consultar as colunas dos trens: ' . mysqli_error($conexao));
+    http_response_code(500);
+    die('Não foi possível verificar os dados dos trens.');
+}
+$colunasDisponiveis = [];
+while ($coluna = mysqli_fetch_assoc($colunasTrens)) {
+    $colunasDisponiveis[] = $coluna['Field'];
+}
+mysqli_free_result($colunasTrens);
+$sqlVelocidade = in_array('velocidade', $colunasDisponiveis, true) ? 'COALESCE(t.velocidade, 0)' : '0';
+$sqlTemperatura = in_array('temperatura', $colunasDisponiveis, true) ? 'COALESCE(t.temperatura, 0)' : '0';
+$sqlConsumo = in_array('consumo', $colunasDisponiveis, true) ? 'COALESCE(t.consumo, 0)' : '0';
+
 $sqlTrens = '
         SELECT
             t.trem_id,
             t.nome_trem,
             t.responsavel_id,
-            COALESCE(t.velocidade, 0) AS velocidade,
-            COALESCE(t.temperatura, 0) AS temperatura,
-            COALESCE(t.consumo, 0) AS consumo,
+            ' . $sqlVelocidade . ' AS velocidade,
+            ' . $sqlTemperatura . ' AS temperatura,
+            ' . $sqlConsumo . ' AS consumo,
             COALESCE((SELECT r.nome FROM rotas r WHERE r.trem_id = t.trem_id ORDER BY r.rota_id LIMIT 1), "Sem rota") AS rota_nome,
             (SELECT COUNT(*) FROM rotas r WHERE r.trem_id = t.trem_id) AS quantidade_rotas,
             CASE WHEN EXISTS (SELECT 1 FROM rotas r WHERE r.trem_id = t.trem_id AND r.status = "Ativo") THEN "Ativo" ELSE "Inativo" END AS status_trem,

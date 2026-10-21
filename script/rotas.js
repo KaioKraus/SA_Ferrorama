@@ -136,38 +136,56 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Formulário de cadastro de rota
     const formCadastroRota = document.getElementById('form_cadastro_rota');
+    const modalAddRota = document.getElementById('modalAddRota');
+    const tituloModalRota = document.getElementById('titulo_modal_rota');
+    const botaoSalvarRota = document.getElementById('btn_salvar_rota');
+    const campoRotaId = formCadastroRota ? formCadastroRota.querySelector('[name="rota_id"]') : null;
+
+    function definirModoCadastroRota() {
+        if (formCadastroRota) formCadastroRota.reset();
+        if (campoRotaId) campoRotaId.value = '';
+        if (tituloModalRota) tituloModalRota.textContent = 'Cadastro de Rota';
+        if (botaoSalvarRota) botaoSalvarRota.textContent = 'Adicionar';
+    }
+
+    const botaoAdicionarRota = document.querySelector('[data-bs-target="#modalAddRota"]');
+    if (botaoAdicionarRota) {
+        botaoAdicionarRota.addEventListener('click', definirModoCadastroRota);
+    }
+
+    document.addEventListener('click', function (event) {
+        const botaoEditar = event.target.closest && event.target.closest('.btn_edit');
+        if (!botaoEditar || !modalAddRota || !formCadastroRota || !campoRotaId) return;
+
+        const linha = botaoEditar.closest('tr[data-rota-id]');
+        const rota = linha && rotasDb.find(function (item) {
+            return String(item.rota_id) === String(linha.dataset.rotaId);
+        });
+        if (!rota) return;
+
+        formCadastroRota.elements.ponto_partida.value = rota.ponto_partida || '';
+        formCadastroRota.elements.ponto_chegada.value = rota.ponto_chegada || '';
+        formCadastroRota.elements.nome.value = rota.nome || '';
+        formCadastroRota.elements.trem_id.value = rota.trem_id || '';
+        formCadastroRota.elements.descricao.value = rota.descricao || '';
+        campoRotaId.value = rota.rota_id;
+
+        const status = Array.from(formCadastroRota.querySelectorAll('[name="status"]')).find(function (opcao) {
+            return opcao.value === rota.status;
+        });
+        if (status) status.checked = true;
+        if (tituloModalRota) tituloModalRota.textContent = 'Editar Rota';
+        if (botaoSalvarRota) botaoSalvarRota.textContent = 'Salvar';
+        bootstrap.Modal.getOrCreateInstance(modalAddRota).show();
+    });
+
     if (formCadastroRota) {
         formCadastroRota.addEventListener('submit', function (e) {
             e.preventDefault();
 
-            // Coleta os dados do formulário
-            const pontoPartida = document.querySelector('select[name="ponto_partida"]').value.trim();
-            const pontoChegada = document.querySelector('select[name="ponto_chegada"]').value.trim();
-            const nome = document.querySelector('input[name="nome"]').value.trim();
-            const tremId = document.querySelector('select[name="trem_id"]').value.trim();
-            const descricao = document.querySelector('textarea[name="descricao"]').value.trim();
-            
-            // Verifica qual status está selecionado
-            let status = 'Ativo';
-            if (document.getElementById('status_manutencao') && document.getElementById('status_manutencao').checked) {
-                status = 'Manutenção';
-            } else if (document.getElementById('status_inativo') && document.getElementById('status_inativo').checked) {
-                status = 'Inativo';
-            }
-
-            // Cria o FormData
-            const formData = new FormData();
-            formData.append('ponto_partida', pontoPartida);
-            formData.append('ponto_chegada', pontoChegada);
-            formData.append('nome', nome);
-            formData.append('trem_id', tremId);
-            formData.append('descricao', descricao);
-            formData.append('status', status);
-
-            // Envia via fetch
-            fetch('cadastrar_rota.php', {
+            fetch(formCadastroRota.action, {
                 method: 'POST',
-                body: formData
+                body: new FormData(formCadastroRota)
             })
             .then(async response => {
                 const text = await response.text();
@@ -175,8 +193,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     const data = JSON.parse(text);
                     if (data.success) {
                         if (data.reload) {
-                            // Fecha o modal imediatamente e recarrega
-                            const modalCadastro = bootstrap.Modal.getInstance(document.getElementById('modalAddRota'));
+                            const modalCadastro = bootstrap.Modal.getInstance(modalAddRota);
                             if (modalCadastro) {
                                 modalCadastro.hide();
                             }
@@ -186,9 +203,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             if (mensagemDiv) {
                                 mensagemDiv.innerHTML = '<div class="alert alert-success" style="background-color: #d1e7dd; border-radius: 8px; border: none;">' + data.message + '</div>';
                             }
-                            formCadastroRota.reset();
                             setTimeout(() => {
-                                const modalCadastro = bootstrap.Modal.getInstance(document.getElementById('modalAddRota'));
+                                const modalCadastro = bootstrap.Modal.getInstance(modalAddRota);
                                 if (modalCadastro) {
                                     modalCadastro.hide();
                                 }
@@ -220,16 +236,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Limpar mensagem ao abrir o modal novamente
-    const modalAddRota = document.getElementById('modalAddRota');
     if (modalAddRota) {
         modalAddRota.addEventListener('show.bs.modal', function () {
             const mensagemDiv = document.getElementById('mensagem_cadastro_rota');
             if (mensagemDiv) {
                 mensagemDiv.innerHTML = '';
-            }
-            const form = document.getElementById('form_cadastro_rota');
-            if (form) {
-                form.reset();
             }
         });
     }

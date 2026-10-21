@@ -14,7 +14,23 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     exit;
 }
 
-$sql = 'SELECT trem_id, nome_trem, velocidade FROM trens ORDER BY trem_id ASC';
+$colunasTrens = mysqli_query($conexao, 'SHOW COLUMNS FROM trens');
+if ($colunasTrens === false) {
+    error_log('Erro ao consultar as colunas dos trens: ' . mysqli_error($conexao));
+    http_response_code(500);
+    echo json_encode(['success' => false, 'message' => 'Não foi possível verificar os dados de velocidade.'], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+$temVelocidade = false;
+while ($coluna = mysqli_fetch_assoc($colunasTrens)) {
+    if ($coluna['Field'] === 'velocidade') {
+        $temVelocidade = true;
+        break;
+    }
+}
+mysqli_free_result($colunasTrens);
+$campoVelocidade = $temVelocidade ? 'velocidade' : '0 AS velocidade';
+$sql = 'SELECT trem_id, nome_trem, ' . $campoVelocidade . ' FROM trens ORDER BY trem_id ASC';
 $resultado = mysqli_query($conexao, $sql);
 if ($resultado === false) {
     error_log('Erro ao consultar velocidades dos trens: ' . mysqli_error($conexao));

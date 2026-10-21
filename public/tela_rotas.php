@@ -297,15 +297,16 @@ mysqli_stmt_close($stmt_rotas);
                 </table>
                 </div>
 
-                <div class="modal fade" id="modalAddRota" tabindex="-1">
+                <div class="modal fade" id="modalAddRota" tabindex="-1" aria-labelledby="titulo_modal_rota" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content" style="border-radius: 15px; border: none;">
                             <div class="modal-header border-0 pb-0">
-                                <h5 class="modal-title w-100 text-center text-dark">Cadastro de Rota</h5>
+                                <h5 class="modal-title w-100 text-center text-dark" id="titulo_modal_rota">Cadastro de Rota</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" style="position: absolute; right: 20px; top: 20px;"></button>
                             </div>
                             <div class="modal-body px-5 pt-4 pb-4">
                                 <form method="POST" action="cadastrar_rota.php" id="form_cadastro_rota">
+                                    <input type="hidden" name="rota_id" value="">
                                     <div class="row mb-4">
                                         <div class="col pe-2">
                                             <div class="input-field">
@@ -386,7 +387,7 @@ mysqli_stmt_close($stmt_rotas);
                                     </div>
 
                                     <div class="text-center">
-                                        <button type="submit" class="btn btn_adicionar px-5">Adicionar</button>
+                                        <button type="submit" class="btn btn_adicionar px-5" id="btn_salvar_rota">Adicionar</button>
                                         <div id="mensagem_cadastro_rota" class="mt-3"></div>
                                     </div>
                                 </form>

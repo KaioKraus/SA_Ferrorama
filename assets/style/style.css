@@ -19,7 +19,23 @@ body {
 /*Login*/
 .body_login {
     background: linear-gradient(#101111, #072A2A, #072A2A);
+    height: 100vh;
+    min-height: 100vh;
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.logo-login {
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    width: 100px;
     height: auto;
+    filter: brightness(0) invert(1);
 }
 
 .form1 {
@@ -28,7 +44,8 @@ body {
     padding: 20px;
     border: 1px solid black;
     border-radius: 25px;
-    margin: 16vh auto;
+    margin: 0 auto;
+    transform: translateY(6vh);
     background-color: #0A3D3D;
     color: white;
 }
@@ -85,6 +102,39 @@ body {
     color: white;
     font-size: 24px;
     font-weight: bold;
+}
+
+.logo-login-animando {
+    position: fixed;
+    top: 10px;
+    left: 20px;
+    width: 100px;
+    height: auto;
+    filter: brightness(0) invert(1);
+    pointer-events: none;
+    animation: logo-login-percurso 2.2s ease-in-out forwards;
+}
+
+@keyframes logo-login-percurso {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    82% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(calc(100vw - 100%));
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .logo-login-animando {
+        animation: none;
+    }
 }
 
 
@@ -2121,6 +2171,7 @@ a.trens-card-status:focus-visible {
 
     /*Tela de login*/
     .body_login {
+        height: 100vh;
         min-height: 100vh;
         display: flex;
         align-items: center;
@@ -2135,6 +2186,7 @@ a.trens-card-status:focus-visible {
         border: 1px solid black;
         border-radius: 25px;
         margin: 0 auto;
+        transform: none;
         background-color: #0A3D3D;
         color: white;
     }

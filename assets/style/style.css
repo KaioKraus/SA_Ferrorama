@@ -229,22 +229,25 @@ h3 {
 .conteudo {
     flex-grow: 1;
     background-color: #CFD8D6;
-    height: 100vh;
+    min-height: 100vh;
     padding: 40px;
-    overflow-y: auto;
+    overflow: auto;
 }
 
 .card_usuarios {
+    width: 100%;
+    min-height: 100%;
     background-color: #D9D9D9;
-    border-radius: 20px;
+    border: 1px solid #b6c0bd;
+    border-radius: 17px;
     padding: 30px;
     box-shadow: var(--shadow-card);
-    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .card_usuarios,
-.card_relatorios,
-.card_gerar_relatorios,
 .dashboard-painel,
 .trens-painel,
 .trens-card-trem,

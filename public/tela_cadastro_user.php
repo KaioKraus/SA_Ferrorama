@@ -41,6 +41,27 @@ if (!$resultado) {
 
 <body>
 
+    <?php
+    // Verifica mensagens de erro ou sucesso na sessão
+    if (isset($_SESSION['mensagem_erro'])): ?>
+        <div class="alert alert-warning alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" 
+             style="z-index: 9999; max-width: 600px;" role="alert">
+            <strong>Atenção!</strong> <?php echo htmlspecialchars($_SESSION['mensagem_erro']); ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <?php unset($_SESSION['mensagem_erro']); ?>
+    <?php endif; ?>
+
+    <?php
+    if (isset($_SESSION['mensagem_sucesso'])): ?>
+        <div class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" 
+             style="z-index: 9999; max-width: 600px;" role="alert">
+            <strong>Sucesso!</strong> <?php echo htmlspecialchars($_SESSION['mensagem_sucesso']); ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <?php unset($_SESSION['mensagem_sucesso']); ?>
+    <?php endif; ?>
+
     <!--Main-->
     <main>
 
@@ -334,6 +355,27 @@ if (!$resultado) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../script/nav.js?v=20261006"></script>
     <script src="../script/usuarios.js?v=20261006"></script>
+    <script>
+        // Auto-fechar alertas após alguns segundos
+        document.addEventListener('DOMContentLoaded', function() {
+            const alertWarning = document.querySelector('.alert-warning');
+            const alertSuccess = document.querySelector('.alert-success');
+            
+            if (alertWarning) {
+                setTimeout(function() {
+                    const bsAlert = bootstrap.Alert.getOrCreateInstance(alertWarning);
+                    bsAlert.close();
+                }, 7000); // 7 segundos para avisos
+            }
+            
+            if (alertSuccess) {
+                setTimeout(function() {
+                    const bsAlert = bootstrap.Alert.getOrCreateInstance(alertSuccess);
+                    bsAlert.close();
+                }, 4000); // 4 segundos para sucesso
+            }
+        });
+    </script>
 </body>
 
 </html>

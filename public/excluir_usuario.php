@@ -32,15 +32,33 @@ if (isset($_SESSION['usuario_id']) && (int)$_SESSION['usuario_id'] === (int)$id)
 $sql = 'DELETE FROM usuarios WHERE usuario_id = ? LIMIT 1';
 if ($stmt = mysqli_prepare($conexao, $sql)) {
     mysqli_stmt_bind_param($stmt, 'i', $id);
-    mysqli_stmt_execute($stmt);
-    $affected = mysqli_stmt_affected_rows($stmt);
-    mysqli_stmt_close($stmt);
+    
+    try {
+        mysqli_stmt_execute($stmt);
+        $affected = mysqli_stmt_affected_rows($stmt);
+        mysqli_stmt_close($stmt);
 
-    if ($affected > 0) {
-        header('Location: tela_cadastro_user.php?deleted=1');
-        exit;
-    } else {
-        header('Location: tela_cadastro_user.php?deleted=0');
+        if ($affected > 0) {
+            $_SESSION['mensagem_sucesso'] = 'Usuário excluído com sucesso.';
+            header('Location: tela_cadastro_user.php');
+            exit;
+        } else {
+            header('Location: tela_cadastro_user.php?deleted=0');
+            exit;
+        }
+    } catch (mysqli_sql_exception $e) {
+        mysqli_stmt_close($stmt);
+        
+        // Verifica se é erro de constraint de chave estrangeira
+        if (strpos($e->getMessage(), 'foreign key constraint fails') !== false || 
+            strpos($e->getMessage(), 'Cannot delete or update a parent row') !== false) {
+            $_SESSION['mensagem_erro'] = 'Não é possível excluir! Este usuário está vinculado a um ou mais trens. Para excluí-lo, primeiro remova ou reatribua os trens associados.';
+            header('Location: tela_cadastro_user.php');
+            exit;
+        }
+        
+        // Outros erros de banco
+        header('Location: tela_cadastro_user.php?error=db_error');
         exit;
     }
 } else {

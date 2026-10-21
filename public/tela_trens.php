@@ -10,33 +10,26 @@ header('Expires: 0');
 
 $usuarios = [];
 $resultadoUsuarios = mysqli_query($conexao, "SELECT usuario_id, nome FROM usuarios ORDER BY nome ASC");
-if ($resultadoUsuarios) {
-    while ($usuario = mysqli_fetch_assoc($resultadoUsuarios)) {
-        $usuarios[] = $usuario;
-    }
+if (!$resultadoUsuarios) {
+    error_log('Erro ao consultar responsáveis dos trens: ' . mysqli_error($conexao));
+    http_response_code(500);
+    die('Não foi possível carregar os responsáveis dos trens.');
+}
+while ($usuario = mysqli_fetch_assoc($resultadoUsuarios)) {
+    $usuarios[] = $usuario;
 }
 
 $termoBusca = isset($_GET['q']) ? trim((string) $_GET['q']) : '';
+$responsavelSelecionado = filter_var($_GET['responsavel'] ?? 0, FILTER_VALIDATE_INT, [
+    'options' => ['min_range' => 0],
+]);
+if ($responsavelSelecionado === false) {
+    $responsavelSelecionado = 0;
+}
 $trens = [];
 
-if ($termoBusca === '') {
-    $resultadoTrens = mysqli_query($conexao, "
-        SELECT 
-            t.trem_id,
-            t.nome_trem,
-            t.responsavel_id,
-            COALESCE(t.velocidade, 0) AS velocidade,
-            COALESCE(t.temperatura, 0) AS temperatura,
-            COALESCE(t.consumo, 0) AS consumo,
-            COALESCE((SELECT r.nome FROM rotas r WHERE r.trem_id = t.trem_id ORDER BY r.rota_id LIMIT 1), 'Sem rota') AS rota_nome,
-            (SELECT COUNT(*) FROM rotas r WHERE r.trem_id = t.trem_id) AS quantidade_rotas,
-            CASE WHEN EXISTS (SELECT 1 FROM rotas r WHERE r.trem_id = t.trem_id AND r.status = 'Ativo') THEN 'Ativo' ELSE 'Inativo' END AS status_trem,
-            CASE WHEN EXISTS (SELECT 1 FROM rotas r WHERE r.trem_id = t.trem_id AND r.status = 'Ativo') THEN 1 ELSE 0 END AS rota_ativa
-        FROM trens t
-        ORDER BY t.trem_id ASC
-    ");
-} else {
-    $sqlBusca = 'SELECT 
+$sqlTrens = '
+        SELECT
             t.trem_id,
             t.nome_trem,
             t.responsavel_id,
@@ -48,29 +41,45 @@ if ($termoBusca === '') {
             CASE WHEN EXISTS (SELECT 1 FROM rotas r WHERE r.trem_id = t.trem_id AND r.status = "Ativo") THEN "Ativo" ELSE "Inativo" END AS status_trem,
             CASE WHEN EXISTS (SELECT 1 FROM rotas r WHERE r.trem_id = t.trem_id AND r.status = "Ativo") THEN 1 ELSE 0 END AS rota_ativa
         FROM trens t
-        WHERE CAST(t.trem_id AS CHAR) LIKE ? OR t.nome_trem LIKE ?
-        ORDER BY t.trem_id ASC';
-    $stmt = mysqli_prepare($conexao, $sqlBusca);
-    if ($stmt === false) {
-        error_log('Erro ao preparar busca de trens: ' . mysqli_error($conexao));
-        http_response_code(500);
-        die('Não foi possível buscar os trens.');
-    }
-
-    $filtro = '%' . $termoBusca . '%';
-    mysqli_stmt_bind_param($stmt, 'ss', $filtro, $filtro);
-    mysqli_stmt_execute($stmt);
-    $resultadoTrens = mysqli_stmt_get_result($stmt);
+        WHERE (? = "" OR CAST(t.trem_id AS CHAR) LIKE ? OR t.nome_trem LIKE ?)
+            AND (? = 0 OR t.responsavel_id = ?)
+        ORDER BY t.trem_id ASC
+    ';
+$stmtTrens = mysqli_prepare($conexao, $sqlTrens);
+if ($stmtTrens === false) {
+    error_log('Erro ao preparar consulta de trens: ' . mysqli_error($conexao));
+    http_response_code(500);
+    die('Não foi possível carregar os trens cadastrados.');
 }
+
+$filtroBusca = '%' . $termoBusca . '%';
+mysqli_stmt_bind_param(
+    $stmtTrens,
+    'sssii',
+    $termoBusca,
+    $filtroBusca,
+    $filtroBusca,
+    $responsavelSelecionado,
+    $responsavelSelecionado
+);
+if (!mysqli_stmt_execute($stmtTrens)) {
+    error_log('Erro ao consultar trens: ' . mysqli_stmt_error($stmtTrens));
+    mysqli_stmt_close($stmtTrens);
+    http_response_code(500);
+    die('Não foi possível carregar os trens cadastrados.');
+}
+$resultadoTrens = mysqli_stmt_get_result($stmtTrens);
 
 if (!$resultadoTrens) {
     error_log('Erro ao consultar trens: ' . mysqli_error($conexao));
+    mysqli_stmt_close($stmtTrens);
     http_response_code(500);
     die('Não foi possível carregar os trens cadastrados.');
 }
 while ($trem = mysqli_fetch_assoc($resultadoTrens)) {
     $trens[] = $trem;
 }
+mysqli_stmt_close($stmtTrens);
 ?>
 
 <!DOCTYPE html>
@@ -167,11 +176,21 @@ while ($trem = mysqli_fetch_assoc($resultadoTrens)) {
                 <?php endif; ?>
 
                 <div class="trens-topo d-flex align-items-center justify-content-between">
-                    <form method="GET" action="tela_trens.php" class="input-group trens-busca" autocomplete="off">
-                        <input id="input_busca_trem" name="q" type="text" class="form-control trens-input" value="<?= htmlspecialchars($termoBusca, ENT_QUOTES, 'UTF-8'); ?>" placeholder="Buscar por ID ou Nome" aria-label="Buscar por ID ou Nome">
-                        <button id="btn_busca_trem" class="btn trens-btn-busca" type="submit" aria-label="Buscar">
-                            <i class="bi bi-search"></i>
-                        </button>
+                    <form method="GET" action="tela_trens.php" class="trens-filtros" autocomplete="off">
+                        <div class="input-group trens-busca">
+                            <input id="input_busca_trem" name="q" type="text" class="form-control trens-input" value="<?= htmlspecialchars($termoBusca, ENT_QUOTES, 'UTF-8'); ?>" placeholder="Buscar por ID ou Nome" aria-label="Buscar por ID ou Nome">
+                            <button id="btn_busca_trem" class="btn trens-btn-busca" type="submit" aria-label="Buscar">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                        <select id="filtro_responsavel_trem" name="responsavel" class="form-select trens-filtro-responsavel" aria-label="Filtrar trens por responsável">
+                            <option value="0">Todos os responsáveis</option>
+                            <?php foreach ($usuarios as $usuario): ?>
+                                <option value="<?= (int) $usuario['usuario_id']; ?>" <?= (int) $responsavelSelecionado === (int) $usuario['usuario_id'] ? 'selected' : ''; ?>>
+                                    <?= htmlspecialchars((string) $usuario['nome'], ENT_QUOTES, 'UTF-8'); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </form>
 
                     <?php if ($usuarioEhAdministrador): ?>

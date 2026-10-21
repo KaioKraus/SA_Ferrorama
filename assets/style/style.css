@@ -1148,6 +1148,21 @@ h3 {
     height: 39px;
 }
 
+.trens-filtros {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 12px;
+}
+
+.trens-filtro-responsavel {
+    width: min(260px, 35%);
+    min-width: 190px;
+    height: 39px;
+    border: none;
+    border-radius: 7px;
+}
+
 .dashboard-input,
 .trens-input {
     height: 39px;
@@ -1851,6 +1866,12 @@ a.trens-card-status:focus-visible {
         padding: 18px 18px 0;
     }
 
+    .trens-topo {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 12px;
+    }
+
     .barra_busca {
         flex-direction: column;
         align-items: stretch;
@@ -1860,10 +1881,21 @@ a.trens-card-status:focus-visible {
 
     .dashboard-busca,
     .trens-busca,
+    .trens-filtros,
     .input_buscar,
     .filtro_busca {
         width: 100%;
         max-width: 100%;
+    }
+
+    .trens-filtros {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .trens-filtro-responsavel {
+        width: 100%;
+        min-width: 0;
     }
 
     .dashboard-grid,

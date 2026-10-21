@@ -56,6 +56,7 @@ O dashboard funciona como o painel principal do sistema, permitindo acessar as p
 ### Trens
 
 Permite visualizar as informações relacionadas aos trens cadastrados no sistema.
+Também permite filtrar os trens pelo responsável para localizar e reassociar trens antes da exclusão de um funcionário.
 
 ### Rotas
 

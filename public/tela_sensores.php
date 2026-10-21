@@ -100,7 +100,9 @@ header('Expires: 0');
                             <th>Localização</th>
                             <th>Tipo de dado</th>
                             <th>Status</th>
-                            <th>Ações</th>
+                            <?php if ($usuarioEhAdministrador): ?>
+                                <th>Ações</th>
+                            <?php endif; ?>
                         </tr>
                     </thead>
                     <tbody id="tbody_sensores">
@@ -110,12 +112,12 @@ header('Expires: 0');
                             <td>Trem - ID 5823</td>
                             <td>Temperatura</td>
                             <td><span class="trens-card-status ativo">Ativo</span></td>
+                            <?php if ($usuarioEhAdministrador): ?>
                             <td>
-                                <?php if ($usuarioEhAdministrador): ?>
                                 <button class="btn_edit" type="button" aria-label="Editar Sensor de Temperatura A1"><i class="bi bi-pencil-square"></i></button>
                                 <button type="button" class="btn_delete ms-4" data-id="10001"><i class="bi bi-trash"></i></button>
-                                <?php endif; ?>
                             </td>
+                            <?php endif; ?>
                         </tr>
                         <tr data-sensor-id="10002" data-nome="Sensor de Vibração B2" data-vinculo="rota" data-localizacao="trecho_rota1" data-tipo="vibracao" data-status="Inativo">
                             <td>10002</td>
@@ -123,12 +125,12 @@ header('Expires: 0');
                             <td>Rota 1 (Estação Norte → Estação Sul)</td>
                             <td>Vibração</td>
                             <td><span class="trens-card-status inativo">Inativo</span></td>
+                            <?php if ($usuarioEhAdministrador): ?>
                             <td>
-                                <?php if ($usuarioEhAdministrador): ?>
                                 <button class="btn_edit" type="button" aria-label="Editar Sensor de Vibração B2"><i class="bi bi-pencil-square"></i></button>
                                 <button type="button" class="btn_delete ms-4" data-id="10002"><i class="bi bi-trash"></i></button>
-                                <?php endif; ?>
                             </td>
+                            <?php endif; ?>
                         </tr>
                         <tr data-sensor-id="10003" data-nome="Sensor de Velocidade C3" data-vinculo="trem" data-localizacao="trem_5823" data-tipo="velocidade" data-status="Ativo">
                             <td>10003</td>
@@ -136,12 +138,12 @@ header('Expires: 0');
                             <td>Trem - ID 5823</td>
                             <td>Velocidade</td>
                             <td><span class="trens-card-status ativo">Ativo</span></td>
+                            <?php if ($usuarioEhAdministrador): ?>
                             <td>
-                                <?php if ($usuarioEhAdministrador): ?>
                                 <button class="btn_edit" type="button" aria-label="Editar Sensor de Velocidade C3"><i class="bi bi-pencil-square"></i></button>
                                 <button type="button" class="btn_delete ms-4" data-id="10003"><i class="bi bi-trash"></i></button>
-                                <?php endif; ?>
                             </td>
+                            <?php endif; ?>
                         </tr>
                         <tr data-sensor-id="10004" data-nome="Sensor de Pressão D4" data-vinculo="rota" data-localizacao="trecho_rota2" data-tipo="pressao" data-status="Inativo">
                             <td>10004</td>
@@ -149,12 +151,12 @@ header('Expires: 0');
                             <td>Rota 2 (Estação Norte → Estação Sul)</td>
                             <td>Pressão</td>
                             <td><span class="trens-card-status inativo">Inativo</span></td>
+                            <?php if ($usuarioEhAdministrador): ?>
                             <td>
-                                <?php if ($usuarioEhAdministrador): ?>
                                 <button class="btn_edit" type="button" aria-label="Editar Sensor de Pressão D4"><i class="bi bi-pencil-square"></i></button>
                                 <button type="button" class="btn_delete ms-4" data-id="10004"><i class="bi bi-trash"></i></button>
-                                <?php endif; ?>
                             </td>
+                            <?php endif; ?>
                         </tr>
                     </tbody>
                 </table>

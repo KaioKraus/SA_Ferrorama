@@ -240,7 +240,11 @@ mysqli_stmt_close($stmt_rotas);
                             <th>Destino</th>
                             <th>Trem</th>
                             <th>Status</th>
-                            <th>Ações</th>
+                            <?php if ($usuarioEhAdministrador): ?>
+                                <th>Ações</th>
+                            <?php else: ?>
+                                <th>Visualizar</th>
+                            <?php endif; ?>
                         </tr>
                     </thead>
                     <tbody>
@@ -276,8 +280,8 @@ mysqli_stmt_close($stmt_rotas);
                                         </a>
                                     </td>
                                     <td>
-                                        <button class="btn_edit" type="button" aria-label="Editar rota"><i class="bi bi-pencil-square"></i></button>
                                         <?php if ($usuarioEhAdministrador): ?>
+                                            <button class="btn_edit" type="button" aria-label="Editar rota"><i class="bi bi-pencil-square"></i></button>
                                             <button class="btn_delete mx-2" type="button" data-bs-toggle="modal" data-bs-target="#modal_confirm_delete" data-id="<?= (int) ($rota['rota_id'] ?? 0); ?>" aria-label="Excluir rota"><i class="bi bi-trash"></i></button>
                                         <?php endif; ?>
                                         <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" data-rota-id="<?= (int) ($rota['rota_id'] ?? 0); ?>" aria-label="Informações da rota"><i class="bi bi-info-lg"></i></button>

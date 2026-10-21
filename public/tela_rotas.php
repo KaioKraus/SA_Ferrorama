@@ -7,36 +7,22 @@ $usuarioNome = $_SESSION['usuario_nome'] ?? 'Usuário';
 $sql_trens = "SELECT trem_id, nome_trem FROM trens ORDER BY nome_trem ASC";
 $resultado_trens = mysqli_query($conexao, $sql_trens);
 
-$sql_estacoes = "SELECT nome_estacao AS estacao FROM estacoes WHERE status = 'Ativo' ORDER BY nome_estacao ASC";
-$estacoes = [];
-$tabelaEstacoesDisponivel = true;
+// Busca pontos únicos existentes nas rotas para os selects
+$pontos = [];
 try {
-    $resultado_estacoes = mysqli_query($conexao, $sql_estacoes);
-    while ($row = mysqli_fetch_assoc($resultado_estacoes)) {
-        $estacoes[] = $row['estacao'];
+    $resultado_pontos = mysqli_query(
+        $conexao,
+        "SELECT ponto AS nome FROM (
+            SELECT ponto_partida AS ponto FROM rotas
+            UNION
+            SELECT ponto_chegada AS ponto FROM rotas
+        ) AS pontos ORDER BY ponto"
+    );
+    while ($row = mysqli_fetch_assoc($resultado_pontos)) {
+        $pontos[] = $row['nome'];
     }
 } catch (mysqli_sql_exception $exception) {
-    if ($exception->getCode() !== 1146) {
-        throw $exception;
-    }
-
-    error_log('Tabela estacoes não encontrada. Usando pontos existentes nas rotas até a migração do banco.');
-    $tabelaEstacoesDisponivel = false;
-    try {
-        $resultado_estacoes = mysqli_query(
-            $conexao,
-            "SELECT ponto AS estacao FROM (
-                SELECT ponto_partida AS ponto FROM rotas
-                UNION
-                SELECT ponto_chegada AS ponto FROM rotas
-            ) AS pontos ORDER BY ponto"
-        );
-        while ($row = mysqli_fetch_assoc($resultado_estacoes)) {
-            $estacoes[] = $row['estacao'];
-        }
-    } catch (mysqli_sql_exception $fallbackException) {
-        error_log('Erro ao carregar estações alternativas: ' . $fallbackException->getMessage());
-    }
+    error_log('Erro ao carregar pontos das rotas: ' . $exception->getMessage());
 }
 
 $statusParametro = $_GET['status'] ?? '';
@@ -93,7 +79,7 @@ if ($resultado_rotas) {
     }
 }
 $pontosFiltro = array_merge(
-    $estacoes,
+    $pontos,
     array_column($rotasBanco, 'ponto_partida'),
     array_column($rotasBanco, 'ponto_chegada')
 );
@@ -194,12 +180,6 @@ mysqli_stmt_close($stmt_rotas);
 
         <section class="conteudo">
             <div class="card_usuarios">
-                <?php if (!$tabelaEstacoesDisponivel): ?>
-                    <div class="alert alert-warning" role="alert">
-                        A tabela de estações não existe no banco. Exibindo os pontos usados nas rotas existentes.
-                        Execute <code>database/migracao_estacoes.sql</code> para restaurar a lista completa de estações.
-                    </div>
-                <?php endif; ?>
                 <div class="barra_busca mb-3">
                     <div class="barra_busca_filtro">
                         <form method="GET" action="tela_rotas.php" class="input-group dashboard-busca">
@@ -327,9 +307,9 @@ mysqli_stmt_close($stmt_rotas);
                                             <div class="input-field">
                                                 <select required name="ponto_partida" class="form-select">
                                                     <option value=""></option>
-                                                    <?php if (count($estacoes) > 0): ?>
-                                                        <?php foreach($estacoes as $estacao): ?>
-                                                            <option value="<?= htmlspecialchars($estacao) ?>"><?= htmlspecialchars($estacao) ?></option>
+                                                    <?php if (count($pontos) > 0): ?>
+                                                        <?php foreach($pontos as $ponto): ?>
+                                                            <option value="<?= htmlspecialchars($ponto) ?>"><?= htmlspecialchars($ponto) ?></option>
                                                         <?php endforeach; ?>
                                                     <?php endif; ?>
                                                 </select>
@@ -340,9 +320,9 @@ mysqli_stmt_close($stmt_rotas);
                                             <div class="input-field">
                                                 <select required name="ponto_chegada" class="form-select">
                                                     <option value=""></option>
-                                                    <?php if (count($estacoes) > 0): ?>
-                                                        <?php foreach($estacoes as $estacao): ?>
-                                                            <option value="<?= htmlspecialchars($estacao) ?>"><?= htmlspecialchars($estacao) ?></option>
+                                                    <?php if (count($pontos) > 0): ?>
+                                                        <?php foreach($pontos as $ponto): ?>
+                                                            <option value="<?= htmlspecialchars($ponto) ?>"><?= htmlspecialchars($ponto) ?></option>
                                                         <?php endforeach; ?>
                                                     <?php endif; ?>
                                                 </select>
@@ -514,5 +494,26 @@ mysqli_stmt_close($stmt_rotas);
     <script src="../script/validacao.js"></script>
     <script src="../script/nav.js"></script>
     <script src="../script/rotas.js"></script>
+    <script>
+        // Auto-fechar alertas após alguns segundos
+        document.addEventListener('DOMContentLoaded', function() {
+            const alertWarning = document.querySelector('.alert-warning');
+            const alertSuccess = document.querySelector('.alert-success');
+            
+            if (alertWarning) {
+                setTimeout(function() {
+                    const bsAlert = bootstrap.Alert.getOrCreateInstance(alertWarning);
+                    bsAlert.close();
+                }, 7000); // 7 segundos para avisos
+            }
+            
+            if (alertSuccess) {
+                setTimeout(function() {
+                    const bsAlert = bootstrap.Alert.getOrCreateInstance(alertSuccess);
+                    bsAlert.close();
+                }, 4000); // 4 segundos para sucesso
+            }
+        });
+    </script>
 </body>
 </html>

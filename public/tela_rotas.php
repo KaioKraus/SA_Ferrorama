@@ -351,7 +351,7 @@ mysqli_stmt_close($stmt_rotas);
         </section>
 
         <div class="modal fade" id="modal_monitoramento" tabindex="-1" aria-labelledby="label_modal_monitoramento" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-dialog modal-dialog-centered modal-xl" style="max-width: 1050px;">
                 <div class="modal-content border-0 rounded-4 shadow">
 
                     <!-- HEADER -->

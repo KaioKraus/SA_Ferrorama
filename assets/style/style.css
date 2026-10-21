@@ -531,7 +531,7 @@ h3 {
     height: 46px !important;
     padding: 0 1.25rem !important;
     border-radius: 12px !important;
-    background-color: #0a5e57 !important;
+    background-color: #0A3D3D !important;
     border: none !important;
     color: #ffffff !important;
     font-size: 1.05rem !important;
@@ -541,110 +541,147 @@ h3 {
     align-items: center !important;
     justify-content: center !important;
     line-height: 1 !important;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-.modal-dados-trem {
-    max-width: 480px;
-    border-radius: 18px !important;
+#btn_salvar_trem:hover,
+#btn_salvar_trem:focus,
+#btn_salvar_trem:active {
+    background-color: #072A2A !important;
+    color: #ffffff !important;
+    transform: translateY(-1px);
 }
 
-.modal-dados-trem-content {
-    background: rgba(246, 246, 246, 0.96) !important;
-    border: 1px solid rgba(17, 17, 17, 0.12) !important;
+#modal_monitoramento .modal-dialog,
+#modal_visualizar_trem .modal-dialog {
+    max-width: 520px;
+}
+
+#modal_monitoramento .modal-content,
+#modal_visualizar_trem .modal-content {
+    background: #e4e5e4 !important;
+    border: 1px solid rgba(24, 30, 29, 0.12) !important;
     border-radius: 18px !important;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.14) !important;
+    box-shadow: var(--shadow-modal) !important;
     overflow: hidden;
 }
 
-.modal-dados-trem-header {
+#modal_monitoramento .modal-header,
+#modal_visualizar_trem .modal-header {
     position: relative;
     padding: 1.6rem 1.4rem 0.5rem;
     border-bottom: none !important;
 }
 
-.modal-dados-trem-header .modal-title {
-    font-size: 2rem;
+#modal_monitoramento .modal-title,
+#modal_visualizar_trem .modal-title {
+    font-size: 2rem !important;
     line-height: 1.2;
-    color: #111;
-    margin-top: 0.1rem;
-    font-weight: 800;
-}
-
-.modal-dados-trem-close {
-    position: absolute;
-    right: 18px;
-    top: 18px;
-    width: 24px;
-    height: 24px;
-    opacity: 1;
-    border: none;
-    background: transparent;
-    filter: brightness(0) saturate(100%);
-    padding: 0;
-}
-
-.modal-dados-trem-body {
-    padding: 0.35rem 1.45rem 1.5rem;
-    background: rgba(246, 246, 246, 0.96);
-}
-
-.dados-trem-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.1rem 1.5rem;
-}
-
-.dados-trem-grid-3campos {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-}
-
-.dados-trem-field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.dados-trem-field label {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: #111;
-    margin: 0;
-}
-
-.dados-trem-field input,
-.dados-trem-field select {
-    height: 44px;
-    width: 100%;
-    border: 1.5px solid rgba(17, 17, 17, 0.5) !important;
-    border-radius: 10px;
-    background: #ffffff !important;
-    color: #111;
-    padding: 0.5rem 0.9rem;
-    font-size: 1.05rem;
-    box-shadow: none !important;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-}
-
-.dados-trem-field input:focus,
-.dados-trem-field select:focus {
-    border-color: rgba(17, 17, 17, 0.5) !important;
-    box-shadow: none !important;
-    outline: none;
-    background: #ffffff !important;
-}
-
-.dados-trem-field input:disabled,
-.dados-trem-field select:disabled {
-    background: #ffffff !important;
     color: #111 !important;
-    cursor: default !important;
-    opacity: 1 !important;
+    margin-top: 0.1rem;
+    font-weight: 800 !important;
 }
 
-.dados-trem-field-full {
-    margin-top: 0.5rem;
+#modal_monitoramento .modal-body,
+#modal_visualizar_trem .modal-body {
+    padding: 0.35rem 1.45rem 1.5rem;
+    background: #e4e5e4;
+}
+
+#modal_monitoramento .input-field,
+#modal_visualizar_trem .input-field {
+    position: relative;
+}
+
+#modal_monitoramento .input-field input,
+#modal_monitoramento .input-field select,
+#modal_visualizar_trem .input-field input,
+#modal_visualizar_trem .input-field select {
     width: 100%;
+    height: 48px !important;
+    padding: 0.75rem 0.9rem;
+    border-radius: 10px;
+    border: 1px solid rgba(20, 20, 20, 0.42) !important;
+    background: rgba(255, 255, 255, 0.7);
+    color: #1a1a1a;
+    font-size: 1.05rem;
+    box-shadow: none !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#modal_monitoramento .input-field select,
+#modal_visualizar_trem .input-field select {
+    appearance: auto;
+    background-image: none !important;
+    padding-right: 2.5rem;
+}
+
+#modal_monitoramento .input-field input:focus,
+#modal_monitoramento .input-field select:focus,
+#modal_visualizar_trem .input-field input:focus,
+#modal_visualizar_trem .input-field select:focus {
+    border-color: #0c5a5d !important;
+    box-shadow: 0 0 0 0.2rem rgba(12, 90, 93, 0.12) !important;
+    outline: none;
+}
+
+#modal_monitoramento .input-field label,
+#modal_visualizar_trem .input-field label {
+    position: absolute;
+    top: 0;
+    left: 15px;
+    color: #5c5c5c;
+    pointer-events: none;
+    background-color: transparent;
+    transform: translateY(0.7rem);
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+#modal_monitoramento .input-field input:focus ~ label,
+#modal_monitoramento .input-field input:valid ~ label,
+#modal_monitoramento .input-field input.has-value ~ label,
+#modal_monitoramento .input-field select:focus ~ label,
+#modal_monitoramento .input-field select:not([value=""]):valid ~ label,
+#modal_visualizar_trem .input-field input:focus ~ label,
+#modal_visualizar_trem .input-field input:valid ~ label,
+#modal_visualizar_trem .input-field input.has-value ~ label,
+#modal_visualizar_trem .input-field select:focus ~ label,
+#modal_visualizar_trem .input-field select:not([value=""]):valid ~ label {
+    transform: translateY(-52%) translateX(-10px) scale(0.8);
+    background-color: #e4e5e4;
+    padding: 0 5px;
+    color: #0A3D3D;
+    font-weight: bold;
+    letter-spacing: 1px;
+    border: none;
+    border-radius: 50%;
+}
+
+#modal_monitoramento .input-field input:disabled,
+#modal_monitoramento .input-field select:disabled,
+#modal_visualizar_trem .input-field input:disabled,
+#modal_visualizar_trem .input-field select:disabled {
+    background: rgba(255, 255, 255, 0.7) !important;
+    color: #1a1a1a !important;
+    opacity: 1 !important;
+    cursor: default !important;
+}
+
+#modal_visualizar_trem .visualizar-field,
+#modal_visualizar_trem .visualizar-field input,
+#modal_visualizar_trem .visualizar-field select,
+#modal_visualizar_trem .visualizar-field label {
+    pointer-events: none !important;
+    user-select: none !important;
+}
+
+#modal_visualizar_trem .visualizar-field input:focus,
+#modal_visualizar_trem .visualizar-field select:focus,
+#modal_visualizar_trem .visualizar-field input:active,
+#modal_visualizar_trem .visualizar-field select:active {
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 #navModal .modal-content,
@@ -894,8 +931,14 @@ h3 {
     text-shadow: 0 0 25px #0A3D3D;
 }
 
-#navModal .modal-body a.nav-logout {
+#navModal .modal-body a.nav-logout,
+#navModal .modal-body a.nav-logout:link,
+#navModal .modal-body a.nav-logout:visited,
+#navModal .modal-body a.nav-logout:hover,
+#navModal .modal-body a.nav-logout:focus {
     color: #ce2e2e !important;
+    opacity: 1 !important;
+    visibility: visible !important;
     font-weight: 700;
     text-shadow: 0 0 25px #FB4242;
 }
@@ -1431,14 +1474,14 @@ a.trens-card-status:focus-visible {
 
 .route-modal-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1.8fr) minmax(220px, 0.95fr);
-    gap: 1.5rem;
+    grid-template-columns: minmax(0, 1.9fr) minmax(240px, 1fr);
+    gap: 1.75rem;
     align-items: center;
 }
 
 .route-visual {
     width: 100%;
-    min-height: 260px;
+    min-height: 320px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1451,7 +1494,7 @@ a.trens-card-status:focus-visible {
     display: block;
     width: 100%;
     height: auto;
-    max-height: 300px;
+    max-height: 360px;
     object-fit: contain;
     filter: none;
 }
@@ -1459,10 +1502,10 @@ a.trens-card-status:focus-visible {
 .route-info-panel {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
+    gap: 0.45rem;
     padding: 0.5rem 0;
     color: #0d0d0d;
-    font-size: 1.05rem;
+    font-size: 1.08rem;
 }
 
 .route-info-row {

@@ -15,6 +15,22 @@ document.addEventListener('DOMContentLoaded', function () {
             btn.setAttribute('aria-label', 'Editar trem');
         });
 
+        document.querySelectorAll('.trens-card-trem').forEach(function (card) {
+            var status = (card.dataset && card.dataset.status) || '';
+            var rotaAtiva = (card.dataset && card.dataset.rotaAtiva === '1');
+            var statusBadge = card.querySelector('.trens-card-status');
+            if (statusBadge) {
+                statusBadge.classList.remove('ativo', 'inativo', 'manutencao');
+                statusBadge.classList.add((status && status.toLowerCase() === 'ativo') ? 'ativo' : 'inativo');
+            }
+
+            if (status && status.toLowerCase() === 'ativo' && rotaAtiva) {
+                var deleteBtn = card.querySelector('.btn_delete');
+                if (deleteBtn) {
+                    deleteBtn.remove();
+                }
+            }
+        });
     }
 
     function buscarTrens(termo) {
@@ -131,17 +147,42 @@ document.addEventListener('DOMContentLoaded', function () {
             var card = botao ? botao.closest('.trens-card-trem') : null;
             if (!card) return;
 
-            var id = (card.querySelector('strong') && card.querySelector('strong').textContent.replace('ID:', '').trim()) || card.dataset.id || '';
-            var nome = (card.querySelector('.trens-card-nome') && card.querySelector('.trens-card-nome').textContent.replace(/^Nome\s*:\s*/i, '').trim()) || card.dataset.nome || '';
-            var idEl = document.getElementById('visualizar_trem_id');
-            var nomeEl = document.getElementById('visualizar_trem_nome');
-            var responsavelEl = document.getElementById('visualizar_trem_responsavel');
+            var id = (card.querySelector('strong') && card.querySelector('strong').textContent.replace('ID:', '').trim()) || card.dataset.id || '0';
+            var nome = (card.querySelector('.trens-card-nome') && card.querySelector('.trens-card-nome').textContent.replace(/^Nome\s*:\s*/i, '').trim()) || card.dataset.nome || 'Nome do trem';
+            var status = card.dataset.status || 'Inativo';
+            var rota = card.dataset.rota || 'Sem rota';
+            var responsavelId = card.dataset.responsavel || '';
+            var velocidade = card.dataset.velocidade || '0';
+            var temperatura = card.dataset.temperatura || '0';
+            var consumo = card.dataset.consumo || '0';
+            var nomeResponsavel = 'Sem responsável';
 
-            if (idEl) idEl.value = id;
-            if (nomeEl) nomeEl.value = nome;
-            if (responsavelEl) {
-                responsavelEl.value = card.dataset.responsavel || '';
+            if (window.tremUsuarios && responsavelId) {
+                var usuario = window.tremUsuarios.find(function (item) {
+                    return String(item.usuario_id) === String(responsavelId);
+                });
+                if (usuario && usuario.nome) {
+                    nomeResponsavel = usuario.nome;
+                }
             }
+
+            var idEl = document.getElementById('modal_trem_visualizar_id');
+            var nomeEl = document.getElementById('modal_trem_visualizar_nome');
+            var statusEl = document.getElementById('modal_trem_visualizar_status');
+            var rotaEl = document.getElementById('modal_trem_visualizar_rota');
+            var responsavelEl = document.getElementById('modal_trem_visualizar_responsavel');
+            var velocidadeEl = document.getElementById('modal_trem_visualizar_velocidade');
+            var temperaturaEl = document.getElementById('modal_trem_visualizar_temperatura');
+            var consumoEl = document.getElementById('modal_trem_visualizar_consumo');
+
+            if (idEl) idEl.textContent = id;
+            if (nomeEl) nomeEl.textContent = nome;
+            if (statusEl) statusEl.textContent = status;
+            if (rotaEl) rotaEl.textContent = rota;
+            if (responsavelEl) responsavelEl.textContent = nomeResponsavel;
+            if (velocidadeEl) velocidadeEl.textContent = (velocidade === '' || velocidade === null || velocidade === undefined) ? '0' : velocidade;
+            if (temperaturaEl) temperaturaEl.textContent = (temperatura === '' || temperatura === null || temperatura === undefined) ? '0°C' : temperatura + '°C';
+            if (consumoEl) consumoEl.textContent = (consumo === '' || consumo === null || consumo === undefined) ? '0kWh' : consumo + 'kWh';
         });
     }
 
@@ -203,6 +244,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     document.querySelectorAll('.trens-card-cabecalho').forEach(function (header) {
+        var card = header.closest('.trens-card-trem');
+        var status = card && card.dataset ? (card.dataset.status || '') : '';
+        var rotaAtiva = card && card.dataset ? card.dataset.rotaAtiva === '1' : false;
+
+        if (status && status.toLowerCase() === 'ativo' && rotaAtiva) {
+            return;
+        }
+
         if (header.querySelector('.btn_delete')) return;
         var strong = header.querySelector('strong');
         var idText = strong ? strong.textContent.replace('ID:', '').trim() : '';

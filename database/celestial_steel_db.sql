@@ -73,6 +73,9 @@ CREATE TABLE trens (
     trem_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nome_trem VARCHAR(155) NOT NULL,
     responsavel_id INT NOT NULL,
+    velocidade DECIMAL(10,2) NOT NULL DEFAULT 0,
+    temperatura DECIMAL(10,2) NOT NULL DEFAULT 0,
+    consumo DECIMAL(10,2) NOT NULL DEFAULT 0,
     FOREIGN KEY (responsavel_id) REFERENCES usuarios(usuario_id)
 );
 

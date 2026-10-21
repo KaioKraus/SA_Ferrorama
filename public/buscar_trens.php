@@ -10,10 +10,33 @@ $termoBusca = isset($_GET['q']) ? trim((string) $_GET['q']) : '';
 $trens = [];
 
 if ($termoBusca === '') {
-    $sql = 'SELECT trem_id, nome_trem, responsavel_id FROM trens ORDER BY trem_id ASC';
+    $sql = 'SELECT 
+                t.trem_id,
+                t.nome_trem,
+                t.responsavel_id,
+                COALESCE(t.velocidade, 0) AS velocidade,
+                COALESCE(t.temperatura, 0) AS temperatura,
+                COALESCE(t.consumo, 0) AS consumo,
+                COALESCE((SELECT r.nome FROM rotas r WHERE r.trem_id = t.trem_id ORDER BY r.rota_id LIMIT 1), "Sem rota") AS rota_nome,
+                CASE WHEN EXISTS (SELECT 1 FROM rotas r WHERE r.trem_id = t.trem_id AND r.status = "Ativo") THEN "Ativo" ELSE "Inativo" END AS status_trem,
+                CASE WHEN EXISTS (SELECT 1 FROM rotas r WHERE r.trem_id = t.trem_id AND r.status = "Ativo") THEN 1 ELSE 0 END AS rota_ativa
+            FROM trens t
+            ORDER BY t.trem_id ASC';
     $resultado = mysqli_query($conexao, $sql);
 } else {
-    $sql = 'SELECT trem_id, nome_trem, responsavel_id FROM trens WHERE CAST(trem_id AS CHAR) LIKE ? OR nome_trem LIKE ? ORDER BY trem_id ASC';
+    $sql = 'SELECT 
+                t.trem_id,
+                t.nome_trem,
+                t.responsavel_id,
+                COALESCE(t.velocidade, 0) AS velocidade,
+                COALESCE(t.temperatura, 0) AS temperatura,
+                COALESCE(t.consumo, 0) AS consumo,
+                COALESCE((SELECT r.nome FROM rotas r WHERE r.trem_id = t.trem_id ORDER BY r.rota_id LIMIT 1), "Sem rota") AS rota_nome,
+                CASE WHEN EXISTS (SELECT 1 FROM rotas r WHERE r.trem_id = t.trem_id AND r.status = "Ativo") THEN "Ativo" ELSE "Inativo" END AS status_trem,
+                CASE WHEN EXISTS (SELECT 1 FROM rotas r WHERE r.trem_id = t.trem_id AND r.status = "Ativo") THEN 1 ELSE 0 END AS rota_ativa
+            FROM trens t
+            WHERE CAST(t.trem_id AS CHAR) LIKE ? OR t.nome_trem LIKE ?
+            ORDER BY t.trem_id ASC';
     $stmt = mysqli_prepare($conexao, $sql);
     if ($stmt === false) {
         http_response_code(500);
@@ -46,21 +69,29 @@ foreach ($trens as $trem):
     $tremId = (int) $trem['trem_id'];
     $nomeTrem = htmlspecialchars((string) $trem['nome_trem'], ENT_QUOTES, 'UTF-8');
     $responsavelId = (int) $trem['responsavel_id'];
-    $statusTrem = 'Inativo';
+    $statusTrem = (string) ($trem['status_trem'] ?? 'Inativo');
+    $rotaAtiva = !empty($trem['rota_ativa']) && (int) $trem['rota_ativa'] === 1;
+    $velocidadeTrem = (float) ($trem['velocidade'] ?? 0);
+    $temperaturaTrem = (float) ($trem['temperatura'] ?? 0);
+    $consumoTrem = (float) ($trem['consumo'] ?? 0);
+    $rotaNome = (string) ($trem['rota_nome'] ?? 'Sem rota');
+    $mostrarBotaoExcluir = !($statusTrem === 'Ativo' && $rotaAtiva);
     ?>
     <div class="col">
-        <article class="trens-card-trem" data-id="<?= $tremId; ?>" data-nome="<?= $nomeTrem; ?>" data-responsavel="<?= $responsavelId; ?>" data-status="<?= $statusTrem; ?>">
+        <article class="trens-card-trem" data-id="<?= $tremId; ?>" data-nome="<?= $nomeTrem; ?>" data-responsavel="<?= $responsavelId; ?>" data-status="<?= htmlspecialchars($statusTrem, ENT_QUOTES, 'UTF-8'); ?>" data-rota="<?= htmlspecialchars($rotaNome, ENT_QUOTES, 'UTF-8'); ?>" data-velocidade="<?= htmlspecialchars((string) $velocidadeTrem, ENT_QUOTES, 'UTF-8'); ?>" data-temperatura="<?= htmlspecialchars((string) $temperaturaTrem, ENT_QUOTES, 'UTF-8'); ?>" data-consumo="<?= htmlspecialchars((string) $consumoTrem, ENT_QUOTES, 'UTF-8'); ?>" data-rota-ativa="<?= $rotaAtiva ? '1' : '0'; ?>">
             <div class="trens-card-cabecalho">
                 <div class="trens-card-header-row">
-                    <span class="trens-card-status inativo"><?= $statusTrem; ?></span>
+                    <span class="trens-card-status <?= strtolower($statusTrem) === 'ativo' ? 'ativo' : 'inativo'; ?>"><?= $statusTrem; ?></span>
                     <div class="trens-card-acoes">
                         <?php if ($usuarioEhAdministrador): ?>
                             <button class="btn_edit" type="button" aria-label="Editar trem">
                                 <i class="bi bi-pencil-square"></i>
                             </button>
-                            <button class="btn_delete" type="button" data-id="<?= $tremId; ?>" aria-label="Excluir trem">
-                                <i class="bi bi-trash"></i>
-                            </button>
+                            <?php if ($mostrarBotaoExcluir): ?>
+                                <button class="btn_delete" type="button" data-id="<?= $tremId; ?>" aria-label="Excluir trem">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            <?php endif; ?>
                         <?php endif; ?>
                         <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_visualizar_trem" aria-label="Detalhes do trem">
                             <i class="bi bi-info-lg"></i>

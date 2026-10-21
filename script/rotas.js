@@ -140,9 +140,6 @@ document.addEventListener('DOMContentLoaded', function () {
         formCadastroRota.addEventListener('submit', function (e) {
             e.preventDefault();
 
-            const mensagemDiv = document.getElementById('mensagem_cadastro_rota');
-            mensagemDiv.innerHTML = '<div class="spinner-border spinner-border-sm text-primary" role="status"><span class="visually-hidden">Carregando...</span></div>';
-
             // Coleta os dados do formulário
             const pontoPartida = document.querySelector('select[name="ponto_partida"]').value.trim();
             const pontoChegada = document.querySelector('select[name="ponto_chegada"]').value.trim();
@@ -177,27 +174,47 @@ document.addEventListener('DOMContentLoaded', function () {
                 try {
                     const data = JSON.parse(text);
                     if (data.success) {
-                        mensagemDiv.innerHTML = '<div class="alert alert-success" style="background-color: #d1e7dd; border-radius: 8px; border: none;">' + data.message + '</div>';
-                        formCadastroRota.reset();
-                        // Fecha o modal após 2 segundos e recarrega a página
-                        setTimeout(() => {
+                        if (data.reload) {
+                            // Fecha o modal imediatamente e recarrega
                             const modalCadastro = bootstrap.Modal.getInstance(document.getElementById('modalAddRota'));
                             if (modalCadastro) {
                                 modalCadastro.hide();
                             }
                             location.reload();
-                        }, 2000);
+                        } else {
+                            const mensagemDiv = document.getElementById('mensagem_cadastro_rota');
+                            if (mensagemDiv) {
+                                mensagemDiv.innerHTML = '<div class="alert alert-success" style="background-color: #d1e7dd; border-radius: 8px; border: none;">' + data.message + '</div>';
+                            }
+                            formCadastroRota.reset();
+                            setTimeout(() => {
+                                const modalCadastro = bootstrap.Modal.getInstance(document.getElementById('modalAddRota'));
+                                if (modalCadastro) {
+                                    modalCadastro.hide();
+                                }
+                                location.reload();
+                            }, 2000);
+                        }
                     } else {
-                        mensagemDiv.innerHTML = '<div class="alert alert-danger" style="border-radius: 8px;">' + data.message + '</div>';
+                        const mensagemDiv = document.getElementById('mensagem_cadastro_rota');
+                        if (mensagemDiv) {
+                            mensagemDiv.innerHTML = '<div class="alert alert-danger" style="border-radius: 8px;">' + data.message + '</div>';
+                        }
                     }
                 } catch (err) {
                     console.error('Resposta inválida do servidor:', text);
-                    mensagemDiv.innerHTML = '<div class="alert alert-danger" style="border-radius: 8px;">Erro do servidor. Verifique os dados e tente novamente.</div>';
+                    const mensagemDiv = document.getElementById('mensagem_cadastro_rota');
+                    if (mensagemDiv) {
+                        mensagemDiv.innerHTML = '<div class="alert alert-danger" style="border-radius: 8px;">Erro do servidor. Verifique os dados e tente novamente.</div>';
+                    }
                 }
             })
             .catch(error => {
                 console.error('Erro:', error);
-                mensagemDiv.innerHTML = '<div class="alert alert-danger" style="border-radius: 8px;">Erro ao processar requisição</div>';
+                const mensagemDiv = document.getElementById('mensagem_cadastro_rota');
+                if (mensagemDiv) {
+                    mensagemDiv.innerHTML = '<div class="alert alert-danger" style="border-radius: 8px;">Erro ao processar requisição</div>';
+                }
             });
         });
     }

@@ -31,7 +31,8 @@ $stmtRotasAtivas = mysqli_prepare($conexao, "SELECT COUNT(*) AS quantidade FROM 
 if (!$stmtRotasAtivas) {
     error_log('Erro ao verificar rotas ativas do trem: ' . mysqli_error($conexao));
     mysqli_rollback($conexao);
-    header('Location: tela_trens.php?deleted=0');
+    $_SESSION['mensagem_erro'] = 'Erro ao verificar rotas do trem. Tente novamente.';
+    header('Location: tela_trens.php');
     exit;
 }
 
@@ -56,7 +57,8 @@ mysqli_stmt_close($stmtRotasAtivas);
 
 if ((int) ($rotasAtivas['quantidade'] ?? 0) > 0) {
     mysqli_rollback($conexao);
-    header('Location: tela_trens.php?error=active_route');
+    $_SESSION['mensagem_erro'] = 'Não é possível excluir! Este trem possui rotas ativas. Para excluí-lo, primeiro finalize ou remova as rotas associadas.';
+    header('Location: tela_trens.php');
     exit;
 }
 
@@ -135,10 +137,12 @@ mysqli_stmt_close($stmtTrem);
 
 if ($ok && $affected > 0) {
     mysqli_commit($conexao);
-    header('Location: tela_trens.php?deleted=1&routes=' . $rotasExcluidas);
+    $_SESSION['mensagem_sucesso'] = 'Trem excluído com sucesso.';
+    header('Location: tela_trens.php');
     exit;
 }
 
 mysqli_rollback($conexao);
-header('Location: tela_trens.php?deleted=0');
+$_SESSION['mensagem_erro'] = 'Erro ao excluir o trem. Tente novamente.';
+header('Location: tela_trens.php');
 exit;

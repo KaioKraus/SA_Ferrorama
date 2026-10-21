@@ -322,11 +322,6 @@ document.addEventListener('DOMContentLoaded', function () {
         formCadastroTrem.addEventListener('submit', function (event) {
             event.preventDefault();
 
-            var mensagem = document.getElementById('mensagem_cadastro_trem');
-            if (mensagem) {
-                mensagem.innerHTML = '<div class="alert alert-info py-2 mb-0">Enviando cadastro...</div>';
-            }
-
             var botaoAdicionar = formCadastroTrem.querySelector('button[type="submit"]');
             if (botaoAdicionar) botaoAdicionar.disabled = true;
 
@@ -341,11 +336,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 try {
                     var data = JSON.parse(text);
                     if (data.success) {
-                        if (mensagem) {
-                            mensagem.innerHTML = '<div class="alert alert-success py-2 mb-0">' + data.message + '</div>';
-                        }
-                        formCadastroTrem.reset();
-                        setTimeout(function () {
+                        if (data.reload) {
+                            // Fecha o modal imediatamente e recarrega
                             var modalCadastro = document.getElementById('modal_cadastro');
                             if (modalCadastro && typeof bootstrap !== 'undefined') {
                                 var modalInstance = bootstrap.Modal.getInstance(modalCadastro);
@@ -354,7 +346,22 @@ document.addEventListener('DOMContentLoaded', function () {
                                 }
                             }
                             location.reload();
-                        }, 1200);
+                        } else {
+                            if (mensagem) {
+                                mensagem.innerHTML = '<div class="alert alert-success py-2 mb-0">' + data.message + '</div>';
+                            }
+                            formCadastroTrem.reset();
+                            setTimeout(function () {
+                                var modalCadastro = document.getElementById('modal_cadastro');
+                                if (modalCadastro && typeof bootstrap !== 'undefined') {
+                                    var modalInstance = bootstrap.Modal.getInstance(modalCadastro);
+                                    if (modalInstance) {
+                                        modalInstance.hide();
+                                    }
+                                }
+                                location.reload();
+                            }, 1200);
+                        }
                         return;
                     }
                     if (mensagem) {

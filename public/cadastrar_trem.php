@@ -76,4 +76,8 @@ if (!mysqli_stmt_execute($stmt)) {
 
 $tremId = mysqli_stmt_insert_id($stmt);
 mysqli_stmt_close($stmt);
-responderCadastroTrem(201, true, 'Trem cadastrado com sucesso! ID: ' . $tremId);
+
+$_SESSION['mensagem_sucesso'] = 'Trem cadastrado com sucesso!';
+http_response_code(200);
+echo json_encode(['success' => true, 'reload' => true], JSON_UNESCAPED_UNICODE);
+exit;

@@ -116,6 +116,28 @@ mysqli_stmt_close($stmt_rotas);
     <title>Celestial Steel - Rotas</title>
 </head>
 <body>
+
+    <?php
+    // Verifica mensagens de erro ou sucesso na sessão
+    if (isset($_SESSION['mensagem_erro'])): ?>
+        <div class="alert alert-warning alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" 
+             style="z-index: 9999; max-width: 600px;" role="alert">
+            <strong>Atenção!</strong> <?php echo htmlspecialchars($_SESSION['mensagem_erro']); ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <?php unset($_SESSION['mensagem_erro']); ?>
+    <?php endif; ?>
+
+    <?php
+    if (isset($_SESSION['mensagem_sucesso'])): ?>
+        <div class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" 
+             style="z-index: 9999; max-width: 600px;" role="alert">
+            <strong>Sucesso!</strong> <?php echo htmlspecialchars($_SESSION['mensagem_sucesso']); ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <?php unset($_SESSION['mensagem_sucesso']); ?>
+    <?php endif; ?>
+
     <main>
         <nav class="nav1_mobile">
             <button class="hamburger-btn" data-bs-toggle="modal" data-bs-target="#navModal" aria-label="Abrir menu">

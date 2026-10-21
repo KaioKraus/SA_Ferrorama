@@ -66,7 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     mysqli_stmt_bind_param($stmt, 'sssiss', $ponto_partida, $ponto_chegada, $nome, $trem_id, $descricao, $status);
 
     if (mysqli_stmt_execute($stmt)) {
-        echo json_encode(['success' => true, 'message' => 'Rota cadastrada com sucesso!']);
+        $_SESSION['mensagem_sucesso'] = 'Rota cadastrada com sucesso!';
+        echo json_encode(['success' => true, 'reload' => true]);
     } else {
         echo json_encode(['success' => false, 'message' => 'Erro ao cadastrar rota']);
     }

@@ -200,15 +200,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 try {
                     const data = JSON.parse(text);
                     if (data.success) {
-                        mensagemDiv.innerHTML = '<div class="alert alert-success">' + data.message + '</div>';
-                        formCadastro.reset();
-                        setTimeout(() => {
+                        if (data.reload) {
+                            // Fecha o modal e recarrega a página
                             const modalCadastro = bootstrap.Modal.getInstance(document.getElementById('modal_cadastro'));
                             if (modalCadastro) {
                                 modalCadastro.hide();
                             }
                             location.reload();
-                        }, 2000);
+                        } else {
+                            mensagemDiv.innerHTML = '<div class="alert alert-success">' + (data.message || 'Operação realizada com sucesso') + '</div>';
+                            formCadastro.reset();
+                            setTimeout(() => {
+                                const modalCadastro = bootstrap.Modal.getInstance(document.getElementById('modal_cadastro'));
+                                if (modalCadastro) {
+                                    modalCadastro.hide();
+                                }
+                                location.reload();
+                            }, 2000);
+                        }
                     } else {
                         mensagemDiv.innerHTML = '<div class="alert alert-danger">' + data.message + '</div>';
                     }

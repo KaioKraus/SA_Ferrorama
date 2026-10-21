@@ -96,6 +96,27 @@ mysqli_stmt_close($stmtTrens);
 
 <body>
 
+    <?php
+    // Verifica mensagens de erro ou sucesso na sessão
+    if (isset($_SESSION['mensagem_erro'])): ?>
+        <div class="alert alert-warning alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" 
+             style="z-index: 9999; max-width: 600px;" role="alert">
+            <strong>Atenção!</strong> <?php echo htmlspecialchars($_SESSION['mensagem_erro']); ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <?php unset($_SESSION['mensagem_erro']); ?>
+    <?php endif; ?>
+
+    <?php
+    if (isset($_SESSION['mensagem_sucesso'])): ?>
+        <div class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" 
+             style="z-index: 9999; max-width: 600px;" role="alert">
+            <strong>Sucesso!</strong> <?php echo htmlspecialchars($_SESSION['mensagem_sucesso']); ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <?php unset($_SESSION['mensagem_sucesso']); ?>
+    <?php endif; ?>
+
 <?php if (empty($usuarioEhAdministrador) || !$usuarioEhAdministrador): ?>
 <style>
     .btn_delete { display: none !important; }
@@ -159,21 +180,6 @@ mysqli_stmt_close($stmtTrens);
 
         <section class="conteudo trens-conteudo">
             <div class="trens-painel">
-                <?php if (isset($_GET['deleted']) && $_GET['deleted'] === '1'): ?>
-                    <?php $rotasExcluidas = filter_var($_GET['routes'] ?? 0, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) ?: 0; ?>
-                    <div class="alert alert-success" role="status">
-                        Trem excluído com sucesso.
-                        <?php if ($rotasExcluidas === 1): ?>
-                            1 rota vinculada também foi excluída.
-                        <?php elseif ($rotasExcluidas > 1): ?>
-                            <?= $rotasExcluidas; ?> rotas vinculadas também foram excluídas.
-                        <?php endif; ?>
-                    </div>
-                <?php elseif (isset($_GET['error']) && $_GET['error'] === 'active_route'): ?>
-                    <div class="alert alert-warning" role="alert">Não é possível excluir um trem que possui rota ativa. Inative ou remova a rota antes de tentar novamente.</div>
-                <?php elseif (isset($_GET['deleted']) && $_GET['deleted'] === '0'): ?>
-                    <div class="alert alert-danger" role="alert">Não foi possível excluir o trem e suas dependências. Nenhuma alteração foi aplicada.</div>
-                <?php endif; ?>
 
                 <div class="trens-topo d-flex align-items-center justify-content-between">
                     <form method="GET" action="tela_trens.php" class="trens-filtros" autocomplete="off">
@@ -436,6 +442,27 @@ mysqli_stmt_close($stmtTrens);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../script/nav.js"></script>
     <script src="../script/trens.js"></script>
+    <script>
+        // Auto-fechar alertas após alguns segundos
+        document.addEventListener('DOMContentLoaded', function() {
+            const alertWarning = document.querySelector('.alert-warning');
+            const alertSuccess = document.querySelector('.alert-success');
+            
+            if (alertWarning) {
+                setTimeout(function() {
+                    const bsAlert = bootstrap.Alert.getOrCreateInstance(alertWarning);
+                    bsAlert.close();
+                }, 7000); // 7 segundos para avisos
+            }
+            
+            if (alertSuccess) {
+                setTimeout(function() {
+                    const bsAlert = bootstrap.Alert.getOrCreateInstance(alertSuccess);
+                    bsAlert.close();
+                }, 4000); // 4 segundos para sucesso
+            }
+        });
+    </script>
 </body>
 
 </html>

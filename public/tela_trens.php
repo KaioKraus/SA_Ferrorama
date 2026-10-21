@@ -274,7 +274,7 @@ while ($trem = mysqli_fetch_assoc($resultadoTrens)) {
                             <div class="row mb-4">
                                 <div class="col">
                                     <div class="input-field">
-                                        <input required="" autocomplete="off" type="text" id="modal_trem_id" readonly />
+                                        <input required="" autocomplete="off" type="text" id="modal_trem_id" class="form-control" readonly aria-readonly="true" tabindex="-1" />
                                         <label for="modal_trem_id">ID do Trem</label>
                                     </div>
                                 </div>

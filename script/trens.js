@@ -110,15 +110,39 @@ document.addEventListener('DOMContentLoaded', function () {
         var dias = card.dataset.dias || 'Segunda, Quarta, Sexta';
         var responsavel = card.dataset.responsavel || '';
 
-        if (idEl) idEl.value = id;
+        if (idEl) {
+            idEl.value = id;
+            idEl.classList.toggle('has-value', !!id);
+        }
         if (hiddenIdEl) hiddenIdEl.value = id;
-        if (nomeEl) nomeEl.value = nome;
-        if (partidaEl) partidaEl.value = partida;
-        if (chegadaEl) chegadaEl.value = chegada;
-        if (horaPartidaEl) horaPartidaEl.value = horaPartida;
-        if (horaChegadaEl) horaChegadaEl.value = horaChegada;
-        if (diasEl) diasEl.value = dias;
-        if (statusEl) statusEl.value = status;
+        if (nomeEl) {
+            nomeEl.value = nome;
+            nomeEl.classList.toggle('has-value', !!nome);
+        }
+        if (partidaEl) {
+            partidaEl.value = partida;
+            partidaEl.classList.toggle('has-value', !!partida);
+        }
+        if (chegadaEl) {
+            chegadaEl.value = chegada;
+            chegadaEl.classList.toggle('has-value', !!chegada);
+        }
+        if (horaPartidaEl) {
+            horaPartidaEl.value = horaPartida;
+            horaPartidaEl.classList.toggle('has-value', !!horaPartida);
+        }
+        if (horaChegadaEl) {
+            horaChegadaEl.value = horaChegada;
+            horaChegadaEl.classList.toggle('has-value', !!horaChegada);
+        }
+        if (diasEl) {
+            diasEl.value = dias;
+            diasEl.classList.toggle('has-value', !!dias);
+        }
+        if (statusEl) {
+            statusEl.value = status;
+            statusEl.classList.toggle('has-value', !!status);
+        }
 
         if (responsavelEl) {
             responsavelEl.disabled = !isAdmin;
@@ -128,6 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 responsavelEl.selectedIndex = 0;
             }
+            responsavelEl.classList.toggle('has-value', !!responsavel);
         }
 
         configurarPermissaoModal();

@@ -81,23 +81,28 @@ document.addEventListener('DOMContentLoaded', function () {
         const nome = cells[0] ? cells[0].textContent.trim() : '';
         const email = cells[1] ? cells[1].textContent.trim() : '';
         const cpf = cells[2] ? cells[2].textContent.trim() : '';
-        const permissaoText = cells[3] ? cells[3].textContent.trim().toLowerCase() : '';
+        const telefone = cells[3] ? cells[3].textContent.trim() : '';
+        const permissaoText = cells[4] ? cells[4].textContent.trim().toLowerCase() : '';
 
         // Preenche os inputs do modal
         const inputId = document.getElementById('input_user_id');
-        const inputNome = document.getElementById('input_nome');
         const inputCpf = document.getElementById('input_cpf');
         const inputEmail = document.getElementById('input_email');
         const inputTelefone = document.getElementById('input_telefone');
+        const inputNome = document.getElementById('input_nome');
         const inputSenha = document.getElementById('input_senha');
+        const colSenha = document.querySelector('#row_senha_nome .col.pe-2'); // Coluna da senha
         const radioAdmin = document.getElementById('admin');
         const radioFunc = document.getElementById('funcionario');
 
-        if (inputNome) inputNome.value = nome;
         if (inputCpf) inputCpf.value = cpf;
         if (inputEmail) inputEmail.value = email;
-        if (inputTelefone) inputTelefone.value = '';
-        if (inputSenha) inputSenha.value = '';
+        if (inputTelefone) inputTelefone.value = telefone;
+        if (inputNome) inputNome.value = nome;
+
+        // Esconde apenas a COLUNA da senha (mantém o nome visível)
+        if (colSenha) colSenha.style.display = 'none';
+        if (inputSenha) inputSenha.required = false;
 
         // Tenta identificar permissão pelo texto da célula
         if (permissaoText.includes('admin')) {
@@ -114,10 +119,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const modalEl = document.getElementById('modal_cadastro');
         const modalTitle = document.getElementById('label_modal_cadastro');
         const submitBtn = document.querySelector('#form_cadastro_user .btn_adicionar');
-        if (modalTitle) modalTitle.textContent = 'Editar Usuário';
+        if (modalTitle) modalTitle.textContent = 'Edição de Usuário';
         if (submitBtn) submitBtn.textContent = 'Salvar';
-        // senha não obrigatória em edição
-        if (inputSenha) inputSenha.required = false;
 
         if (modalEl && typeof bootstrap !== 'undefined') {
             const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
@@ -132,14 +135,22 @@ document.addEventListener('DOMContentLoaded', function () {
             const modalTitle = document.getElementById('label_modal_cadastro');
             const submitBtn = document.querySelector('#form_cadastro_user .btn_adicionar');
             const form = document.getElementById('form_cadastro_user');
+            
             if (modalTitle) modalTitle.textContent = 'Cadastro de Usuário';
             if (submitBtn) submitBtn.textContent = 'Adicionar';
             if (form) form.reset();
-            // senha obrigatória no cadastro
+            
+            // Mostra a coluna da senha novamente
+            const colSenha = document.querySelector('#row_senha_nome .col.pe-2');
+            if (colSenha) colSenha.style.display = '';
+            
+            // Senha obrigatória no cadastro
             const senhaInput = document.getElementById('input_senha');
             if (senhaInput) senhaInput.required = true;
+            
             const inputId = document.getElementById('input_user_id');
             if (inputId) inputId.value = '';
+            
             const mensagemDiv = document.getElementById('mensagem_cadastro');
             if (mensagemDiv) mensagemDiv.innerHTML = '';
         });
@@ -154,29 +165,32 @@ document.addEventListener('DOMContentLoaded', function () {
             const mensagemDiv = document.getElementById('mensagem_cadastro');
             mensagemDiv.innerHTML = '<div class="spinner-border spinner-border-sm text-primary" role="status"><span class="visually-hidden">Carregando...</span></div>';
 
-            // Coleta os dados do formulário
             const nome = document.getElementById('input_nome').value.trim();
             const cpf = document.getElementById('input_cpf').value.trim();
             const email = document.getElementById('input_email').value.trim();
             const telefone = document.getElementById('input_telefone').value.trim();
             const senha = document.getElementById('input_senha').value.trim();
-            
-            // Verifica qual permissão está selecionada
             const permissao = document.getElementById('admin').checked ? 'admin' : 'funcionario';
 
-            // Cria o FormData
             const formData = new FormData();
             formData.append('nome', nome);
             formData.append('cpf', cpf);
             formData.append('email', email);
-            // inclui id quando em modo edição (campo hidden)
-            const userId = document.getElementById('input_user_id') ? document.getElementById('input_user_id').value : '';
-            if (userId) formData.append('id', userId);
             formData.append('telefone', telefone);
-            formData.append('senha', senha);
             formData.append('permissao', permissao);
+            
+            const userId = document.getElementById('input_user_id').value;
+            if (userId) {
+                formData.append('id', userId);
+                if (senha) {
+                    formData.append('senha', senha);
+                } else {
+                    formData.append('senha', '');
+                }
+            } else {
+                formData.append('senha', senha);
+            }
 
-            // Envia via fetch
             fetch('cadastrar_usuario.php', {
                 method: 'POST',
                 body: formData
@@ -188,7 +202,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (data.success) {
                         mensagemDiv.innerHTML = '<div class="alert alert-success">' + data.message + '</div>';
                         formCadastro.reset();
-                        // Fecha o modal após 2 segundos e recarrega a página
                         setTimeout(() => {
                             const modalCadastro = bootstrap.Modal.getInstance(document.getElementById('modal_cadastro'));
                             if (modalCadastro) {

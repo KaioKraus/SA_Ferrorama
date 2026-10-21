@@ -53,9 +53,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    if (strlen($senha) < 8) {
-        echo json_encode(['success' => false, 'message' => 'A senha deve ter no mínimo 8 caracteres']);
-        exit;
+    // Validação de senha: obrigatória no cadastro, opcional na edição
+    if ($id > 0) {
+        // Modo edição: só valida se a senha foi preenchida
+        if (!empty($senha) && strlen($senha) < 8) {
+            echo json_encode(['success' => false, 'message' => 'A senha deve ter no mínimo 8 caracteres']);
+            exit;
+        }
+    } else {
+        // Modo cadastro: senha obrigatória
+        if (strlen($senha) < 8) {
+            echo json_encode(['success' => false, 'message' => 'A senha deve ter no mínimo 8 caracteres']);
+            exit;
+        }
     }
 
     // Verifica se o email já existe (ignora o próprio usuário em edição)

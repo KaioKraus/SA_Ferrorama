@@ -222,8 +222,8 @@ if (!$resultado) {
                             <div class="row mb-4">
                                 <div class="col pe-2">
                                     <div class="input-field">
-                                        <input required="" autocomplete="off" type="text" id="input_nome" class="form-control" />
-                                        <label for="input_nome">Nome</label>
+                                        <input required="" autocomplete="off" type="text" id="input_telefone" class="form-control" />
+                                        <label for="input_telefone">Telefone</label>
                                     </div>
                                 </div>
                                 <div class="col ps-2">
@@ -234,7 +234,7 @@ if (!$resultado) {
                                 </div>
                             </div>
 
-                            <div class="row mb-4">
+                            <div class="row mb-4" id="row_senha_nome">
                                 <div class="col pe-2">
                                     <div class="input-field">
                                         <input required="" autocomplete="off" type="password" id="input_senha" class="form-control pe-5" minlength="8" />
@@ -246,8 +246,8 @@ if (!$resultado) {
                                 </div>
                                 <div class="col ps-2">
                                     <div class="input-field">
-                                        <input required="" autocomplete="off" type="text" id="input_telefone" class="form-control" />
-                                        <label for="input_telefone">Telefone</label>
+                                        <input required="" autocomplete="off" type="text" id="input_nome" class="form-control" />
+                                        <label for="input_nome">Nome</label>
                                     </div>
                                 </div>
                             </div>

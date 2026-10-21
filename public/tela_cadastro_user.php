@@ -110,6 +110,7 @@ if (!$resultado) {
                     <button class="btn trens-btn-add" type="button" data-bs-toggle="modal" data-bs-target="#modal_cadastro">Adicionar</button>
                     <?php endif; ?>
                 </div>
+                <div class="table-wrapper">
                 <table class="table">
                     <thead>
                         <tr>
@@ -203,6 +204,7 @@ if (!$resultado) {
 
 </tbody>
                 </table>
+                </div>
             </div>
         </section>
 

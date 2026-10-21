@@ -1,10 +1,29 @@
 <?php
 session_start();
 include __DIR__ . '/validar_acesso.php';
+
 $usuarioNome = $_SESSION['usuario_nome'] ?? 'Usuário';
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Expires: 0');
+
+$resultadoTrens = mysqli_query($conexao, 'SELECT trem_id, nome_trem FROM trens ORDER BY nome_trem ASC');
+if (!$resultadoTrens) {
+    error_log('Erro ao consultar trens para filtros de relatório: ' . mysqli_error($conexao));
+    http_response_code(500);
+    die('Não foi possível carregar os filtros de relatórios.');
+}
+$trensRelatorio = mysqli_fetch_all($resultadoTrens, MYSQLI_ASSOC);
+mysqli_free_result($resultadoTrens);
+
+$resultadoTiposSensor = mysqli_query($conexao, 'SELECT DISTINCT tipo_dado FROM sensores WHERE tipo_dado <> "" ORDER BY tipo_dado ASC');
+if (!$resultadoTiposSensor) {
+    error_log('Erro ao consultar tipos de sensores para filtros de relatório: ' . mysqli_error($conexao));
+    http_response_code(500);
+    die('Não foi possível carregar os filtros de relatórios.');
+}
+$tiposSensorRelatorio = mysqli_fetch_all($resultadoTiposSensor, MYSQLI_ASSOC);
+mysqli_free_result($resultadoTiposSensor);
 ?>
 
 <!DOCTYPE html>
@@ -87,8 +106,13 @@ header('Expires: 0');
                             </button>
                         </div>
                         <div class="filtro_busca">
-                            <select class="form-select filtro_busca_select" aria-label="Filtrar por tipo de falha">
-                                <option selected>Tipo de Falha</option>
+                            <select id="filtro_tipo_relatorio" class="form-select filtro_busca_select" aria-label="Filtrar por tipo de sensor">
+                                <option value="todos" selected>Todos os tipos</option>
+                                <?php foreach ($tiposSensorRelatorio as $tipoSensor): ?>
+                                    <option value="<?= htmlspecialchars($tipoSensor['tipo_dado'], ENT_QUOTES, 'UTF-8'); ?>">
+                                        <?= htmlspecialchars($tipoSensor['tipo_dado'], ENT_QUOTES, 'UTF-8'); ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                     </div>
@@ -100,51 +124,13 @@ header('Expires: 0');
                             <tr>
                                 <th scope="col">ID</th>
                                 <th scope="col">Data</th>
-                                <th scope="col">Tipo de falha</th>
-                                <th scope="col">Ações</th>
+                                <th scope="col">Trem</th>
+                                <th scope="col">Sensor</th>
+                                <th scope="col">Falha</th>
                             </tr>
                         </thead>
                         <tbody id="tbody_relatorios">
-                        <tr data-id="1001" data-trem="5823" data-sensor="temperatura" data-data="2026-09-10" data-falha="temperatura elevada">
-                            <td>1001</td>
-                            <td>10/09/2026</td>
-                            <td>Temperatura elevada</td>
-                            <td>
-                                <?php if ($usuarioEhAdministrador): ?>
-                                <button class="btn_delete" type="button" aria-label="Excluir relatório 1001" title="Excluir relatório"><i class="bi bi-trash"></i></button>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                        <tr data-id="1002" data-trem="5824" data-sensor="vibracao" data-data="2026-09-12" data-falha="vibração excessiva">
-                            <td>1002</td>
-                            <td>12/09/2026</td>
-                            <td>Vibração excessiva</td>
-                            <td>
-                                <?php if ($usuarioEhAdministrador): ?>
-                                <button class="btn_delete" type="button" aria-label="Excluir relatório 1002" title="Excluir relatório"><i class="bi bi-trash"></i></button>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                        <tr data-id="1003" data-trem="5823" data-sensor="velocidade" data-data="2026-09-15" data-falha="desaceleração brusca">
-                            <td>1003</td>
-                            <td>15/09/2026</td>
-                            <td>Desaceleração brusca</td>
-                            <td>
-                                <?php if ($usuarioEhAdministrador): ?>
-                                <button class="btn_delete" type="button" aria-label="Excluir relatório 1003" title="Excluir relatório"><i class="bi bi-trash"></i></button>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                        <tr data-id="1004" data-trem="5825" data-sensor="pressao" data-data="2026-09-20" data-falha="pressão anormal">
-                            <td>1004</td>
-                            <td>20/09/2026</td>
-                            <td>Pressão anormal</td>
-                            <td>
-                                <?php if ($usuarioEhAdministrador): ?>
-                                <button class="btn_delete" type="button" aria-label="Excluir relatório 1004" title="Excluir relatório"><i class="bi bi-trash"></i></button>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
+                            <tr><td colspan="5" class="text-center text-muted">Carregando relatórios...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -160,9 +146,11 @@ header('Expires: 0');
                             <label for="relatorio_trem">Trem</label>
                             <select id="relatorio_trem" class="form-select input-relatorio" required>
                                 <option value="todos" selected>Todos os trens</option>
-                                <option value="5823">Trem 5823</option>
-                                <option value="5824">Trem 5824</option>
-                                <option value="5825">Trem 5825</option>
+                                <?php foreach ($trensRelatorio as $trem): ?>
+                                    <option value="<?= (int) $trem['trem_id']; ?>">
+                                        <?= htmlspecialchars($trem['nome_trem'], ENT_QUOTES, 'UTF-8'); ?> (ID <?= (int) $trem['trem_id']; ?>)
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
 
@@ -170,10 +158,11 @@ header('Expires: 0');
                             <label for="relatorio_sensor">Sensor</label>
                             <select id="relatorio_sensor" class="form-select input-relatorio" required>
                                 <option value="todos" selected>Todos os sensores</option>
-                                <option value="temperatura">Temperatura</option>
-                                <option value="vibracao">Vibração</option>
-                                <option value="velocidade">Velocidade</option>
-                                <option value="pressao">Pressão</option>
+                                <?php foreach ($tiposSensorRelatorio as $tipoSensor): ?>
+                                    <option value="<?= htmlspecialchars($tipoSensor['tipo_dado'], ENT_QUOTES, 'UTF-8'); ?>">
+                                        <?= htmlspecialchars($tipoSensor['tipo_dado'], ENT_QUOTES, 'UTF-8'); ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                     </div>
@@ -235,9 +224,11 @@ header('Expires: 0');
                             <label for="relatorio_modal_trem" class="form-label fw-bold text-dark">Trem</label>
                             <select id="relatorio_modal_trem" class="form-select" required>
                                 <option value="todos" selected>Todos os trens</option>
-                                <option value="5823">Trem 5823</option>
-                                <option value="5824">Trem 5824</option>
-                                <option value="5825">Trem 5825</option>
+                                <?php foreach ($trensRelatorio as $trem): ?>
+                                    <option value="<?= (int) $trem['trem_id']; ?>">
+                                        <?= htmlspecialchars($trem['nome_trem'], ENT_QUOTES, 'UTF-8'); ?> (ID <?= (int) $trem['trem_id']; ?>)
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
 
@@ -245,10 +236,11 @@ header('Expires: 0');
                             <label for="relatorio_modal_sensor" class="form-label fw-bold text-dark">Sensor</label>
                             <select id="relatorio_modal_sensor" class="form-select" required>
                                 <option value="todos" selected>Todos os sensores</option>
-                                <option value="temperatura">Temperatura</option>
-                                <option value="vibracao">Vibração</option>
-                                <option value="velocidade">Velocidade</option>
-                                <option value="pressao">Pressão</option>
+                                <?php foreach ($tiposSensorRelatorio as $tipoSensor): ?>
+                                    <option value="<?= htmlspecialchars($tipoSensor['tipo_dado'], ENT_QUOTES, 'UTF-8'); ?>">
+                                        <?= htmlspecialchars($tipoSensor['tipo_dado'], ENT_QUOTES, 'UTF-8'); ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
 
@@ -264,7 +256,7 @@ header('Expires: 0');
                         </div>
 
                         <div class="text-center mt-4">
-                            <button type="submit" class="btn btn_adicionar px-5">Adicionar</button>
+                            <button type="submit" class="btn btn_adicionar px-5">Gerar relatório</button>
                             <div id="mensagem_relatorio_modal" class="mt-3"></div>
                         </div>
                     </form>

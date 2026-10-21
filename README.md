@@ -68,7 +68,7 @@ Possui uma área destinada à visualização das informações dos sensores.
 
 ### Relatórios
 
-O sistema possui uma tela para visualizar os relatórios disponíveis.
+A tela consulta os relatórios persistidos no banco, relacionando cada registro à falha, ao trem e ao sensor correspondente. É possível gerar uma consulta por trem, tipo de dado do sensor e período (datas inicial e final inclusivas); os filtros de busca e tipo também podem ser aplicados à lista carregada. A consulta é feita no servidor com parâmetros preparados.
 
 ---
 

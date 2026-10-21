@@ -1,7 +1,58 @@
 <?php
-$usuarioNome = $_SESSION['usuario_nome'] ?? '';
-$usuarioEmail = $_SESSION['usuario_email'] ?? '';
 $usuarioId = $_SESSION['usuario_id'] ?? 0;
+$usuarioNome = '';
+$usuarioEmail = '';
+$usuarioCpf = '';
+$usuarioTelefone = '';
+$usuarioCargoId = 0;
+$usuarioPermissao = 'Não informado';
+
+// Busca dados completos do usuário no banco
+if ($usuarioId > 0) {
+    require_once __DIR__ . '/../infra/conexao.php';
+    
+    $sql = "SELECT u.nome, u.email, u.cpf, u.telefone, u.cargo_id, c.nome AS cargo_nome 
+            FROM usuarios u 
+            LEFT JOIN Cargos c ON u.cargo_id = c.id 
+            WHERE u.usuario_id = ? 
+            LIMIT 1";
+    
+    if ($stmt = mysqli_prepare($conexao, $sql)) {
+        mysqli_stmt_bind_param($stmt, 'i', $usuarioId);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $userData = mysqli_fetch_assoc($result);
+        mysqli_stmt_close($stmt);
+        
+        if ($userData) {
+            $usuarioNome = $userData['nome'] ?? '';
+            $usuarioEmail = $userData['email'] ?? '';
+            $usuarioCpf = $userData['cpf'] ?? '';
+            $usuarioTelefone = $userData['telefone'] ?? '';
+            $usuarioCargoId = (int)($userData['cargo_id'] ?? 0);
+            $usuarioPermissao = $userData['cargo_nome'] ?? 'Não informado';
+        }
+    }
+}
+
+// Formata CPF
+if (strlen($usuarioCpf) === 11) {
+    $usuarioCpf = substr($usuarioCpf, 0, 3) . '.' .
+                  substr($usuarioCpf, 3, 3) . '.' .
+                  substr($usuarioCpf, 6, 3) . '-' .
+                  substr($usuarioCpf, 9, 2);
+} else {
+    $usuarioCpf = $usuarioCpf ?: 'Não informado';
+}
+
+// Formata Telefone
+if (strlen($usuarioTelefone) === 11) {
+    $usuarioTelefone = '(' . substr($usuarioTelefone, 0, 2) . ') ' .
+                       substr($usuarioTelefone, 2, 5) . '-' .
+                       substr($usuarioTelefone, 7, 4);
+} else {
+    $usuarioTelefone = $usuarioTelefone ?: 'Não informado';
+}
 ?>
 
 
@@ -25,11 +76,11 @@ $usuarioId = $_SESSION['usuario_id'] ?? 0;
                                 <div class="perfil_avatar">FOTO</div>
 
                                 <div class="perfil_data">
-                                    <div class="perfil_row"><span class="perfil_label">Nome:</span> <?= htmlspecialchars($usuarioNome ?: 'Administrador', ENT_QUOTES) ?></div>
-                                    <div class="perfil_row"><span class="perfil_label">Email:</span> <?= htmlspecialchars($usuarioEmail ?: 'admin@teste.com', ENT_QUOTES) ?></div>
-                                    <div class="perfil_row"><span class="perfil_label">Permissão:</span> administrador</div>
-                                    <div class="perfil_row"><span class="perfil_label">Telefone:</span> (99) 99999-9999</div>
-                                    <div class="perfil_row"><span class="perfil_label">CPF:</span> 999.999.999-99</div>
+                                    <div class="perfil_row"><span class="perfil_label">Nome:</span> <?= htmlspecialchars($usuarioNome, ENT_QUOTES) ?></div>
+                                    <div class="perfil_row"><span class="perfil_label">Email:</span> <?= htmlspecialchars($usuarioEmail, ENT_QUOTES) ?></div>
+                                    <div class="perfil_row"><span class="perfil_label">Permissão:</span> <?= htmlspecialchars($usuarioPermissao, ENT_QUOTES) ?></div>
+                                    <div class="perfil_row"><span class="perfil_label">Telefone:</span> <?= htmlspecialchars($usuarioTelefone, ENT_QUOTES) ?></div>
+                                    <div class="perfil_row"><span class="perfil_label">CPF:</span> <?= htmlspecialchars($usuarioCpf, ENT_QUOTES) ?></div>
                                 </div>
                             </div>
                         </div>

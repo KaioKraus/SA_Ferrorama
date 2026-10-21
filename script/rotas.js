@@ -55,16 +55,26 @@ document.addEventListener('DOMContentLoaded', function () {
     const filtroDestinoRota = document.getElementById('filtro_destino_rota');
     const linhasRotas = Array.from(document.querySelectorAll('.table tbody tr[data-rota-id]'));
     const tbodyRotas = document.querySelector('.table tbody');
+    const linhaRotasVaziaInicial = tbodyRotas ? tbodyRotas.querySelector('[data-empty-routes]') : null;
+
+    function normalizarPontoRota(ponto) {
+        return String(ponto || '')
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .trim()
+            .replace(/\s+/g, ' ')
+            .toLocaleLowerCase('pt-BR');
+    }
 
     function aplicarFiltroRotas() {
-        const partidaSelecionada = filtroPartidaRota ? filtroPartidaRota.value : '';
-        const destinoSelecionado = filtroDestinoRota ? filtroDestinoRota.value : '';
+        const partidaSelecionada = normalizarPontoRota(filtroPartidaRota ? filtroPartidaRota.value : '');
+        const destinoSelecionado = normalizarPontoRota(filtroDestinoRota ? filtroDestinoRota.value : '');
 
         let algumVisivel = false;
 
         linhasRotas.forEach(function (linha) {
-            const pontoPartida = (linha.cells[2] ? linha.cells[2].textContent.trim() : '');
-            const destinoRota = (linha.cells[3] ? linha.cells[3].textContent.trim() : '');
+            const pontoPartida = normalizarPontoRota(linha.dataset.pontoPartida);
+            const destinoRota = normalizarPontoRota(linha.dataset.pontoChegada);
 
             const correspondePartida = partidaSelecionada === '' || pontoPartida === partidaSelecionada;
             const correspondeDestino = destinoSelecionado === '' || destinoRota === destinoSelecionado;
@@ -75,8 +85,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         const linhaVazia = tbodyRotas ? tbodyRotas.querySelector('#linha_rota_vazia') : null;
+        if (linhaRotasVaziaInicial) {
+            linhaRotasVaziaInicial.hidden = linhasRotas.length > 0;
+        }
 
-        if (!algumVisivel) {
+        if (linhasRotas.length > 0 && !algumVisivel) {
             if (tbodyRotas && !linhaVazia) {
                 const linha = document.createElement('tr');
                 linha.id = 'linha_rota_vazia';

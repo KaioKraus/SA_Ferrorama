@@ -92,6 +92,16 @@ if ($resultado_rotas) {
         ];
     }
 }
+$pontosFiltro = array_merge(
+    $estacoes,
+    array_column($rotasBanco, 'ponto_partida'),
+    array_column($rotasBanco, 'ponto_chegada')
+);
+$pontosFiltro = array_values(array_unique(array_filter(
+    array_map(static fn($ponto) => trim((string) $ponto), $pontosFiltro),
+    static fn($ponto) => $ponto !== ''
+)));
+sort($pontosFiltro, SORT_NATURAL | SORT_FLAG_CASE);
 mysqli_stmt_close($stmt_rotas);
 ?>
 
@@ -181,22 +191,20 @@ mysqli_stmt_close($stmt_rotas);
                         </form>
 
                         <div class="filtro_busca">
-                            <select id="filtro_partida_rota" class="form-select filtro_busca_select">
-                                <option value="">Ponto de Partida</option>
-                                <option value="Estação Norte">Estação Norte</option>
-                                <option value="Estação Sul">Estação Sul</option>
-                                <option value="Estação Leste">Estação Leste</option>
-                                <option value="Estação Oeste">Estação Oeste</option>
+                            <select id="filtro_partida_rota" class="form-select filtro_busca_select" aria-label="Filtrar por ponto de partida">
+                                <option value="">Todos os pontos de partida</option>
+                                <?php foreach ($pontosFiltro as $ponto): ?>
+                                    <option value="<?= htmlspecialchars($ponto, ENT_QUOTES, 'UTF-8'); ?>"><?= htmlspecialchars($ponto, ENT_QUOTES, 'UTF-8'); ?></option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
 
                         <div class="filtro_busca">
-                            <select id="filtro_destino_rota" class="form-select filtro_busca_select">
-                                <option value="">Destino</option>
-                                <option value="Estação Norte">Estação Norte</option>
-                                <option value="Estação Sul">Estação Sul</option>
-                                <option value="Estação Leste">Estação Leste</option>
-                                <option value="Estação Oeste">Estação Oeste</option>
+                            <select id="filtro_destino_rota" class="form-select filtro_busca_select" aria-label="Filtrar por ponto de chegada">
+                                <option value="">Todos os pontos de chegada</option>
+                                <?php foreach ($pontosFiltro as $ponto): ?>
+                                    <option value="<?= htmlspecialchars($ponto, ENT_QUOTES, 'UTF-8'); ?>"><?= htmlspecialchars($ponto, ENT_QUOTES, 'UTF-8'); ?></option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                     </div>
@@ -248,7 +256,10 @@ mysqli_stmt_close($stmt_rotas);
                                 }
                                 $nomeTrem = $rota['nome_trem'] ?? 'Trem não informado';
                                 ?>
-                                <tr data-rota-id="<?= (int) ($rota['rota_id'] ?? 0); ?>">
+                                <tr
+                                    data-rota-id="<?= (int) ($rota['rota_id'] ?? 0); ?>"
+                                    data-ponto-partida="<?= htmlspecialchars((string) ($rota['ponto_partida'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
+                                    data-ponto-chegada="<?= htmlspecialchars((string) ($rota['ponto_chegada'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>">
                                     <td><?= htmlspecialchars((string) ($rota['rota_id'] ?? '')) ?></td>
                                     <td><?= htmlspecialchars((string) ($rota['nome'] ?? '')) ?></td>
                                     <td><?= htmlspecialchars((string) ($rota['ponto_partida'] ?? '')) ?></td>
@@ -273,7 +284,7 @@ mysqli_stmt_close($stmt_rotas);
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="7" class="text-center text-muted"><?= $statusFiltro !== '' ? 'Nenhuma rota encontrada com esse status.' : 'Nenhuma rota cadastrada.'; ?></td>
+                                <td colspan="7" data-empty-routes class="text-center text-muted"><?= $statusFiltro !== '' ? 'Nenhuma rota encontrada com esse status.' : 'Nenhuma rota cadastrada.'; ?></td>
                             </tr>
                         <?php endif; ?>
                     </tbody>

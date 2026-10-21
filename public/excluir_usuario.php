@@ -5,7 +5,10 @@ session_start();
 include __DIR__ . '/validar_acesso.php';
 require_once __DIR__ . '/../infra/conexao.php';
 
-// Só administradores devem chegar aqui (validar_acesso.php já redireciona quando necessário)
+if (!$usuarioEhAdministrador) {
+    http_response_code(403);
+    exit('Acesso negado. Somente administradores podem excluir usuários.');
+}
 
 // Validação básica do POST
 if (!isset($_POST['id'])) {

@@ -4,35 +4,29 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-$usuarioCargoId = filter_var($_SESSION['usuario_cargo_id'] ?? null, FILTER_VALIDATE_INT);
-$usuarioEmail = strtolower(trim($_SESSION['usuario_email'] ?? ''));
+include_once __DIR__ . '/../infra/conexao.php';
 
-if ($usuarioCargoId === false || !in_array($usuarioCargoId, [1, 2], true)) {
-    include_once __DIR__ . '/../infra/conexao.php';
-
-    $sqlCargo = 'SELECT cargo_id FROM usuarios WHERE usuario_id = ? LIMIT 1';
-    if ($stmtCargo = mysqli_prepare($conexao, $sqlCargo)) {
-        mysqli_stmt_bind_param($stmtCargo, 'i', $_SESSION['usuario_id']);
-        mysqli_stmt_execute($stmtCargo);
+$usuarioCargoId = 0;
+$sqlCargo = 'SELECT cargo_id FROM usuarios WHERE usuario_id = ? LIMIT 1';
+$stmtCargo = mysqli_prepare($conexao, $sqlCargo);
+if ($stmtCargo) {
+    mysqli_stmt_bind_param($stmtCargo, 'i', $_SESSION['usuario_id']);
+    if (mysqli_stmt_execute($stmtCargo)) {
         $resultadoCargo = mysqli_stmt_get_result($stmtCargo);
-        $usuarioCargo = mysqli_fetch_assoc($resultadoCargo);
-
-        $usuarioCargoId = filter_var($usuarioCargo['cargo_id'] ?? null, FILTER_VALIDATE_INT);
-        if ($usuarioCargoId === false) {
-            $usuarioCargoId = 0;
+        $usuarioCargo = $resultadoCargo ? mysqli_fetch_assoc($resultadoCargo) : null;
+        $cargoId = filter_var($usuarioCargo['cargo_id'] ?? null, FILTER_VALIDATE_INT);
+        if ($cargoId !== false && in_array($cargoId, [1, 2], true)) {
+            $usuarioCargoId = $cargoId;
         }
-
-        $_SESSION['usuario_cargo_id'] = (int)$usuarioCargoId;
-        mysqli_stmt_close($stmtCargo);
     } else {
-        $usuarioCargoId = 0;
+        error_log('Erro ao consultar permissão do usuário: ' . mysqli_stmt_error($stmtCargo));
     }
+    mysqli_stmt_close($stmtCargo);
+} else {
+    error_log('Erro ao preparar consulta de permissão: ' . mysqli_error($conexao));
 }
 
-if ($usuarioEmail === 'admin@teste.com' && (int)$usuarioCargoId !== 1) {
-    $usuarioCargoId = 1;
-    $_SESSION['usuario_cargo_id'] = 1;
-}
+$_SESSION['usuario_cargo_id'] = $usuarioCargoId;
 
 $usuarioEhAdministrador = ((int)$usuarioCargoId === 1);
 $usuarioEhFuncionario = ((int)$usuarioCargoId === 2);

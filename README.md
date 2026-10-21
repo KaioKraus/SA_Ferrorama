@@ -210,6 +210,7 @@ public/tela_login.php
 | RN07 | O encerramento da sessão deve remover o acesso do usuário autenticado e redirecioná-lo para a tela de login. |
 | RN08 | Cada usuário pode possuir apenas uma foto de perfil ativa por vez. |
 | RN09 | Apenas o próprio usuário poderá alterar sua senha, exceto em casos de redefinição feita por administrador. |
+| RN10 | Funcionários podem visualizar e pesquisar as informações operacionais, mas não podem acessar a tela de usuários nem cadastrar, editar ou excluir registros; administradores têm acesso a todas as telas e funções. |
 
 ---
 

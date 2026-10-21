@@ -1423,13 +1423,56 @@ a.trens-card-status:focus-visible {
 
 .dashboard-graficos {
     margin: 20px 65px 0px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: space-between;
 }
 
-.dashboard-graficos div {
+.dashboard-graficos > div {
     background-color: #EAEAEA;
     height: 142px;
     width: 305px;
     border-radius: 10px;
+}
+
+.dashboard-graficos .grafico-velocidade {
+    flex: 1 1 100%;
+    min-width: 0;
+    height: 320px;
+    padding: 18px 22px;
+    background-color: #EAEAEA;
+    border-radius: 10px;
+    color: #072727;
+}
+
+.grafico-velocidade-cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 10px;
+}
+
+.grafico-velocidade-cabecalho h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.grafico-velocidade-cabecalho span,
+.grafico-velocidade-mensagem {
+    color: #555;
+    font-size: 0.9rem;
+}
+
+.grafico-velocidade-area {
+    position: relative;
+    height: 245px;
+}
+
+.grafico-velocidade-mensagem {
+    margin: 8px 0 0;
 }
 
 .trilho {
@@ -1630,30 +1673,44 @@ a.trens-card-status:focus-visible {
     padding: 24px;
 }
 
-.card_relatorios .table {
-    border-collapse: separate;
-    border-spacing: 0 12px;
+.relatorios-tabela-container {
     width: 100%;
+    border-radius: 10px;
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
 }
 
-.card_relatorios .table thead th {
+.card_relatorios .relatorios-table {
+    width: 100%;
+    min-width: 540px;
+    margin: 0;
+    border-collapse: collapse;
+    background-color: #ffffff;
+}
+
+.card_relatorios .relatorios-table thead th {
+    padding: 12px;
+    border-bottom: 2px solid #dee2e6;
+    background-color: #f4f6f6;
     color: #072727;
     font-weight: 700;
-    background: transparent;
-    padding: 8px 12px;
-    text-align: left;
+    text-align: center;
 }
 
-.card_relatorios .table tbody tr {
-    background: #D9D9D9 !important;
-    border-radius: 10px !important; 
-    box-shadow: 0 6px 18px rgba(7, 39, 39, 0.04) !important;
-}
-
-.card_relatorios .table tbody td {
-    padding: 12px 14px;
-    vertical-align: middle;
+.card_relatorios .relatorios-table tbody td {
+    padding: 12px;
+    border-bottom: 1px solid #dee2e6;
     color: #333333;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.card_relatorios .relatorios-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.card_relatorios .relatorios-table tbody td:last-child {
+    width: 100px;
 }
 
 .btn-detalhes-relatorio {
@@ -1696,12 +1753,6 @@ a.trens-card-status:focus-visible {
     margin-top: 10px;
 }
 
-.relatorios-table {
-    display: table;
-    width: 100%;
-    margin-top: 10px;
-}
-
 .relatorio-card {
     background: #fff;
     border-radius: 12px;
@@ -1730,61 +1781,12 @@ a.trens-card-status:focus-visible {
     justify-content: flex-start;
 }
 
-.relatorios-table {
-    display: table !important;
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.relatorios-table thead th,
-.relatorios-table tbody td {
-    display: table-cell !important;
-    vertical-align: middle !important;
-        text-align: center !important;
-    padding: 12px 10px;
-    white-space: nowrap;
-}
-
-.relatorios-table tbody tr {
-    display: table-row !important;
-}
-
 .relatorios-table .btn-detalhes-relatorio {
     display: none !important;
 }
 
-.card_relatorios .table {
-    border-collapse: collapse !important;
-    border-spacing: 0 !important;
-    width: 100%;
-}
-
-.card_relatorios .table tbody tr {
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    margin-bottom: 0 !important;
-}
-
-.relatorios-table tbody tr {
-    border-bottom: 1px solid #ececec;
-}
-
-.relatorios-table tbody tr:last-child {
-    border-bottom: none;
-}
-
-.card_relatorios .table.relatorios-table,
-.card_relatorios .table,
-.relatorios-table {
-    
-    background-color: transparent;
-}
-
-
 @media (min-width: 821px) {
     .card_relatorios { background-color: #D9D9D9 !important; }
-    .card_relatorios .table, .relatorios-table { background-color: #ffff !important; }
-    .relatorios-table tbody tr { background: transparent !important; box-shadow: none !important; }
 }
 
 @media (max-width: 1024px) {
@@ -1933,9 +1935,16 @@ a.trens-card-status:focus-visible {
         justify-content: center;
     }
 
-    .dashboard-graficos div {
+    .dashboard-graficos > div {
         width: min(100%, 260px);
         height: 138px;
+    }
+
+    .dashboard-graficos .grafico-velocidade {
+        width: 100%;
+        height: 300px;
+        flex-basis: 100%;
+        padding: 16px;
     }
 
     .trilho {
@@ -1955,9 +1964,7 @@ a.trens-card-status:focus-visible {
         gap: 14px;
     }
 
-    .card_relatorios .table {
-        display: block;
-        width: 100%;
+    .relatorios-tabela-container {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
     }
@@ -2121,6 +2128,12 @@ a.trens-card-status:focus-visible {
         flex-wrap: wrap;
     }
 
+    .dashboard-graficos .grafico-velocidade {
+        width: 100%;
+        height: 300px;
+        flex-basis: 100%;
+    }
+
     .dashboard-topo {
         height: 0px;
         margin: 0;
@@ -2163,76 +2176,9 @@ a.trens-card-status:focus-visible {
         max-width: 100%;
     }
 
-    .card_relatorios .table {
-        display: block;
-        width: 100%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .relatorios-grid {
-        display: grid !important;
-    }
-
-    .relatorios-table {
-        display: none !important;
-    }
-
-    .card_relatorios .table thead th,
-    .card_relatorios .table tbody td {
-        white-space: nowrap;
-    }
-
-
-    .card_relatorios .table thead th:first-child,
-    .card_relatorios .table tbody td:first-child {
-        display: none;
-    }
-
-    .card_relatorios .table tbody tr {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 8px;
-        border-bottom: 1px solid #ececec;
-    }
-
-    .card_relatorios .table tbody td {
-        display: block;
-        flex: 1 1 0;
-        min-width: 0;
-    }
-
-    .card_relatorios .table tbody td:last-child {
-        flex: 0 0 auto;
-        display: flex;
-        gap: 8px;
-        align-items: center;
-    }
-
     .btn-detalhes-relatorio,
     .btn_delete {
         white-space: nowrap;
-    }
-
-    .card_relatorios .table tbody tr {
-        background: #D9D9D9;
-        padding: 10px;
-        box-shadow: 0 6px 18px rgba(7, 39, 39, 0.04);
-        border-radius: 10px;
-        margin-bottom: 12px;
-    }
-
-    .card_relatorios .table tbody td {
-        padding: 8px 6px;
-    }
-
-    .card_relatorios .table tbody td:last-child {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        margin-top: 6px;
     }
 
 }

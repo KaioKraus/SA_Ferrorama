@@ -51,7 +51,7 @@ Possui uma tela para realizar o cadastro de novos usuários.
 
 ### Dashboard
 
-O dashboard funciona como o painel principal do sistema, permitindo acessar as principais funcionalidades.
+O dashboard funciona como o painel principal do sistema, permitindo acessar as principais funcionalidades. O gráfico de velocidade consulta os valores atuais dos trens periodicamente e atualiza o histórico exibido sem recarregar a página.
 
 ### Trens
 
@@ -148,6 +148,8 @@ A tela de login está localizada em:
 ```text
 public/tela_login.php
 ```
+
+Se o banco já estiver criado e a tela de rotas informar que a tabela `estacoes` não existe, execute `database/migracao_estacoes.sql` no banco `celestial_steel_db` pelo phpMyAdmin ou cliente MySQL.
 
 ---
 

@@ -94,23 +94,24 @@ header('Expires: 0');
                     </div>
                     
                 </div>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Data</th>
-                            <th>Tipo de falha</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbody_relatorios">
+                <div class="table-responsive relatorios-tabela-container">
+                    <table class="table relatorios-table mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Data</th>
+                                <th scope="col">Tipo de falha</th>
+                                <th scope="col">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody_relatorios">
                         <tr data-id="1001" data-trem="5823" data-sensor="temperatura" data-data="2026-09-10" data-falha="temperatura elevada">
                             <td>1001</td>
                             <td>10/09/2026</td>
                             <td>Temperatura elevada</td>
                             <td>
                                 <?php if ($usuarioEhAdministrador): ?>
-                                <button class="btn_delete ms-4"><i class="bi bi-trash"></i></button>
+                                <button class="btn_delete" type="button" aria-label="Excluir relatório 1001" title="Excluir relatório"><i class="bi bi-trash"></i></button>
                                 <?php endif; ?>
                             </td>
                         </tr>
@@ -120,7 +121,7 @@ header('Expires: 0');
                             <td>Vibração excessiva</td>
                             <td>
                                 <?php if ($usuarioEhAdministrador): ?>
-                                <button class="btn_delete ms-4"><i class="bi bi-trash"></i></button>
+                                <button class="btn_delete" type="button" aria-label="Excluir relatório 1002" title="Excluir relatório"><i class="bi bi-trash"></i></button>
                                 <?php endif; ?>
                             </td>
                         </tr>
@@ -130,7 +131,7 @@ header('Expires: 0');
                             <td>Desaceleração brusca</td>
                             <td>
                                 <?php if ($usuarioEhAdministrador): ?>
-                                <button class="btn_delete ms-4"><i class="bi bi-trash"></i></button>
+                                <button class="btn_delete" type="button" aria-label="Excluir relatório 1003" title="Excluir relatório"><i class="bi bi-trash"></i></button>
                                 <?php endif; ?>
                             </td>
                         </tr>
@@ -140,12 +141,13 @@ header('Expires: 0');
                             <td>Pressão anormal</td>
                             <td>
                                 <?php if ($usuarioEhAdministrador): ?>
-                                <button class="btn_delete ms-4"><i class="bi bi-trash"></i></button>
+                                <button class="btn_delete" type="button" aria-label="Excluir relatório 1004" title="Excluir relatório"><i class="bi bi-trash"></i></button>
                                 <?php endif; ?>
                             </td>
                         </tr>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <div class="card_gerar_relatorios">

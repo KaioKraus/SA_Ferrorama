@@ -84,20 +84,21 @@ header('Expires: 0');
                 </div>
 
                 <div>
-                    <div class="dashboard-graficos d-flex justify-content-between">
-                        <div class="grafico-velocidade">
-
+                    <div class="dashboard-graficos">
+                        <section class="grafico-velocidade" aria-labelledby="titulo-grafico-velocidade">
+                            <div class="grafico-velocidade-cabecalho">
+                                <h2 id="titulo-grafico-velocidade">Velocidade dos trens</h2>
+                                <span id="status-grafico-velocidade" role="status" aria-live="polite">Carregando dados...</span>
+                            </div>
+                            <div class="grafico-velocidade-area">
+                                <canvas id="grafico_velocidade" aria-label="Histórico recente de velocidade dos trens em quilômetros por hora" role="img"></canvas>
+                            </div>
+                            <p id="mensagem-grafico-velocidade" class="grafico-velocidade-mensagem" hidden></p>
+                        </section>
+                        <div class="grafico-temperatura" aria-hidden="true">
                         </div>
-                        <div class="grafico-temperatura">
-
-                        </div>
-                        <div class="grafico-consumo">
-
-                        </div>
-                        <div class="status">
-
-                        </div>
-
+                        <div class="grafico-consumo" aria-hidden="true"></div>
+                        <div class="status" aria-hidden="true"></div>
                     </div>
 
                     <div class="trilho">
@@ -137,7 +138,9 @@ header('Expires: 0');
     <?php include __DIR__ . '/_modal_perfil.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
     <script src="../script/nav.js"></script>
+    <script src="../script/dashboard.js"></script>
 </body>
 
 </html>

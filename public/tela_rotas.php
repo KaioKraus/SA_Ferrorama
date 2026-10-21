@@ -8,7 +8,36 @@ $sql_trens = "SELECT trem_id, nome_trem FROM trens ORDER BY nome_trem ASC";
 $resultado_trens = mysqli_query($conexao, $sql_trens);
 
 $sql_estacoes = "SELECT nome_estacao AS estacao FROM estacoes WHERE status = 'Ativo' ORDER BY nome_estacao ASC";
-$resultado_estacoes = mysqli_query($conexao, $sql_estacoes);
+$estacoes = [];
+$tabelaEstacoesDisponivel = true;
+try {
+    $resultado_estacoes = mysqli_query($conexao, $sql_estacoes);
+    while ($row = mysqli_fetch_assoc($resultado_estacoes)) {
+        $estacoes[] = $row['estacao'];
+    }
+} catch (mysqli_sql_exception $exception) {
+    if ($exception->getCode() !== 1146) {
+        throw $exception;
+    }
+
+    error_log('Tabela estacoes não encontrada. Usando pontos existentes nas rotas até a migração do banco.');
+    $tabelaEstacoesDisponivel = false;
+    try {
+        $resultado_estacoes = mysqli_query(
+            $conexao,
+            "SELECT ponto AS estacao FROM (
+                SELECT ponto_partida AS ponto FROM rotas
+                UNION
+                SELECT ponto_chegada AS ponto FROM rotas
+            ) AS pontos ORDER BY ponto"
+        );
+        while ($row = mysqli_fetch_assoc($resultado_estacoes)) {
+            $estacoes[] = $row['estacao'];
+        }
+    } catch (mysqli_sql_exception $fallbackException) {
+        error_log('Erro ao carregar estações alternativas: ' . $fallbackException->getMessage());
+    }
+}
 
 $statusParametro = $_GET['status'] ?? '';
 $statusFiltro = is_string($statusParametro) ? trim($statusParametro) : '';
@@ -47,13 +76,6 @@ if (!mysqli_stmt_execute($stmt_rotas)) {
     die('Não foi possível carregar as rotas.');
 }
 $resultado_rotas = mysqli_stmt_get_result($stmt_rotas);
-
-$estacoes = [];
-if ($resultado_estacoes) {
-    while ($row = mysqli_fetch_assoc($resultado_estacoes)) {
-        $estacoes[] = $row['estacao'];
-    }
-}
 
 $rotasBanco = [];
 if ($resultado_rotas) {
@@ -140,6 +162,12 @@ mysqli_stmt_close($stmt_rotas);
 
         <section class="conteudo">
             <div class="card_usuarios">
+                <?php if (!$tabelaEstacoesDisponivel): ?>
+                    <div class="alert alert-warning" role="alert">
+                        A tabela de estações não existe no banco. Exibindo os pontos usados nas rotas existentes.
+                        Execute <code>database/migracao_estacoes.sql</code> para restaurar a lista completa de estações.
+                    </div>
+                <?php endif; ?>
                 <div class="barra_busca mb-3">
                     <div class="barra_busca_filtro">
                         <form method="GET" action="tela_rotas.php" class="input-group dashboard-busca">

@@ -29,6 +29,7 @@ if ($termoBusca === '') {
             COALESCE(t.temperatura, 0) AS temperatura,
             COALESCE(t.consumo, 0) AS consumo,
             COALESCE((SELECT r.nome FROM rotas r WHERE r.trem_id = t.trem_id ORDER BY r.rota_id LIMIT 1), 'Sem rota') AS rota_nome,
+            (SELECT COUNT(*) FROM rotas r WHERE r.trem_id = t.trem_id) AS quantidade_rotas,
             CASE WHEN EXISTS (SELECT 1 FROM rotas r WHERE r.trem_id = t.trem_id AND r.status = 'Ativo') THEN 'Ativo' ELSE 'Inativo' END AS status_trem,
             CASE WHEN EXISTS (SELECT 1 FROM rotas r WHERE r.trem_id = t.trem_id AND r.status = 'Ativo') THEN 1 ELSE 0 END AS rota_ativa
         FROM trens t
@@ -43,6 +44,7 @@ if ($termoBusca === '') {
             COALESCE(t.temperatura, 0) AS temperatura,
             COALESCE(t.consumo, 0) AS consumo,
             COALESCE((SELECT r.nome FROM rotas r WHERE r.trem_id = t.trem_id ORDER BY r.rota_id LIMIT 1), "Sem rota") AS rota_nome,
+            (SELECT COUNT(*) FROM rotas r WHERE r.trem_id = t.trem_id) AS quantidade_rotas,
             CASE WHEN EXISTS (SELECT 1 FROM rotas r WHERE r.trem_id = t.trem_id AND r.status = "Ativo") THEN "Ativo" ELSE "Inativo" END AS status_trem,
             CASE WHEN EXISTS (SELECT 1 FROM rotas r WHERE r.trem_id = t.trem_id AND r.status = "Ativo") THEN 1 ELSE 0 END AS rota_ativa
         FROM trens t
@@ -148,6 +150,22 @@ while ($trem = mysqli_fetch_assoc($resultadoTrens)) {
 
         <section class="conteudo trens-conteudo">
             <div class="trens-painel">
+                <?php if (isset($_GET['deleted']) && $_GET['deleted'] === '1'): ?>
+                    <?php $rotasExcluidas = filter_var($_GET['routes'] ?? 0, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) ?: 0; ?>
+                    <div class="alert alert-success" role="status">
+                        Trem excluído com sucesso.
+                        <?php if ($rotasExcluidas === 1): ?>
+                            1 rota vinculada também foi excluída.
+                        <?php elseif ($rotasExcluidas > 1): ?>
+                            <?= $rotasExcluidas; ?> rotas vinculadas também foram excluídas.
+                        <?php endif; ?>
+                    </div>
+                <?php elseif (isset($_GET['error']) && $_GET['error'] === 'active_route'): ?>
+                    <div class="alert alert-warning" role="alert">Não é possível excluir um trem que possui rota ativa. Inative ou remova a rota antes de tentar novamente.</div>
+                <?php elseif (isset($_GET['deleted']) && $_GET['deleted'] === '0'): ?>
+                    <div class="alert alert-danger" role="alert">Não foi possível excluir o trem e suas dependências. Nenhuma alteração foi aplicada.</div>
+                <?php endif; ?>
+
                 <div class="trens-topo d-flex align-items-center justify-content-between">
                     <form method="GET" action="tela_trens.php" class="input-group trens-busca" autocomplete="off">
                         <input id="input_busca_trem" name="q" type="text" class="form-control trens-input" value="<?= htmlspecialchars($termoBusca, ENT_QUOTES, 'UTF-8'); ?>" placeholder="Buscar por ID ou Nome" aria-label="Buscar por ID ou Nome">
@@ -179,10 +197,11 @@ while ($trem = mysqli_fetch_assoc($resultadoTrens)) {
                                 $temperaturaTrem = (float) ($trem['temperatura'] ?? 0);
                                 $consumoTrem = (float) ($trem['consumo'] ?? 0);
                                 $rotaNome = (string) ($trem['rota_nome'] ?? 'Sem rota');
+                                $quantidadeRotas = (int) ($trem['quantidade_rotas'] ?? 0);
                                 $mostrarBotaoExcluir = !($statusTrem === 'Ativo' && $rotaAtiva);
                                 ?>
                                 <div class="col">
-                                    <article class="trens-card-trem" data-id="<?= $tremId; ?>" data-nome="<?= $nomeTrem; ?>" data-responsavel="<?= $responsavelId; ?>" data-status="<?= htmlspecialchars($statusTrem, ENT_QUOTES, 'UTF-8'); ?>" data-rota="<?= htmlspecialchars($rotaNome, ENT_QUOTES, 'UTF-8'); ?>" data-velocidade="<?= htmlspecialchars((string) $velocidadeTrem, ENT_QUOTES, 'UTF-8'); ?>" data-temperatura="<?= htmlspecialchars((string) $temperaturaTrem, ENT_QUOTES, 'UTF-8'); ?>" data-consumo="<?= htmlspecialchars((string) $consumoTrem, ENT_QUOTES, 'UTF-8'); ?>" data-rota-ativa="<?= $rotaAtiva ? '1' : '0'; ?>">
+                                    <article class="trens-card-trem" data-id="<?= $tremId; ?>" data-nome="<?= $nomeTrem; ?>" data-responsavel="<?= $responsavelId; ?>" data-status="<?= htmlspecialchars($statusTrem, ENT_QUOTES, 'UTF-8'); ?>" data-rota="<?= htmlspecialchars($rotaNome, ENT_QUOTES, 'UTF-8'); ?>" data-quantidade-rotas="<?= $quantidadeRotas; ?>" data-velocidade="<?= htmlspecialchars((string) $velocidadeTrem, ENT_QUOTES, 'UTF-8'); ?>" data-temperatura="<?= htmlspecialchars((string) $temperaturaTrem, ENT_QUOTES, 'UTF-8'); ?>" data-consumo="<?= htmlspecialchars((string) $consumoTrem, ENT_QUOTES, 'UTF-8'); ?>" data-rota-ativa="<?= $rotaAtiva ? '1' : '0'; ?>">
                                         <div class="trens-card-cabecalho">
                                             <div class="trens-card-header-row">
                                                 <span class="trens-card-status <?= strtolower($statusTrem) === 'ativo' ? 'ativo' : 'inativo'; ?>"><?= $statusTrem; ?></span>
@@ -354,7 +373,7 @@ while ($trem = mysqli_fetch_assoc($resultadoTrens)) {
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p id="modal_confirm_text">Deseja realmente excluir este trem?</p>
+                    <div id="modal_confirm_text" class="alert alert-warning mb-0" role="alert">Deseja realmente excluir este trem?</div>
                 </div>
                 <div class="modal-footer">
                     <form id="form_delete_train" method="post" action="excluir_trem.php">

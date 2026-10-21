@@ -56,6 +56,7 @@ O dashboard funciona como o painel principal do sistema, permitindo acessar as p
 ### Trens
 
 Permite visualizar as informações relacionadas aos trens cadastrados no sistema.
+Também permite filtrar os trens pelo responsável para localizar e reassociar trens antes da exclusão de um funcionário.
 
 ### Rotas
 
@@ -211,6 +212,7 @@ public/tela_login.php
 | RN08 | Cada usuário pode possuir apenas uma foto de perfil ativa por vez. |
 | RN09 | Apenas o próprio usuário poderá alterar sua senha, exceto em casos de redefinição feita por administrador. |
 | RN10 | Funcionários podem visualizar e pesquisar as informações operacionais, mas não podem acessar a tela de usuários nem cadastrar, editar ou excluir registros; administradores têm acesso a todas as telas e funções. |
+| RN11 | Uma rota depende de um trem cadastrado; a exclusão de um trem com rotas inativas exige confirmação e também exclui as rotas vinculadas, enquanto trens com rota ativa não podem ser excluídos. |
 
 ---
 

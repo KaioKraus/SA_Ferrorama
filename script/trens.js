@@ -6,7 +6,14 @@ document.addEventListener('DOMContentLoaded', function () {
     var isAdmin = modalMonitoramento && modalMonitoramento.dataset.isAdmin === '1';
     var inputBuscaTrem = document.getElementById('input_busca_trem');
     var btnBuscaTrem = document.getElementById('btn_busca_trem');
+    var filtroResponsavelTrem = document.getElementById('filtro_responsavel_trem');
     var trensGrid = document.querySelector('.trens-grid');
+
+    if (filtroResponsavelTrem && filtroResponsavelTrem.form) {
+        filtroResponsavelTrem.addEventListener('change', function () {
+            filtroResponsavelTrem.form.submit();
+        });
+    }
 
     function configurarCartoesTrens() {
         document.querySelectorAll('.btn_edit').forEach(function (btn) {
@@ -296,7 +303,17 @@ document.addEventListener('DOMContentLoaded', function () {
         var input = document.getElementById('delete_train_id');
         if (input) input.value = id;
         var textEl = document.getElementById('modal_confirm_text');
-        if (textEl) textEl.textContent = 'Deseja realmente excluir o trem de ID ' + id + '?';
+        var card = btn.closest('.trens-card-trem');
+        var quantidadeRotas = card ? parseInt(card.dataset.quantidadeRotas || '0', 10) : 0;
+        if (textEl) {
+            if (quantidadeRotas === 1) {
+                textEl.textContent = 'Este trem possui 1 rota vinculada, que também será excluída. Deseja continuar?';
+            } else if (quantidadeRotas > 1) {
+                textEl.textContent = 'Este trem possui ' + quantidadeRotas + ' rotas vinculadas, que também serão excluídas. Deseja continuar?';
+            } else {
+                textEl.textContent = 'Deseja realmente excluir o trem de ID ' + id + '?';
+            }
+        }
         if (bsModal) bsModal.show();
     });
 

@@ -220,6 +220,7 @@ mysqli_stmt_close($stmt_rotas);
                     </div>
                 <?php endif; ?>
 
+                <div class="table-wrapper">
                 <table class="table">
                     <thead>
                         <tr>
@@ -277,6 +278,7 @@ mysqli_stmt_close($stmt_rotas);
                         <?php endif; ?>
                     </tbody>
                 </table>
+                </div>
 
                 <div class="modal fade" id="modalAddRota" tabindex="-1">
                     <div class="modal-dialog modal-dialog-centered">

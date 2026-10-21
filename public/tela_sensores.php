@@ -104,7 +104,7 @@ header('Expires: 0');
                         </tr>
                     </thead>
                     <tbody id="tbody_sensores">
-                        <tr>
+                        <tr data-sensor-id="10001" data-nome="Sensor de Temperatura A1" data-vinculo="trem" data-localizacao="trem_5823" data-tipo="temperatura" data-status="Ativo">
                             <td>10001</td>
                             <td>Sensor de Temperatura A1</td>
                             <td>Trem - ID 5823</td>
@@ -112,12 +112,12 @@ header('Expires: 0');
                             <td><span class="trens-card-status ativo">Ativo</span></td>
                             <td>
                                 <?php if ($usuarioEhAdministrador): ?>
-                                <button class="btn_edit"><i class="bi bi-pencil-square"></i></button>
+                                <button class="btn_edit" type="button" aria-label="Editar Sensor de Temperatura A1"><i class="bi bi-pencil-square"></i></button>
                                 <button type="button" class="btn_delete ms-4" data-id="10001"><i class="bi bi-trash"></i></button>
                                 <?php endif; ?>
                             </td>
                         </tr>
-                        <tr>
+                        <tr data-sensor-id="10002" data-nome="Sensor de Vibração B2" data-vinculo="rota" data-localizacao="trecho_rota1" data-tipo="vibracao" data-status="Inativo">
                             <td>10002</td>
                             <td>Sensor de Vibração B2</td>
                             <td>Rota 1 (Estação Norte → Estação Sul)</td>
@@ -125,12 +125,12 @@ header('Expires: 0');
                             <td><span class="trens-card-status inativo">Inativo</span></td>
                             <td>
                                 <?php if ($usuarioEhAdministrador): ?>
-                                <button class="btn_edit"><i class="bi bi-pencil-square"></i></button>
+                                <button class="btn_edit" type="button" aria-label="Editar Sensor de Vibração B2"><i class="bi bi-pencil-square"></i></button>
                                 <button type="button" class="btn_delete ms-4" data-id="10002"><i class="bi bi-trash"></i></button>
                                 <?php endif; ?>
                             </td>
                         </tr>
-                        <tr>
+                        <tr data-sensor-id="10003" data-nome="Sensor de Velocidade C3" data-vinculo="trem" data-localizacao="trem_5823" data-tipo="velocidade" data-status="Ativo">
                             <td>10003</td>
                             <td>Sensor de Velocidade C3</td>
                             <td>Trem - ID 5823</td>
@@ -138,12 +138,12 @@ header('Expires: 0');
                             <td><span class="trens-card-status ativo">Ativo</span></td>
                             <td>
                                 <?php if ($usuarioEhAdministrador): ?>
-                                <button class="btn_edit"><i class="bi bi-pencil-square"></i></button>
+                                <button class="btn_edit" type="button" aria-label="Editar Sensor de Velocidade C3"><i class="bi bi-pencil-square"></i></button>
                                 <button type="button" class="btn_delete ms-4" data-id="10003"><i class="bi bi-trash"></i></button>
                                 <?php endif; ?>
                             </td>
                         </tr>
-                        <tr>
+                        <tr data-sensor-id="10004" data-nome="Sensor de Pressão D4" data-vinculo="rota" data-localizacao="trecho_rota2" data-tipo="pressao" data-status="Inativo">
                             <td>10004</td>
                             <td>Sensor de Pressão D4</td>
                             <td>Rota 2 (Estação Norte → Estação Sul)</td>
@@ -151,7 +151,7 @@ header('Expires: 0');
                             <td><span class="trens-card-status inativo">Inativo</span></td>
                             <td>
                                 <?php if ($usuarioEhAdministrador): ?>
-                                <button class="btn_edit"><i class="bi bi-pencil-square"></i></button>
+                                <button class="btn_edit" type="button" aria-label="Editar Sensor de Pressão D4"><i class="bi bi-pencil-square"></i></button>
                                 <button type="button" class="btn_delete ms-4" data-id="10004"><i class="bi bi-trash"></i></button>
                                 <?php endif; ?>
                             </td>
@@ -161,6 +161,7 @@ header('Expires: 0');
             </div>
         </section>
 
+        <?php if ($usuarioEhAdministrador): ?>
         <div class="modal fade" id="modal_cadastro_sensor" tabindex="-1" aria-labelledby="label_modal_cadastro_sensor" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content modal-ferroviario">
@@ -219,7 +220,7 @@ header('Expires: 0');
                             </div>
 
                             <div class="text-center mt-4">
-                                <button type="submit" class="btn btn_adicionar px-5">Adicionar</button>
+                                <button id="btn_salvar_sensor" type="submit" class="btn btn_adicionar px-5">Adicionar</button>
                                 <div id="mensagem_cadastro_sensor" class="mt-3"></div>
                             </div>
                         </form>
@@ -227,6 +228,7 @@ header('Expires: 0');
                 </div>
             </div>
         </div>
+        <?php endif; ?>
 
 
     </main>
@@ -278,7 +280,7 @@ header('Expires: 0');
     <?php include __DIR__ . '/_modal_perfil.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../script/nav.js?v=20261006"></script>
-    <script src="../script/sensores.js?v=20261006"></script>
+    <script src="../script/sensores.js?v=20261021"></script>
 
     <script src="../script/validacao.js?v=20261006"></script>
     <script src="../script/scripts.js?v=20261006"></script>

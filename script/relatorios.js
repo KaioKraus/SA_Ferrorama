@@ -139,6 +139,70 @@ configurarFormularioRelatorio(
     'mensagem_relatorio_modal'
 );
 
+const botaoExportarRelatorio = document.getElementById('btn_exportar_relatorio');
+const modalFormatoRelatorio = document.getElementById('modal_formato_relatorio');
+if (botaoExportarRelatorio && modalFormatoRelatorio) {
+    modalFormatoRelatorio.querySelectorAll('[data-formato-relatorio]').forEach((botaoFormato) => {
+        botaoFormato.addEventListener('click', async () => {
+            const formato = botaoFormato.dataset.formatoRelatorio;
+            const mensagem = document.getElementById('mensagem_relatorio');
+            const dataInicio = document.getElementById('relatorio_data_inicio').value;
+            const dataFim = document.getElementById('relatorio_data_fim').value;
+
+            if (Boolean(dataInicio) !== Boolean(dataFim)) {
+                bootstrap.Modal.getOrCreateInstance(modalFormatoRelatorio).hide();
+                mostrarMensagemRelatorio(mensagem, 'Informe as duas datas do período.', 'danger');
+                return;
+            }
+            if (dataInicio && dataInicio > dataFim) {
+                bootstrap.Modal.getOrCreateInstance(modalFormatoRelatorio).hide();
+                mostrarMensagemRelatorio(mensagem, 'A data inicial não pode ser maior que a final.', 'danger');
+                return;
+            }
+
+            const parametros = new URLSearchParams({
+                trem: document.getElementById('relatorio_trem').value,
+                sensor: document.getElementById('relatorio_sensor').value,
+                data_inicio: dataInicio,
+                data_fim: dataFim,
+                formato
+            });
+
+            bootstrap.Modal.getOrCreateInstance(modalFormatoRelatorio).hide();
+            botaoFormato.disabled = true;
+            mostrarMensagemRelatorio(mensagem, `Preparando o arquivo ${formato.toUpperCase()}...`, 'secondary');
+
+            try {
+                const resposta = await fetch(`gerar_relatorio.php?${parametros.toString()}`, {
+                    headers: { Accept: formato === 'pdf' ? 'application/pdf' : 'text/csv' },
+                    cache: 'no-store'
+                });
+                if (!resposta.ok) {
+                    const resultado = await resposta.json().catch(() => null);
+                    throw new Error(resultado?.message || 'Não foi possível baixar o relatório.');
+                }
+
+                const arquivo = await resposta.blob();
+                const url = URL.createObjectURL(arquivo);
+                const link = document.createElement('a');
+                const disposicao = resposta.headers.get('Content-Disposition') || '';
+                const nomeArquivo = disposicao.match(/filename="?([^";]+)"?/i)?.[1] || `relatorio.${formato}`;
+                link.href = url;
+                link.download = nomeArquivo;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+                mostrarMensagemRelatorio(mensagem, `Download do ${formato.toUpperCase()} iniciado.`, 'success');
+            } catch (erro) {
+                mostrarMensagemRelatorio(mensagem, erro.message, 'danger');
+            } finally {
+                botaoFormato.disabled = false;
+            }
+        });
+    });
+}
+
 if (botaoBuscaRelatorios) {
     botaoBuscaRelatorios.addEventListener('click', filtrarLinhasRelatorio);
 }

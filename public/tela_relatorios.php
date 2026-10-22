@@ -179,8 +179,11 @@ mysqli_free_result($resultadoTiposSensor);
                         </div>
                     </div>
 
-                    <div class="form-relatorio-actions">
+                    <div class="form-relatorio-actions gap-2">
                         <button type="submit" class="btn btn_adicionar">Enviar</button>
+                        <button type="button" id="btn_exportar_relatorio" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modal_formato_relatorio">
+                            <i class="bi bi-download" aria-hidden="true"></i> Baixar relatório
+                        </button>
                     </div>
                     <div id="mensagem_relatorio" class="mt-3 text-center"></div>
                 </form>
@@ -188,6 +191,28 @@ mysqli_free_result($resultadoTiposSensor);
 
         </section>
     </main>
+
+    <div class="modal fade" id="modal_formato_relatorio" tabindex="-1" aria-labelledby="label_modal_formato_relatorio" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="label_modal_formato_relatorio">Baixar relatório</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p>Escolha o formato do arquivo para download:</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <button type="button" class="btn btn-outline-success" data-formato-relatorio="csv">
+                            <i class="bi bi-filetype-csv" aria-hidden="true"></i> CSV
+                        </button>
+                        <button type="button" class="btn btn-outline-danger" data-formato-relatorio="pdf">
+                            <i class="bi bi-filetype-pdf" aria-hidden="true"></i> PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="modal fade" id="modal_confirm_delete" tabindex="-1" aria-labelledby="label_modal_confirm_delete" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">

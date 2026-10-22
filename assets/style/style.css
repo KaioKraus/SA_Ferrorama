@@ -1905,7 +1905,104 @@ a.trens-card-status:focus-visible {
     .card_relatorios { background-color: #D9D9D9 !important; }
 }
 
-@media (max-width: 1024px) {
+@media (min-width: 821px) and (max-width: 1040px) {
+    .body_login .form1 {
+        width: min(70vw, 760px);
+        height: auto;
+        min-height: 500px;
+        padding: 30px 42px;
+        box-sizing: border-box;
+        margin: 0 auto;
+        transform: none;
+        border-radius: 28px;
+    }
+
+    .body_login .form1 .mb-3 {
+        width: 84%;
+        margin: 38px auto;
+    }
+
+    .card_usuarios .barra_busca {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .card_usuarios .barra_busca_filtro {
+        flex: 1 1 auto;
+        min-width: 0;
+        gap: 8px;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .card_usuarios .barra_busca .dashboard-busca {
+        flex: 1 1 0;
+        width: auto;
+        min-width: 120px;
+    }
+
+    .card_usuarios .barra_busca .filtro_busca {
+        flex: 1 1 0;
+        width: auto;
+        min-width: 0;
+    }
+
+    .card_usuarios .barra_busca > div:last-child {
+        flex: 0 0 100%;
+    }
+
+    .card_usuarios .barra_busca > div:last-child .trens-btn-add {
+        width: 100%;
+    }
+
+    .card_usuarios .barra_busca > .trens-btn-add {
+        flex: 0 0 100%;
+        width: 100%;
+    }
+
+    .trens-topo.d-flex {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center !important;
+    }
+
+    .trens-topo .trens-filtros {
+        flex: 0 0 100%;
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    .trens-topo > .trens-btn-add {
+        flex: 0 0 100%;
+        width: 100%;
+    }
+}
+
+@media (max-width: 1040px) {
+    .table-wrapper .table tbody td:last-child {
+        white-space: nowrap;
+    }
+
+    .table-wrapper .table tbody td:last-child .btn_edit,
+    .table-wrapper .table tbody td:last-child .btn_delete,
+    .table-wrapper .table tbody td:last-child .trens-card-acao {
+        width: 28px;
+        height: 28px;
+        min-width: 28px;
+        min-height: 28px;
+        margin-left: 2px !important;
+        margin-right: 2px !important;
+        vertical-align: middle;
+    }
+
+    .table-wrapper .table tbody td:last-child .btn_edit i,
+    .table-wrapper .table tbody td:last-child .btn_delete i,
+    .table-wrapper .table tbody td:last-child .trens-card-acao i {
+        font-size: 14px;
+    }
+
     main {
         display: block;
     }
@@ -1976,6 +2073,16 @@ a.trens-card-status:focus-visible {
     .trens-painel {
         height: auto;
         min-height: 420px;
+    }
+
+    .dashboard-painel {
+        padding: 12px;
+        box-sizing: border-box;
+    }
+
+    .dashboard-conteudo {
+        padding-left: 12px;
+        padding-right: 12px;
     }
 
     .dashboard-scroll-wrapper {
@@ -2098,28 +2205,6 @@ a.trens-card-status:focus-visible {
 @media (max-width: 767px) {
     .table {
         min-width: 600px;
-    }
-
-    .table-wrapper .table tbody td:last-child {
-        white-space: nowrap;
-    }
-
-    .table-wrapper .table tbody td:last-child .btn_edit,
-    .table-wrapper .table tbody td:last-child .btn_delete,
-    .table-wrapper .table tbody td:last-child .trens-card-acao {
-        width: 28px;
-        height: 28px;
-        min-width: 28px;
-        min-height: 28px;
-        margin-left: 2px !important;
-        margin-right: 2px !important;
-        vertical-align: middle;
-    }
-
-    .table-wrapper .table tbody td:last-child .btn_edit i,
-    .table-wrapper .table tbody td:last-child .btn_delete i,
-    .table-wrapper .table tbody td:last-child .trens-card-acao i {
-        font-size: 14px;
     }
 
     .nav1_mobile {
@@ -2278,9 +2363,9 @@ a.trens-card-status:focus-visible {
     }
 
     .dashboard-graficos {
-        width: 95%;
+        width: 100%;
         max-width: 630px;
-        margin: 20px auto 0;
+        margin: 12px auto 0;
         gap: 20px;
         flex-wrap: wrap;
     }
@@ -2299,9 +2384,9 @@ a.trens-card-status:focus-visible {
     }
 
     .trilho {
-        width: 75vw;
-        margin: 20px auto 20px;
-        padding: 0;
+        width: 100%;
+        margin: 12px auto;
+        padding: 8px;
         border-radius: 10px;
     }
 

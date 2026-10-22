@@ -79,6 +79,22 @@ header('Expires: 0');
 
 
         <section class="conteudo">
+            <?php if (isset($_SESSION['mensagem_erro'])): ?>
+                <div class="alert alert-warning alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3"
+                    style="z-index: 9999; max-width: 600px;" role="alert">
+                    <strong>Atenção!</strong> <?= htmlspecialchars($_SESSION['mensagem_erro'], ENT_QUOTES, 'UTF-8'); ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+                </div>
+                <?php unset($_SESSION['mensagem_erro']); ?>
+            <?php endif; ?>
+            <?php if (isset($_SESSION['mensagem_sucesso'])): ?>
+                <div class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3"
+                    style="z-index: 9999; max-width: 600px;" role="alert">
+                    <strong>Sucesso!</strong> <?= htmlspecialchars($_SESSION['mensagem_sucesso'], ENT_QUOTES, 'UTF-8'); ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+                </div>
+                <?php unset($_SESSION['mensagem_sucesso']); ?>
+            <?php endif; ?>
             <div class="card_usuarios">
                 <div class="barra_busca">
                     <div class="input-group dashboard-busca">

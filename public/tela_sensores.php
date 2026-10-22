@@ -1,10 +1,44 @@
 <?php
 session_start();
 include __DIR__ . '/validar_acesso.php';
+include __DIR__ . '/../infra/conexao.php';
+
 $usuarioNome = $_SESSION['usuario_nome'] ?? 'Usuário';
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Expires: 0');
+
+$sqlSensores = 'SELECT sensor_id, nome_sensor, localizacao, tipo_dado, status FROM sensores ORDER BY sensor_id ASC';
+$resultadoSensores = mysqli_query($conexao, $sqlSensores);
+$sensores = [];
+if ($resultadoSensores) {
+    while ($sensor = mysqli_fetch_assoc($resultadoSensores)) {
+        $sensores[] = $sensor;
+    }
+    mysqli_free_result($resultadoSensores);
+}
+
+function normalizarVinculoLocalizacao(string $localizacao): array {
+    $localizacaoNormalizada = trim($localizacao);
+    if (stripos($localizacaoNormalizada, 'rota') !== false) {
+        return ['vinculo' => 'rota', 'localizacao' => 'trecho_rota1'];
+    }
+
+    return ['vinculo' => 'trem', 'localizacao' => 'trem_5823'];
+}
+
+function normalizarTipoDado(string $tipoDado): string {
+    $tipo = strtolower(trim($tipoDado));
+
+    if (stripos($tipo, 'temperatura') !== false) return 'temperatura';
+    if (stripos($tipo, 'vibr') !== false) return 'vibracao';
+    if (stripos($tipo, 'velocidade') !== false) return 'velocidade';
+    if (stripos($tipo, 'press') !== false) return 'pressao';
+    if (stripos($tipo, 'umidade') !== false) return 'umidade';
+    if (stripos($tipo, 'energia') !== false) return 'energia';
+
+    return 'outro';
+}
 ?>
 
 <!DOCTYPE html>
@@ -123,58 +157,41 @@ header('Expires: 0');
                         </tr>
                     </thead>
                     <tbody id="tbody_sensores">
-                        <tr data-sensor-id="10001" data-nome="Sensor de Temperatura A1" data-vinculo="trem" data-localizacao="trem_5823" data-tipo="temperatura" data-status="Ativo">
-                            <td>10001</td>
-                            <td>Sensor de Temperatura A1</td>
-                            <td>Trem - ID 5823</td>
-                            <td>Temperatura</td>
-                            <td><span class="trens-card-status ativo">Ativo</span></td>
-                            <?php if ($usuarioEhAdministrador): ?>
-                            <td>
-                                <button class="btn_edit" type="button" aria-label="Editar Sensor de Temperatura A1"><i class="bi bi-pencil-square"></i></button>
-                                <button type="button" class="btn_delete ms-4" data-id="10001"><i class="bi bi-trash"></i></button>
-                            </td>
-                            <?php endif; ?>
-                        </tr>
-                        <tr data-sensor-id="10002" data-nome="Sensor de Vibração B2" data-vinculo="rota" data-localizacao="trecho_rota1" data-tipo="vibracao" data-status="Inativo">
-                            <td>10002</td>
-                            <td>Sensor de Vibração B2</td>
-                            <td>Rota 1 (Estação Norte → Estação Sul)</td>
-                            <td>Vibração</td>
-                            <td><span class="trens-card-status inativo">Inativo</span></td>
-                            <?php if ($usuarioEhAdministrador): ?>
-                            <td>
-                                <button class="btn_edit" type="button" aria-label="Editar Sensor de Vibração B2"><i class="bi bi-pencil-square"></i></button>
-                                <button type="button" class="btn_delete ms-4" data-id="10002"><i class="bi bi-trash"></i></button>
-                            </td>
-                            <?php endif; ?>
-                        </tr>
-                        <tr data-sensor-id="10003" data-nome="Sensor de Velocidade C3" data-vinculo="trem" data-localizacao="trem_5823" data-tipo="velocidade" data-status="Ativo">
-                            <td>10003</td>
-                            <td>Sensor de Velocidade C3</td>
-                            <td>Trem - ID 5823</td>
-                            <td>Velocidade</td>
-                            <td><span class="trens-card-status ativo">Ativo</span></td>
-                            <?php if ($usuarioEhAdministrador): ?>
-                            <td>
-                                <button class="btn_edit" type="button" aria-label="Editar Sensor de Velocidade C3"><i class="bi bi-pencil-square"></i></button>
-                                <button type="button" class="btn_delete ms-4" data-id="10003"><i class="bi bi-trash"></i></button>
-                            </td>
-                            <?php endif; ?>
-                        </tr>
-                        <tr data-sensor-id="10004" data-nome="Sensor de Pressão D4" data-vinculo="rota" data-localizacao="trecho_rota2" data-tipo="pressao" data-status="Inativo">
-                            <td>10004</td>
-                            <td>Sensor de Pressão D4</td>
-                            <td>Rota 2 (Estação Norte → Estação Sul)</td>
-                            <td>Pressão</td>
-                            <td><span class="trens-card-status inativo">Inativo</span></td>
-                            <?php if ($usuarioEhAdministrador): ?>
-                            <td>
-                                <button class="btn_edit" type="button" aria-label="Editar Sensor de Pressão D4"><i class="bi bi-pencil-square"></i></button>
-                                <button type="button" class="btn_delete ms-4" data-id="10004"><i class="bi bi-trash"></i></button>
-                            </td>
-                            <?php endif; ?>
-                        </tr>
+                        <?php if (!empty($sensores)): ?>
+                            <?php foreach ($sensores as $sensor): ?>
+                                <?php
+                                $sensorId = (int)($sensor['sensor_id'] ?? 0);
+                                $nomeSensor = (string)($sensor['nome_sensor'] ?? '');
+                                $localizacaoSensor = (string)($sensor['localizacao'] ?? '');
+                                $tipoDadoSensor = (string)($sensor['tipo_dado'] ?? '');
+                                $statusSensor = (string)($sensor['status'] ?? 'Ativo');
+                                $vinculoSensor = normalizarVinculoLocalizacao($localizacaoSensor);
+                                $statusClass = strtolower($statusSensor) === 'ativo' ? 'ativo' : 'inativo';
+                                ?>
+                                <tr data-sensor-id="<?= htmlspecialchars((string)$sensorId, ENT_QUOTES, 'UTF-8') ?>"
+                                    data-nome="<?= htmlspecialchars($nomeSensor, ENT_QUOTES, 'UTF-8') ?>"
+                                    data-vinculo="<?= htmlspecialchars($vinculoSensor['vinculo'], ENT_QUOTES, 'UTF-8') ?>"
+                                    data-localizacao="<?= htmlspecialchars($vinculoSensor['localizacao'], ENT_QUOTES, 'UTF-8') ?>"
+                                    data-tipo="<?= htmlspecialchars(normalizarTipoDado($tipoDadoSensor), ENT_QUOTES, 'UTF-8') ?>"
+                                    data-status="<?= htmlspecialchars($statusSensor, ENT_QUOTES, 'UTF-8') ?>">
+                                    <td><?= htmlspecialchars((string)$sensorId, ENT_QUOTES, 'UTF-8'); ?></td>
+                                    <td><?= htmlspecialchars($nomeSensor, ENT_QUOTES, 'UTF-8'); ?></td>
+                                    <td><?= htmlspecialchars($localizacaoSensor, ENT_QUOTES, 'UTF-8'); ?></td>
+                                    <td><?= htmlspecialchars($tipoDadoSensor, ENT_QUOTES, 'UTF-8'); ?></td>
+                                    <td><span class="trens-card-status <?= htmlspecialchars($statusClass, ENT_QUOTES, 'UTF-8'); ?>"><?= htmlspecialchars($statusSensor, ENT_QUOTES, 'UTF-8'); ?></span></td>
+                                    <?php if ($usuarioEhAdministrador): ?>
+                                        <td>
+                                            <button class="btn_edit" type="button" aria-label="Editar sensor <?= htmlspecialchars($nomeSensor, ENT_QUOTES, 'UTF-8'); ?>"><i class="bi bi-pencil-square"></i></button>
+                                            <button type="button" class="btn_delete ms-4" data-id="<?= htmlspecialchars((string)$sensorId, ENT_QUOTES, 'UTF-8'); ?>"><i class="bi bi-trash"></i></button>
+                                        </td>
+                                    <?php endif; ?>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="<?= $usuarioEhAdministrador ? 6 : 5; ?>" class="text-center text-muted">Nenhum sensor cadastrado.</td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
                 </div>

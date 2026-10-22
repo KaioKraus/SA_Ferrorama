@@ -210,19 +210,21 @@ INSERT INTO falha (sensor_id, trem_id) VALUES
 CREATE TABLE relatorio (
     relatorio_id INT AUTO_INCREMENT PRIMARY KEY,
     data_relatorio DATE NOT NULL,
+    data_inicio DATE NULL,
+    data_fim DATE NULL,
     falha_id INT,
     FOREIGN KEY (falha_id) REFERENCES falha(falha_id)
 );
 
 
-INSERT INTO relatorio (data_relatorio, falha_id) VALUES
-('2026-01-05', 1),
-('2026-01-18', 2),
-('2026-02-03', 3),
-('2026-02-21', 4),
-('2026-03-10', 5),
-('2026-03-25', 6),
-('2026-04-08', 7),
-('2026-04-19', 8),
-('2026-05-02', 9),
-('2026-05-16', 10);
+INSERT INTO relatorio (data_relatorio, data_inicio, data_fim, falha_id) VALUES
+('2026-01-05', '2026-01-01', '2026-01-05', 1),
+('2026-01-18', '2026-01-10', '2026-01-18', 2),
+('2026-02-03', '2026-01-28', '2026-02-03', 3),
+('2026-02-21', '2026-02-15', '2026-02-21', 4),
+('2026-03-10', '2026-03-01', '2026-03-10', 5),
+('2026-03-25', '2026-03-18', '2026-03-25', 6),
+('2026-04-08', '2026-04-02', '2026-04-08', 7),
+('2026-04-19', '2026-04-12', '2026-04-19', 8),
+('2026-05-02', '2026-04-26', '2026-05-02', 9),
+('2026-05-16', '2026-05-09', '2026-05-16', 10);

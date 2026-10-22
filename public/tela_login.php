@@ -108,7 +108,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 window.location.replace('dashboard.php');
             }
 
-            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            if (
+                window.matchMedia('(max-width: 820px)').matches ||
+                window.matchMedia('(prefers-reduced-motion: reduce)').matches
+            ) {
                 abrirDashboard();
             } else {
                 logoLoginAnimada.addEventListener('animationend', abrirDashboard, { once: true });

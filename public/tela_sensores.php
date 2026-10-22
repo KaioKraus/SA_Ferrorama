@@ -92,6 +92,7 @@ header('Expires: 0');
                     <button class="btn trens-btn-add" type="button" data-bs-toggle="modal" data-bs-target="#modal_cadastro_sensor">Adicionar</button>
                     <?php endif; ?>
                 </div>
+                <div class="table-wrapper">
                 <table class="table">
                     <thead>
                         <tr>
@@ -160,6 +161,7 @@ header('Expires: 0');
                         </tr>
                     </tbody>
                 </table>
+                </div>
             </div>
         </section>
 

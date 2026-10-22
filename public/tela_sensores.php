@@ -4,11 +4,18 @@ include __DIR__ . '/validar_acesso.php';
 include __DIR__ . '/../infra/conexao.php';
 
 $usuarioNome = $_SESSION['usuario_nome'] ?? 'Usuário';
+$termoBusca = trim((string)($_GET['busca'] ?? ''));
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Expires: 0');
 
-$sqlSensores = 'SELECT sensor_id, nome_sensor, localizacao, tipo_dado, status FROM sensores ORDER BY sensor_id ASC';
+$sqlSensores = 'SELECT sensor_id, nome_sensor, localizacao, tipo_dado, status FROM sensores';
+if ($termoBusca !== '') {
+    $termoBuscaSql = mysqli_real_escape_string($conexao, $termoBusca);
+    $sqlSensores .= " WHERE nome_sensor LIKE '%{$termoBuscaSql}%' OR localizacao LIKE '%{$termoBuscaSql}%' OR tipo_dado LIKE '%{$termoBuscaSql}%' OR CAST(sensor_id AS CHAR) LIKE '%{$termoBuscaSql}%'";
+}
+$sqlSensores .= ' ORDER BY sensor_id ASC';
+
 $resultadoSensores = mysqli_query($conexao, $sqlSensores);
 $sensores = [];
 if ($resultadoSensores) {
@@ -131,12 +138,12 @@ function normalizarTipoDado(string $tipoDado): string {
             <?php endif; ?>
             <div class="card_usuarios">
                 <div class="barra_busca">
-                    <div class="input-group dashboard-busca">
-                        <input type="text" id="input_busca_sensor" class="form-control dashboard-input" placeholder="Buscar por ID, nome, localização ou tipo de dado" aria-label="Buscar por ID, nome, localização ou tipo de dado">
-                        <button class="btn dashboard-btn-busca" id="btn_busca_sensor" type="button" aria-label="Buscar">
+                    <form class="input-group dashboard-busca" method="get" action="tela_sensores.php" id="form_busca_sensor">
+                        <input type="text" id="input_busca_sensor" name="busca" value="<?= htmlspecialchars($termoBusca, ENT_QUOTES, 'UTF-8'); ?>" class="form-control dashboard-input" placeholder="Buscar por ID, nome, localização ou tipo de dado" aria-label="Buscar por ID, nome, localização ou tipo de dado">
+                        <button class="btn dashboard-btn-busca" id="btn_busca_sensor" type="submit" aria-label="Buscar">
                             <i class="bi bi-search"></i>
                         </button>
-                    </div>
+                    </form>
 
                     <?php if ($usuarioEhAdministrador): ?>
                     <button class="btn trens-btn-add" type="button" data-bs-toggle="modal" data-bs-target="#modal_cadastro_sensor">Adicionar</button>
@@ -320,7 +327,6 @@ function normalizarTipoDado(string $tipoDado): string {
     <script src="../script/sensores.js?v=20261021"></script>
 
     <script src="../script/validacao.js?v=20261006"></script>
-    <script src="../script/scripts.js?v=20261006"></script>
 </body>
 
 </html>

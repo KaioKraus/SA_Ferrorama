@@ -115,8 +115,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (btnBuscaSensor) {
             btnBuscaSensor.addEventListener('click', filtrarSensores);
         }
-
-        inputBuscaSensor.addEventListener('input', filtrarSensores);
     }
 
     var deleteModalEl = document.getElementById('modal_confirm_delete');

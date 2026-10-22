@@ -26,6 +26,20 @@ $responsavelSelecionado = filter_var($_GET['responsavel'] ?? 0, FILTER_VALIDATE_
 if ($responsavelSelecionado === false) {
     $responsavelSelecionado = 0;
 }
+$statusParametro = $_GET['status'] ?? '';
+$statusFiltro = is_string($statusParametro) ? trim($statusParametro) : '';
+$statusPermitidos = ['Ativo', 'Manutenção', 'Inativo'];
+if (!in_array($statusFiltro, $statusPermitidos, true)) {
+    $statusFiltro = '';
+}
+$baseParams = [];
+if ($termoBusca !== '') {
+    $baseParams['q'] = $termoBusca;
+}
+if ($responsavelSelecionado > 0) {
+    $baseParams['responsavel'] = (int) $responsavelSelecionado;
+}
+$urlBaseTrens = 'tela_trens.php' . (!empty($baseParams) ? '?' . http_build_query($baseParams) : '');
 $trens = [];
 
 $colunasTrens = mysqli_query($conexao, 'SHOW COLUMNS FROM trens');
@@ -53,7 +67,11 @@ $sqlTrens = '
             ' . $sqlConsumo . ' AS consumo,
             COALESCE((SELECT r.nome FROM rotas r WHERE r.trem_id = t.trem_id ORDER BY r.rota_id LIMIT 1), "Sem rota") AS rota_nome,
             (SELECT COUNT(*) FROM rotas r WHERE r.trem_id = t.trem_id) AS quantidade_rotas,
-            CASE WHEN EXISTS (SELECT 1 FROM rotas r WHERE r.trem_id = t.trem_id AND r.status = "Ativo") THEN "Ativo" ELSE "Inativo" END AS status_trem,
+            CASE
+                WHEN EXISTS (SELECT 1 FROM rotas r WHERE r.trem_id = t.trem_id AND r.status = "Ativo") THEN "Ativo"
+                WHEN EXISTS (SELECT 1 FROM rotas r WHERE r.trem_id = t.trem_id AND r.status = "Manutenção") THEN "Manutenção"
+                ELSE "Inativo"
+            END AS status_trem,
             CASE WHEN EXISTS (SELECT 1 FROM rotas r WHERE r.trem_id = t.trem_id AND r.status = "Ativo") THEN 1 ELSE 0 END AS rota_ativa
         FROM trens t
         WHERE (? = "" OR CAST(t.trem_id AS CHAR) LIKE ? OR t.nome_trem LIKE ?)
@@ -95,6 +113,13 @@ while ($trem = mysqli_fetch_assoc($resultadoTrens)) {
     $trens[] = $trem;
 }
 mysqli_stmt_close($stmtTrens);
+
+if ($statusFiltro !== '') {
+    $trens = array_values(array_filter($trens, static function ($trem) use ($statusFiltro) {
+        $statusTrem = (string) ($trem['status_trem'] ?? 'Inativo');
+        return $statusTrem === $statusFiltro;
+    }));
+}
 ?>
 
 <!DOCTYPE html>
@@ -198,6 +223,9 @@ mysqli_stmt_close($stmtTrens);
 
                 <div class="trens-topo d-flex align-items-center justify-content-between">
                     <form method="GET" action="tela_trens.php" class="trens-filtros" autocomplete="off">
+                        <?php if ($statusFiltro !== ''): ?>
+                            <input type="hidden" name="status" value="<?= htmlspecialchars($statusFiltro, ENT_QUOTES, 'UTF-8'); ?>">
+                        <?php endif; ?>
                         <div class="input-group trens-busca">
                             <input id="input_busca_trem" name="q" type="text" class="form-control trens-input" value="<?= htmlspecialchars($termoBusca, ENT_QUOTES, 'UTF-8'); ?>" placeholder="Buscar por ID ou Nome" aria-label="Buscar por ID ou Nome">
                             <button id="btn_busca_trem" class="btn trens-btn-busca" type="submit" aria-label="Buscar">
@@ -232,6 +260,14 @@ mysqli_stmt_close($stmtTrens);
                                 $nomeTrem = htmlspecialchars((string) $trem['nome_trem'], ENT_QUOTES, 'UTF-8');
                                 $responsavelId = (int) $trem['responsavel_id'];
                                 $statusTrem = (string) ($trem['status_trem'] ?? 'Inativo');
+                                $statusClasseTrem = strtolower(trim($statusTrem));
+                                if ($statusClasseTrem === 'manutenção' || $statusClasseTrem === 'manutencao') {
+                                    $statusClasseTrem = 'manutencao';
+                                } elseif ($statusClasseTrem === 'ativo') {
+                                    $statusClasseTrem = 'ativo';
+                                } else {
+                                    $statusClasseTrem = 'inativo';
+                                }
                                 $rotaAtiva = !empty($trem['rota_ativa']) && (int) $trem['rota_ativa'] === 1;
                                 $velocidadeTrem = (float) ($trem['velocidade'] ?? 0);
                                 $temperaturaTrem = (float) ($trem['temperatura'] ?? 0);
@@ -239,12 +275,16 @@ mysqli_stmt_close($stmtTrens);
                                 $rotaNome = (string) ($trem['rota_nome'] ?? 'Sem rota');
                                 $quantidadeRotas = (int) ($trem['quantidade_rotas'] ?? 0);
                                 $mostrarBotaoExcluir = !($statusTrem === 'Ativo' && $rotaAtiva);
+                                $statusHref = $statusFiltro === $statusTrem ? $urlBaseTrens : '?status=' . rawurlencode((string) $statusTrem) . (!empty($baseParams) ? '&' . http_build_query($baseParams) : '');
                                 ?>
                                 <div class="col">
                                     <article class="trens-card-trem" data-id="<?= $tremId; ?>" data-nome="<?= $nomeTrem; ?>" data-responsavel="<?= $responsavelId; ?>" data-status="<?= htmlspecialchars($statusTrem, ENT_QUOTES, 'UTF-8'); ?>" data-rota="<?= htmlspecialchars($rotaNome, ENT_QUOTES, 'UTF-8'); ?>" data-quantidade-rotas="<?= $quantidadeRotas; ?>" data-velocidade="<?= htmlspecialchars((string) $velocidadeTrem, ENT_QUOTES, 'UTF-8'); ?>" data-temperatura="<?= htmlspecialchars((string) $temperaturaTrem, ENT_QUOTES, 'UTF-8'); ?>" data-consumo="<?= htmlspecialchars((string) $consumoTrem, ENT_QUOTES, 'UTF-8'); ?>" data-rota-ativa="<?= $rotaAtiva ? '1' : '0'; ?>">
                                         <div class="trens-card-cabecalho">
                                             <div class="trens-card-header-row">
-                                                <span class="trens-card-status <?= strtolower($statusTrem) === 'ativo' ? 'ativo' : 'inativo'; ?>"><?= $statusTrem; ?></span>
+                                                <a class="trens-card-status <?= htmlspecialchars($statusClasseTrem, ENT_QUOTES, 'UTF-8'); ?><?= $statusFiltro === $statusTrem ? ' filtro-selecionado' : ''; ?>"
+                                                   href="<?= htmlspecialchars($statusHref, ENT_QUOTES, 'UTF-8'); ?>"
+                                                   <?= $statusFiltro === $statusTrem ? 'aria-current="true"' : ''; ?>
+                                                   aria-label="<?= $statusFiltro === $statusTrem ? 'Remover filtro de status ' : 'Filtrar trens com status '; ?><?= htmlspecialchars((string) $statusTrem, ENT_QUOTES, 'UTF-8'); ?>"><?= $statusTrem; ?></a>
                                                 <div class="trens-card-acoes">
                                                     <?php if ($usuarioEhAdministrador): ?>
                                                         <button class="btn_edit" type="button" aria-label="Editar trem">

@@ -28,7 +28,14 @@ document.addEventListener('DOMContentLoaded', function () {
             var statusBadge = card.querySelector('.trens-card-status');
             if (statusBadge) {
                 statusBadge.classList.remove('ativo', 'inativo', 'manutencao');
-                statusBadge.classList.add((status && status.toLowerCase() === 'ativo') ? 'ativo' : 'inativo');
+                var statusNormalized = (status || '').toLowerCase();
+                if (statusNormalized === 'ativo') {
+                    statusBadge.classList.add('ativo');
+                } else if (statusNormalized === 'manutenção' || statusNormalized === 'manutencao') {
+                    statusBadge.classList.add('manutencao');
+                } else {
+                    statusBadge.classList.add('inativo');
+                }
             }
 
             if (status && status.toLowerCase() === 'ativo' && rotaAtiva) {

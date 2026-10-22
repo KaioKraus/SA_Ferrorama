@@ -1859,6 +1859,14 @@ a.trens-card-status:focus-visible {
     color: #072727;
     font-weight: 700;
     text-align: center;
+    vertical-align: middle;
+}
+
+.card_relatorios .relatorios-table thead th:last-child {
+    width: 120px;
+    min-width: 120px;
+    padding-left: 8px;
+    padding-right: 8px;
 }
 
 .card_relatorios .relatorios-table tbody td {
@@ -1874,83 +1882,31 @@ a.trens-card-status:focus-visible {
 }
 
 .card_relatorios .relatorios-table tbody td:last-child {
-    width: 100px;
+    width: 120px;
+    white-space: nowrap;
 }
 
-.btn-detalhes-relatorio {
-    border-radius: 8px;
-    padding: 6px 12px;
-    color: #599967;
-    border: 1px solid #599967;
-    background: transparent;
-    transition: all 0.15s ease-in-out;
-}
-
-.btn-detalhes-relatorio:hover {
-    background: #599967;
-    color: #D9D9D9;
-    box-shadow: var(--shadow-card-hover);
-}
-
-.btn.btn-outline-primary.btn-detalhes-relatorio,
-.btn-detalhes-relatorio.btn-outline-primary {
-    color: #599967 !important;
-    border-color: #599967 !important;
-    background: transparent !important;
-}
-
-.btn-detalhes-relatorio:focus,
-.btn-detalhes-relatorio:active,
-.btn-detalhes-relatorio:hover {
-    background: #599967 !important;
-    color: #ffffff !important;
-    border-color: #599967 !important;
-    box-shadow: var(--shadow-card-hover) !important;
-}
-
-
-
-.relatorios-grid {
-    display: none;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 16px;
-    margin-top: 10px;
-}
-
-.relatorio-card {
-    background: #fff;
-    border-radius: 12px;
-    padding: 16px;
-    box-shadow: var(--shadow-card);
+.card_relatorios .relatorios-table .acoes-relatorio {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.relatorio-date {
-    font-size: 0.95rem;
-    color: #072727;
-    font-weight: 700;
-}
-
-.relatorio-type {
-    color: #333;
-    font-size: 0.95rem;
-    min-height: 36px;
-}
-
-.relatorio-actions {
-    display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 8px;
-    justify-content: flex-start;
+    padding-top: 8px;
+    padding-bottom: 8px;
 }
 
-.relatorios-table .btn-detalhes-relatorio {
-    display: none !important;
-}
-
-@media (min-width: 821px) {
-    .card_relatorios { background-color: #D9D9D9 !important; }
+.card_relatorios .relatorios-table .acoes-relatorio .btn_delete,
+.card_relatorios .relatorios-table .acoes-relatorio .trens-card-acao {
+    width: 35px;
+    height: 35px;
+    min-width: 35px;
+    min-height: 35px;
+    border-radius: 5px;
+    padding: 0;
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 @media (min-width: 821px) and (max-width: 1040px) {

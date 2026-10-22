@@ -21,6 +21,22 @@ function filtrarLinhasRelatorio() {
     });
 }
 
+function formatarData(data) {
+    if (!data) return '';
+    const [ano, mes, dia] = String(data).split('-');
+    if (!ano || !mes || !dia) return data;
+    return `${dia}/${mes}/${ano}`;
+}
+
+function formatarPeriodo(dataInicio, dataFim) {
+    const inicio = formatarData(dataInicio);
+    const fim = formatarData(dataFim);
+    if (!inicio && !fim) return '';
+    if (!inicio) return fim;
+    if (!fim) return inicio;
+    return `${inicio} - ${fim}`;
+}
+
 function renderizarRelatorios(relatorios) {
     if (!tabelaRelatorios) return;
 
@@ -39,21 +55,47 @@ function renderizarRelatorios(relatorios) {
     relatorios.forEach((relatorio) => {
         const linha = document.createElement('tr');
         linha.dataset.relatorio = 'true';
-        linha.dataset.tipo = relatorio.tipo_dado;
-        const data = String(relatorio.data_relatorio || '').split('-').reverse().join('/');
-        const valores = [
-            relatorio.relatorio_id,
-            data,
-            `${relatorio.nome_trem} (ID ${relatorio.trem_id})`,
-            `${relatorio.nome_sensor} — ${relatorio.tipo_dado}`,
-            `Falha #${relatorio.falha_id}`
+        linha.dataset.tipo = relatorio.tipo_dado || 'tipo';
+        linha.dataset.dataInicio = relatorio.data_inicio || '';
+        linha.dataset.dataFim = relatorio.data_fim || '';
+
+        const colunas = [
+            String(relatorio.relatorio_id ?? ''),
+            formatarData(relatorio.data_relatorio),
+            relatorio.tipo_dado || 'Tipo de falha',
+            formatarPeriodo(relatorio.data_inicio, relatorio.data_fim),
+            ''
         ];
 
-        valores.forEach((valor) => {
+        colunas.forEach((valor, indice) => {
             const celula = document.createElement('td');
-            celula.textContent = String(valor ?? '');
+            if (indice === 4) {
+                celula.className = 'acoes-relatorio';
+
+                const botaoExcluir = document.createElement('button');
+                botaoExcluir.type = 'button';
+                botaoExcluir.className = 'btn_delete';
+                botaoExcluir.setAttribute('aria-label', 'Excluir relatório');
+                botaoExcluir.dataset.relatorioExcluir = String(relatorio.relatorio_id ?? '');
+                botaoExcluir.innerHTML = '<i class="bi bi-trash"></i>';
+
+                const botaoDetalhes = document.createElement('button');
+                botaoDetalhes.type = 'button';
+                botaoDetalhes.className = 'trens-card-acao';
+                botaoDetalhes.setAttribute('aria-label', 'Detalhes do relatório');
+                botaoDetalhes.dataset.bsToggle = 'modal';
+                botaoDetalhes.dataset.bsTarget = '#modal_detalhes_relatorio';
+                botaoDetalhes.dataset.relatorioDetalhes = String(relatorio.relatorio_id ?? '');
+                botaoDetalhes.innerHTML = '<i class="bi bi-info-lg"></i>';
+
+                celula.appendChild(botaoExcluir);
+                celula.appendChild(botaoDetalhes);
+            } else {
+                celula.textContent = String(valor ?? '');
+            }
             linha.appendChild(celula);
         });
+
         tabelaRelatorios.appendChild(linha);
     });
 
@@ -204,18 +246,26 @@ if (botaoExportarRelatorio && modalFormatoRelatorio) {
 }
 
 if (botaoBuscaRelatorios) {
-    botaoBuscaRelatorios.addEventListener('click', filtrarLinhasRelatorio);
+    botaoBuscaRelatorios.addEventListener('click', (evento) => {
+        if (buscaRelatorios && buscaRelatorios.form) {
+            buscaRelatorios.form.submit();
+        }
+    });
 }
 if (buscaRelatorios) {
     buscaRelatorios.addEventListener('keydown', (evento) => {
         if (evento.key === 'Enter') {
             evento.preventDefault();
-            filtrarLinhasRelatorio();
+            if (buscaRelatorios.form) {
+                buscaRelatorios.form.submit();
+            }
         }
     });
 }
 if (filtroTipoRelatorio) {
-    filtroTipoRelatorio.addEventListener('change', filtrarLinhasRelatorio);
+    filtroTipoRelatorio.addEventListener('change', () => {
+        if (filtroTipoRelatorio.form) {
+            filtroTipoRelatorio.form.submit();
+        }
+    });
 }
-
-consultarRelatorios({ trem: 'todos', sensor: 'todos' }, null);

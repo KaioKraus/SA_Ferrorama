@@ -24,6 +24,80 @@ if (!$resultadoTiposSensor) {
 }
 $tiposSensorRelatorio = mysqli_fetch_all($resultadoTiposSensor, MYSQLI_ASSOC);
 mysqli_free_result($resultadoTiposSensor);
+
+function formatarDataRelatorio(string $valor): string
+{
+    if ($valor === '' || $valor === null) {
+        return '';
+    }
+
+    $data = DateTime::createFromFormat('Y-m-d', $valor);
+    if (!$data) {
+        return htmlspecialchars($valor, ENT_QUOTES, 'UTF-8');
+    }
+
+    return $data->format('d/m/Y');
+}
+
+function formatarPeriodoRelatorio(?string $inicio, ?string $fim): string
+{
+    $inicioFormatado = $inicio ? formatarDataRelatorio($inicio) : '';
+    $fimFormatado = $fim ? formatarDataRelatorio($fim) : '';
+
+    if ($inicioFormatado === '' && $fimFormatado === '') {
+        return '';
+    }
+
+    if ($inicioFormatado === '') {
+        return $fimFormatado;
+    }
+
+    if ($fimFormatado === '') {
+        return $inicioFormatado;
+    }
+
+    return $inicioFormatado . ' - ' . $fimFormatado;
+}
+
+$termoBusca = trim((string) ($_GET['buscar_relatorio'] ?? ''));
+$tipoFiltro = trim((string) ($_GET['tipo_relatorio'] ?? 'todos'));
+
+$where = [];
+if ($termoBusca !== '') {
+    $termoBuscaSql = '%' . mysqli_real_escape_string($conexao, $termoBusca) . '%';
+    $where[] = "(
+        CAST(r.relatorio_id AS CHAR) LIKE '$termoBuscaSql'
+        OR r.data_relatorio LIKE '$termoBuscaSql'
+        OR s.tipo_dado LIKE '$termoBuscaSql'
+        OR t.nome_trem LIKE '$termoBuscaSql'
+    )";
+}
+if ($tipoFiltro !== '' && $tipoFiltro !== 'todos') {
+    $tipoFiltroSql = mysqli_real_escape_string($conexao, $tipoFiltro);
+    $where[] = "s.tipo_dado = '$tipoFiltroSql'";
+}
+
+$sqlRelatorios = "
+    SELECT r.relatorio_id, r.data_relatorio, r.data_inicio, r.data_fim,
+           s.tipo_dado, t.nome_trem, f.falha_id
+    FROM relatorio r
+    INNER JOIN falha f ON f.falha_id = r.falha_id
+    INNER JOIN sensores s ON s.sensor_id = f.sensor_id
+    INNER JOIN trens t ON t.trem_id = f.trem_id
+";
+if (!empty($where)) {
+    $sqlRelatorios .= ' WHERE ' . implode(' AND ', $where);
+}
+$sqlRelatorios .= ' ORDER BY r.data_relatorio DESC, r.relatorio_id DESC';
+
+$resultadoRelatorios = mysqli_query($conexao, $sqlRelatorios);
+if (!$resultadoRelatorios) {
+    error_log('Erro ao consultar relatórios: ' . mysqli_error($conexao));
+    $relatorios = [];
+} else {
+    $relatorios = mysqli_fetch_all($resultadoRelatorios, MYSQLI_ASSOC);
+    mysqli_free_result($resultadoRelatorios);
+}
 ?>
 
 <!DOCTYPE html>
@@ -97,40 +171,64 @@ mysqli_free_result($resultadoTiposSensor);
 
      <section class="conteudo conteudo-relatorios">
             <div class="card_relatorios">
-                <div class="barra_busca">
+                <form method="get" action="tela_relatorios.php" class="barra_busca">
                     <div class="barra_busca_filtro">
                         <div class="input-group dashboard-busca">
-                            <input id="input_busca_relatorio" type="text" class="form-control dashboard-input" placeholder="Buscar por ID, Data, Trem ou Falha" aria-label="Buscar por ID, Data, Trem ou Falha">
-                            <button id="btn_busca_relatorio" class="btn dashboard-btn-busca" type="button" aria-label="Buscar">
+                            <input id="input_busca_relatorio" name="buscar_relatorio" type="text" class="form-control dashboard-input" value="<?= htmlspecialchars($termoBusca, ENT_QUOTES, 'UTF-8'); ?>" placeholder="Buscar por ID, Data, Trem ou Falha" aria-label="Buscar por ID, Data, Trem ou Falha">
+                            <button id="btn_busca_relatorio" class="btn dashboard-btn-busca" type="submit" aria-label="Buscar">
                                 <i class="bi bi-search"></i>
                             </button>
                         </div>
                         <div class="filtro_busca">
-                            <select id="filtro_tipo_relatorio" class="form-select filtro_busca_select" aria-label="Filtrar por tipo de sensor">
-                                <option value="todos" selected>Todos os tipos</option>
+                            <select id="filtro_tipo_relatorio" name="tipo_relatorio" class="form-select filtro_busca_select" aria-label="Filtrar por tipo de sensor">
+                                <option value="todos" <?= ($tipoFiltro === 'todos' || $tipoFiltro === '') ? 'selected' : ''; ?>>Todos os tipos</option>
                                 <?php foreach ($tiposSensorRelatorio as $tipoSensor): ?>
-                                    <option value="<?= htmlspecialchars($tipoSensor['tipo_dado'], ENT_QUOTES, 'UTF-8'); ?>">
+                                    <option value="<?= htmlspecialchars($tipoSensor['tipo_dado'], ENT_QUOTES, 'UTF-8'); ?>" <?= $tipoFiltro === htmlspecialchars($tipoSensor['tipo_dado'], ENT_QUOTES, 'UTF-8') ? 'selected' : ''; ?>>
                                         <?= htmlspecialchars($tipoSensor['tipo_dado'], ENT_QUOTES, 'UTF-8'); ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
                     </div>
-                    
-                </div>
+                </form>
                 <div class="table-responsive relatorios-tabela-container">
                     <table class="table relatorios-table mb-0">
                         <thead>
                             <tr>
                                 <th scope="col">ID</th>
-                                <th scope="col">Data</th>
-                                <th scope="col">Trem</th>
-                                <th scope="col">Sensor</th>
-                                <th scope="col">Falha</th>
+                                <th scope="col">Data de criação</th>
+                                <th scope="col">Tipo de falha</th>
+                                <th scope="col">Período</th>
+                                <th scope="col">Ações</th>
                             </tr>
                         </thead>
                         <tbody id="tbody_relatorios">
-                            <tr><td colspan="5" class="text-center text-muted">Carregando relatórios...</td></tr>
+                            <?php if (empty($relatorios)): ?>
+                                <tr><td colspan="5" class="text-center text-muted">Nenhum relatório encontrado para os filtros selecionados.</td></tr>
+                            <?php else: ?>
+                                <?php foreach ($relatorios as $relatorio): ?>
+                                    <tr data-relatorio="true"
+                                        data-relatorio-id="<?= (int) ($relatorio['relatorio_id'] ?? 0); ?>"
+                                        data-relatorio-data="<?= htmlspecialchars((string) ($relatorio['data_relatorio'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
+                                        data-relatorio-tipo="<?= htmlspecialchars((string) ($relatorio['tipo_dado'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
+                                        data-relatorio-inicio="<?= htmlspecialchars((string) ($relatorio['data_inicio'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
+                                        data-relatorio-fim="<?= htmlspecialchars((string) ($relatorio['data_fim'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
+                                        data-relatorio-falha="<?= htmlspecialchars('Falha #' . ($relatorio['falha_id'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>">
+                                        <td><?= (int) ($relatorio['relatorio_id'] ?? 0); ?></td>
+                                        <td><?= formatarDataRelatorio((string) ($relatorio['data_relatorio'] ?? '')); ?></td>
+                                        <td><?= htmlspecialchars((string) ($relatorio['tipo_dado'] ?? 'Tipo de falha'), ENT_QUOTES, 'UTF-8'); ?></td>
+                                        <td><?= formatarPeriodoRelatorio((string) ($relatorio['data_inicio'] ?? ''), (string) ($relatorio['data_fim'] ?? '')); ?></td>
+                                        <td class="acoes-relatorio">
+                                            <button type="button" class="btn_delete" data-relatorio-excluir="<?= (int) ($relatorio['relatorio_id'] ?? 0); ?>" aria-label="Excluir relatório">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                            <button type="button" class="trens-card-acao" data-relatorio-detalhes="<?= (int) ($relatorio['relatorio_id'] ?? 0); ?>" data-bs-toggle="modal" data-bs-target="#modal_detalhes_relatorio" aria-label="Detalhes do relatório">
+                                                <i class="bi bi-info-lg"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>

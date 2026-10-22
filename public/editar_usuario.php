@@ -8,14 +8,16 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$userId = (int)($_POST['id'] ?? 0);
+$currentUserId = (int)($_SESSION['usuario_id'] ?? 0);
+$userId = isset($_POST['id']) ? (int)$_POST['id'] : $currentUserId;
+$isAdmin = !empty($_SESSION['usuario_cargo_id']) && ((int)$_SESSION['usuario_cargo_id'] === 1);
 $nome = trim($_POST['nome'] ?? '');
 $email = trim($_POST['email'] ?? '');
 $senha = $_POST['senha'] ?? '';
 
 $referer = $_SERVER['HTTP_REFERER'] ?? 'dashboard.php';
 
-if ($userId !== (int)($_SESSION['usuario_id'] ?? 0)) {
+if ($userId <= 0 || (!$isAdmin && $userId !== $currentUserId)) {
     $_SESSION['mensagem_acesso'] = 'ID de usuário inválido.';
     header('Location: ' . $referer);
     exit;
@@ -55,8 +57,10 @@ if ($senha !== '') {
 }
 
 if ($ok) {
-    $_SESSION['usuario_nome'] = $nome;
-    $_SESSION['usuario_email'] = strtolower($email);
+    if ($userId === $currentUserId) {
+        $_SESSION['usuario_nome'] = $nome;
+        $_SESSION['usuario_email'] = strtolower($email);
+    }
     $_SESSION['mensagem_acesso'] = 'Perfil atualizado com sucesso.';
 } else {
     $_SESSION['mensagem_acesso'] = 'Erro ao atualizar o perfil.';

@@ -91,7 +91,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const inputTelefone = document.getElementById('input_telefone');
         const inputNome = document.getElementById('input_nome');
         const inputSenha = document.getElementById('input_senha');
-        const colSenha = document.querySelector('#row_senha_nome .col.pe-2'); // Coluna da senha
         const radioAdmin = document.getElementById('admin');
         const radioFunc = document.getElementById('funcionario');
 
@@ -99,10 +98,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (inputEmail) inputEmail.value = email;
         if (inputTelefone) inputTelefone.value = telefone;
         if (inputNome) inputNome.value = nome;
-
-        // Esconde apenas a COLUNA da senha (mantém o nome visível)
-        if (colSenha) colSenha.style.display = 'none';
-        if (inputSenha) inputSenha.required = false;
+        if (inputSenha) {
+            inputSenha.value = '';
+            inputSenha.required = false;
+        }
 
         // Tenta identificar permissão pelo texto da célula
         if (permissaoText.includes('admin')) {
@@ -140,13 +139,12 @@ document.addEventListener('DOMContentLoaded', function () {
             if (submitBtn) submitBtn.textContent = 'Adicionar';
             if (form) form.reset();
             
-            // Mostra a coluna da senha novamente
-            const colSenha = document.querySelector('#row_senha_nome .col.pe-2');
-            if (colSenha) colSenha.style.display = '';
-            
             // Senha obrigatória no cadastro
             const senhaInput = document.getElementById('input_senha');
-            if (senhaInput) senhaInput.required = true;
+            if (senhaInput) {
+                senhaInput.value = '';
+                senhaInput.required = true;
+            }
             
             const inputId = document.getElementById('input_user_id');
             if (inputId) inputId.value = '';

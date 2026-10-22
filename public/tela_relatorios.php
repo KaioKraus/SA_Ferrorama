@@ -95,7 +95,7 @@ mysqli_free_result($resultadoTiposSensor);
             </div>
         </nav>
 
-     <section class="conteudo">
+     <section class="conteudo conteudo-relatorios">
             <div class="card_relatorios">
                 <div class="barra_busca">
                     <div class="barra_busca_filtro">

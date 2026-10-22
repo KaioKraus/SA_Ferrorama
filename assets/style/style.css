@@ -154,6 +154,23 @@ main {
     align-items: center;
 }
 
+@media (min-width: 1041px) {
+    .nav1 {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 1000;
+    }
+
+    main > .conteudo,
+    main > .dashboard-conteudo {
+        flex: 0 0 calc(100% - 240px);
+        width: calc(100% - 240px);
+        margin-left: 240px;
+    }
+}
+
 .logo {
     width: 155px;
     height: auto;
@@ -1616,6 +1633,14 @@ a.trens-card-status:focus-visible {
     margin-bottom: 20px;
 }
 
+.conteudo-relatorios {
+    height: auto;
+    min-height: 100vh;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    overflow-y: visible;
+}
+
 .card_gerar_relatorios {
     background-color: #D9D9D9;
     border-radius: 20px;
@@ -2205,6 +2230,20 @@ a.trens-card-status:focus-visible {
 @media (max-width: 767px) {
     .table {
         min-width: 600px;
+    }
+
+    .badge_admin,
+    .badge_funcionario {
+        padding: 2px 8px;
+        font-size: 0.75rem;
+    }
+
+    .table .trens-card-status,
+    .table .sensor-status-badge {
+        min-width: 0;
+        padding: 2px 7px;
+        font-size: 10px;
+        line-height: 1.15;
     }
 
     .nav1_mobile {

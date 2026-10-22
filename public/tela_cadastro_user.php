@@ -8,6 +8,13 @@ header('Expires: 0');
 
 $usuarioNome = $_SESSION['usuario_nome'] ?? 'Usuário';
 
+$perfilParametro = $_GET['perfil'] ?? '';
+$perfilFiltro = is_string($perfilParametro) ? trim($perfilParametro) : '';
+$perfilPermitidos = ['Administrador', 'Funcionário', 'Funcionario'];
+if (!in_array($perfilFiltro, $perfilPermitidos, true)) {
+    $perfilFiltro = '';
+}
+
 $sql = "SELECT 
             u.usuario_id,
             u.nome,
@@ -23,6 +30,24 @@ $resultado = mysqli_query($conexao, $sql);
 
 if (!$resultado) {
     die("Erro ao buscar usuários: " . mysqli_error($conexao));
+}
+
+$usuariosLista = [];
+while ($usuario = mysqli_fetch_assoc($resultado)) {
+    $usuariosLista[] = $usuario;
+}
+
+if ($perfilFiltro !== '') {
+    $usuariosLista = array_values(array_filter($usuariosLista, static function ($usuario) use ($perfilFiltro) {
+        $cargo = (string) ($usuario['cargo'] ?? '');
+        if (stripos($cargo, 'admin') !== false) {
+            return $perfilFiltro === 'Administrador';
+        }
+        if (stripos($cargo, 'func') !== false) {
+            return $perfilFiltro === 'Funcionário' || $perfilFiltro === 'Funcionario';
+        }
+        return false;
+    }));
 }
 ?>
 
@@ -145,12 +170,13 @@ if (!$resultado) {
                     </thead>
 <tbody id="tbody_usuarios">
 
-    <?php if (mysqli_num_rows($resultado) > 0): ?>
+    <?php if (!empty($usuariosLista)): ?>
 
-        <?php while ($usuario = mysqli_fetch_assoc($resultado)): ?>
+        <?php foreach ($usuariosLista as $usuario): ?>
 
             <?php
             $cargo = $usuario['cargo'] ?? 'Sem permissão';
+            $perfilCargo = stripos($cargo, 'admin') !== false ? 'Administrador' : 'Funcionário';
 
             if (stripos($cargo, 'admin') !== false) {
                 $classe_cargo = 'badge_admin';
@@ -160,6 +186,8 @@ if (!$resultado) {
 
             $cpf = $usuario['cpf'];
             $telefone = $usuario['telefone'] ?? '';
+            $perfilSelecionado = $perfilFiltro === $perfilCargo;
+            $perfilHref = $perfilSelecionado ? 'tela_cadastro_user.php' : '?perfil=' . rawurlencode((string) $perfilCargo);
 
             if (strlen($cpf) === 11) {
                 $cpf = substr($cpf, 0, 3) . '.' .
@@ -175,7 +203,7 @@ if (!$resultado) {
             }
             ?>
 
-            <tr data-user-row data-id="<?= htmlspecialchars($usuario['usuario_id'], ENT_QUOTES, 'UTF-8') ?>">
+            <tr data-user-row data-id="<?= htmlspecialchars($usuario['usuario_id'], ENT_QUOTES, 'UTF-8') ?>" data-perfil="<?= htmlspecialchars((string) $cargo, ENT_QUOTES, 'UTF-8'); ?>">
 
                 <td>
                     <?= htmlspecialchars($usuario['nome']) ?>
@@ -194,9 +222,11 @@ if (!$resultado) {
                 </td>
 
                 <td>
-                    <span class="<?= $classe_cargo ?>">
+                    <a class="<?= $classe_cargo ?><?= $perfilSelecionado ? ' filtro-selecionado' : ''; ?>"
+                       href="<?= htmlspecialchars($perfilHref, ENT_QUOTES, 'UTF-8'); ?>"
+                       aria-label="<?= $perfilSelecionado ? 'Remover filtro de perfil ' : 'Filtrar usuários com perfil '; ?><?= htmlspecialchars((string) $perfilCargo, ENT_QUOTES, 'UTF-8'); ?>">
                         <?= htmlspecialchars($cargo) ?>
-                    </span>
+                    </a>
                 </td>
 
                 <td>
@@ -211,13 +241,13 @@ if (!$resultado) {
 
             </tr>
 
-        <?php endwhile; ?>
+        <?php endforeach; ?>
 
     <?php else: ?>
 
         <tr>
             <td colspan="6" class="text-center">
-                Nenhum usuário cadastrado.
+                <?= $perfilFiltro !== '' ? 'Nenhum usuário encontrado com esse perfil.' : 'Nenhum usuário cadastrado.'; ?>
             </td>
         </tr>
 

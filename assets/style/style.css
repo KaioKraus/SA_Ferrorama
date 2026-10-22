@@ -435,22 +435,45 @@ h3 {
 
 .badge_admin {
     background-color: #8EDE7E;
-    color: #000000;
+    color: #0f460c !important;
     border: 1px solid #007D17;
     border-radius: 20px;
     padding: 2px 15px;
     font-size: 0.9rem;
     display: inline-block;
+    font-weight: 700;
 }
 
 .badge_funcionario {
     background-color: #E2E27E;
-    color: #000000;
+    color: #635b1a !important;
     border: 1px solid #818B01;
     padding: 2px 15px;
     border-radius: 20px;
     font-size: 0.9rem;
     display: inline-block;
+    font-weight: 700;
+}
+
+a.badge_admin,
+a.badge_funcionario {
+    text-decoration: none !important;
+    cursor: pointer;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+a.badge_admin:hover,
+a.badge_funcionario:hover,
+a.badge_admin.filtro-selecionado,
+a.badge_funcionario.filtro-selecionado {
+    box-shadow: 0 0 0 2px rgba(7, 39, 39, 0.2);
+    transform: translateY(-1px);
+}
+
+a.badge_admin:focus-visible,
+a.badge_funcionario:focus-visible {
+    outline: 2px solid #072727;
+    outline-offset: 2px;
 }
 
 .btn_edit,

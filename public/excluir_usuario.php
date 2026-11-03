@@ -24,7 +24,8 @@ if ($id === false || $id <= 0) {
 
 // Evita que o usuário exclua a si próprio
 if (isset($_SESSION['usuario_id']) && (int)$_SESSION['usuario_id'] === (int)$id) {
-    header('Location: tela_cadastro_user.php?error=cannot_delete_self');
+    $_SESSION['mensagem_erro'] = 'Você não pode excluir sua própria conta de administrador.';
+    header('Location: tela_cadastro_user.php');
     exit;
 }
 

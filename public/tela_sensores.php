@@ -188,7 +188,7 @@ function normalizarTipoDado(string $tipoDado): string {
                                     <td><span class="trens-card-status <?= htmlspecialchars($statusClass, ENT_QUOTES, 'UTF-8'); ?>"><?= htmlspecialchars($statusSensor, ENT_QUOTES, 'UTF-8'); ?></span></td>
                                     <?php if ($usuarioEhAdministrador): ?>
                                         <td>
-                                            <button class="btn_edit" type="button" aria-label="Editar sensor <?= htmlspecialchars($nomeSensor, ENT_QUOTES, 'UTF-8'); ?>"><i class="bi bi-pencil-square"></i></button>
+                                            <button class="btn_edit" type="button" data-bs-toggle="modal" data-bs-target="#modal_cadastro_sensor" aria-label="Editar sensor <?= htmlspecialchars($nomeSensor, ENT_QUOTES, 'UTF-8'); ?>"><i class="bi bi-pencil-square"></i></button>
                                             <button type="button" class="btn_delete ms-4" data-id="<?= htmlspecialchars((string)$sensorId, ENT_QUOTES, 'UTF-8'); ?>"><i class="bi bi-trash"></i></button>
                                         </td>
                                     <?php endif; ?>

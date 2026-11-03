@@ -1,4 +1,16 @@
 document.addEventListener('DOMContentLoaded', function () {
+    function atualizarLabelFlutuante(campo) {
+        if (!campo) return;
+        const valor = campo.value ?? '';
+        campo.classList.toggle('has-value', String(valor).trim() !== '');
+    }
+
+    document.querySelectorAll('.input-field input, .input-field select, .input-field textarea').forEach(campo => {
+        atualizarLabelFlutuante(campo);
+        campo.addEventListener('input', () => atualizarLabelFlutuante(campo));
+        campo.addEventListener('change', () => atualizarLabelFlutuante(campo));
+    });
+
     const inputBuscaUsuario = document.getElementById('input_busca_usuario');
     const btnBuscaUsuario = document.getElementById('btn_busca_usuario');
     const tbodyUsuarios = document.getElementById('tbody_usuarios');
@@ -94,13 +106,26 @@ document.addEventListener('DOMContentLoaded', function () {
         const radioAdmin = document.getElementById('admin');
         const radioFunc = document.getElementById('funcionario');
 
-        if (inputCpf) inputCpf.value = cpf;
-        if (inputEmail) inputEmail.value = email;
-        if (inputTelefone) inputTelefone.value = telefone;
-        if (inputNome) inputNome.value = nome;
+        if (inputCpf) {
+            inputCpf.value = cpf;
+            atualizarLabelFlutuante(inputCpf);
+        }
+        if (inputEmail) {
+            inputEmail.value = email;
+            atualizarLabelFlutuante(inputEmail);
+        }
+        if (inputTelefone) {
+            inputTelefone.value = telefone;
+            atualizarLabelFlutuante(inputTelefone);
+        }
+        if (inputNome) {
+            inputNome.value = nome;
+            atualizarLabelFlutuante(inputNome);
+        }
         if (inputSenha) {
             inputSenha.value = '';
             inputSenha.required = false;
+            atualizarLabelFlutuante(inputSenha);
         }
 
         // Tenta identificar permissão pelo texto da célula
@@ -138,12 +163,14 @@ document.addEventListener('DOMContentLoaded', function () {
             if (modalTitle) modalTitle.textContent = 'Cadastro de Usuário';
             if (submitBtn) submitBtn.textContent = 'Adicionar';
             if (form) form.reset();
+            document.querySelectorAll('#form_cadastro_user .input-field input, #form_cadastro_user .input-field select, #form_cadastro_user .input-field textarea').forEach(campo => atualizarLabelFlutuante(campo));
             
             // Senha obrigatória no cadastro
             const senhaInput = document.getElementById('input_senha');
             if (senhaInput) {
                 senhaInput.value = '';
                 senhaInput.required = true;
+                atualizarLabelFlutuante(senhaInput);
             }
             
             const inputId = document.getElementById('input_user_id');

@@ -5,7 +5,7 @@ $user = "root";
 $password = "";
 $database = "celestial_steel_db";
 
-$conexao = @mysqli_connect($host, $user, $password, $database, 3306);
+$conexao = @mysqli_connect($host, $user, $password, $database, 3309);
 
 if (!$conexao) {
     http_response_code(503);

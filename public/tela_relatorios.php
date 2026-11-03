@@ -112,7 +112,7 @@ if (!$resultadoRelatorios) {
     <title>Celestial Steel</title>
 </head>
 
-<body>
+<body data-is-admin="<?= $usuarioEhAdministrador ? '1' : '0'; ?>">
 
     <!--Main-->
     <main>
@@ -219,9 +219,11 @@ if (!$resultadoRelatorios) {
                                         <td><?= htmlspecialchars((string) ($relatorio['tipo_dado'] ?? 'Tipo de falha'), ENT_QUOTES, 'UTF-8'); ?></td>
                                         <td><?= formatarPeriodoRelatorio((string) ($relatorio['data_inicio'] ?? ''), (string) ($relatorio['data_fim'] ?? '')); ?></td>
                                         <td class="acoes-relatorio">
-                                            <button type="button" class="btn_delete" data-relatorio-excluir="<?= (int) ($relatorio['relatorio_id'] ?? 0); ?>" aria-label="Excluir relatório">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
+                                            <?php if ($usuarioEhAdministrador): ?>
+                                                <button type="button" class="btn_delete" data-relatorio-excluir="<?= (int) ($relatorio['relatorio_id'] ?? 0); ?>" aria-label="Excluir relatório">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            <?php endif; ?>
                                             <button type="button" class="trens-card-acao" data-relatorio-detalhes="<?= (int) ($relatorio['relatorio_id'] ?? 0); ?>" data-bs-toggle="modal" data-bs-target="#modal_detalhes_relatorio" aria-label="Detalhes do relatório">
                                                 <i class="bi bi-info-lg"></i>
                                             </button>

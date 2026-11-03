@@ -2,6 +2,7 @@ const tabelaRelatorios = document.getElementById('tbody_relatorios');
 const buscaRelatorios = document.getElementById('input_busca_relatorio');
 const botaoBuscaRelatorios = document.getElementById('btn_busca_relatorio');
 const filtroTipoRelatorio = document.getElementById('filtro_tipo_relatorio');
+const isAdmin = document.body && document.body.dataset.isAdmin === '1';
 
 function mostrarMensagemRelatorio(elemento, mensagem, tipo) {
     if (!elemento) return;
@@ -72,12 +73,15 @@ function renderizarRelatorios(relatorios) {
             if (indice === 4) {
                 celula.className = 'acoes-relatorio';
 
-                const botaoExcluir = document.createElement('button');
-                botaoExcluir.type = 'button';
-                botaoExcluir.className = 'btn_delete';
-                botaoExcluir.setAttribute('aria-label', 'Excluir relatório');
-                botaoExcluir.dataset.relatorioExcluir = String(relatorio.relatorio_id ?? '');
-                botaoExcluir.innerHTML = '<i class="bi bi-trash"></i>';
+                if (isAdmin) {
+                    const botaoExcluir = document.createElement('button');
+                    botaoExcluir.type = 'button';
+                    botaoExcluir.className = 'btn_delete';
+                    botaoExcluir.setAttribute('aria-label', 'Excluir relatório');
+                    botaoExcluir.dataset.relatorioExcluir = String(relatorio.relatorio_id ?? '');
+                    botaoExcluir.innerHTML = '<i class="bi bi-trash"></i>';
+                    celula.appendChild(botaoExcluir);
+                }
 
                 const botaoDetalhes = document.createElement('button');
                 botaoDetalhes.type = 'button';
@@ -88,7 +92,6 @@ function renderizarRelatorios(relatorios) {
                 botaoDetalhes.dataset.relatorioDetalhes = String(relatorio.relatorio_id ?? '');
                 botaoDetalhes.innerHTML = '<i class="bi bi-info-lg"></i>';
 
-                celula.appendChild(botaoExcluir);
                 celula.appendChild(botaoDetalhes);
             } else {
                 celula.textContent = String(valor ?? '');

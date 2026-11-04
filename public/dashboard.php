@@ -76,33 +76,41 @@ header('Expires: 0');
             </div>
         </nav>
 
-        
-
         <section class="conteudo">
             <div class="dashboard-painel">
-                <div class="dashboard-topo d-flex align-items-center justify-content-between">
+                <div class="dashboard-metricas">
+                    <div class="dashboard-card-velocidade">
+                        <div class="velocidade-cabecalho">
+                            <h3 class="velocidade-titulo">Velocidade (km/h)</h3>
+                        </div>
+                        <div class="velocidade-grafico-area">
+                            <canvas id="grafico_velocidade"></canvas>
+                        </div>
+                        <p id="mensagem-grafico-velocidade" class="velocidade-mensagem" hidden></p>
+                    </div>
+
+                    <div class="dashboard-card-metrica">
+                    </div>
+
+                    <div class="dashboard-card-metrica">
+                    </div>
+
+                    <div class="dashboard-card-status">
+                        <div class="status-container">
+                            <p class="status-label">Status</p>
+                            <div class="status-info">
+                                <div class="status-icone" id="status_icone">
+                                    <i class="bi bi-check-lg"></i>
+                                </div>
+                                <h3 class="status-texto" id="status_texto">OPERACIONAL</h3>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="dashboard-scroll-wrapper">
-                    <div class="dashboard-graficos">
-                        <section class="grafico-velocidade" aria-labelledby="titulo-grafico-velocidade">
-                            <div class="grafico-velocidade-cabecalho">
-                                <h2 id="titulo-grafico-velocidade">Velocidade dos trens</h2>
-                                <span id="status-grafico-velocidade" role="status" aria-live="polite">Carregando dados...</span>
-                            </div>
-                            <div class="grafico-velocidade-area">
-                                <canvas id="grafico_velocidade" aria-label="Histórico recente de velocidade dos trens em quilômetros por hora" role="img"></canvas>
-                            </div>
-                            <p id="mensagem-grafico-velocidade" class="grafico-velocidade-mensagem" hidden></p>
-                        </section>
-                        <div class="grafico-temperatura" aria-hidden="true">
-                        </div>
-                        <div class="grafico-consumo" aria-hidden="true"></div>
-                        <div class="status" aria-hidden="true"></div>
-                    </div>
-
                     <div class="trilho">
-                        <img src="../assets/img/trilho2.svg" alt="trilho" class="trilho-img img-fluid">
+                        <img src="../assets/img/trilho2.svg" alt="Visualização do trilho ferroviário" class="trilho-img img-fluid">
                     </div>
                 </div>
 

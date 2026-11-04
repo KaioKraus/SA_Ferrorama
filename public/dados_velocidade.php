@@ -3,6 +3,9 @@ session_start();
 require_once __DIR__ . '/validar_acesso.php';
 require_once __DIR__ . '/../infra/conexao.php';
 
+// Definir timezone para horário de Brasília
+date_default_timezone_set('America/Sao_Paulo');
+
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
@@ -22,20 +25,29 @@ if ($colunasTrens === false) {
     exit;
 }
 $temVelocidade = false;
+$temTemperatura = false;
+$temConsumo = false;
 while ($coluna = mysqli_fetch_assoc($colunasTrens)) {
     if ($coluna['Field'] === 'velocidade') {
         $temVelocidade = true;
-        break;
+    }
+    if ($coluna['Field'] === 'temperatura') {
+        $temTemperatura = true;
+    }
+    if ($coluna['Field'] === 'consumo') {
+        $temConsumo = true;
     }
 }
 mysqli_free_result($colunasTrens);
 $campoVelocidade = $temVelocidade ? 'velocidade' : '0 AS velocidade';
-$sql = 'SELECT trem_id, nome_trem, ' . $campoVelocidade . ' FROM trens ORDER BY trem_id ASC';
+$campoTemperatura = $temTemperatura ? 'temperatura' : '0 AS temperatura';
+$campoConsumo = $temConsumo ? 'consumo' : '0 AS consumo';
+$sql = 'SELECT trem_id, nome_trem, ' . $campoVelocidade . ', ' . $campoTemperatura . ', ' . $campoConsumo . ' FROM trens ORDER BY trem_id ASC';
 $resultado = mysqli_query($conexao, $sql);
 if ($resultado === false) {
-    error_log('Erro ao consultar velocidades dos trens: ' . mysqli_error($conexao));
+    error_log('Erro ao consultar dados dos trens: ' . mysqli_error($conexao));
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Não foi possível atualizar os dados de velocidade.'], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['success' => false, 'message' => 'Não foi possível atualizar os dados.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -45,6 +57,8 @@ while ($trem = mysqli_fetch_assoc($resultado)) {
         'id' => (int) $trem['trem_id'],
         'nome' => (string) $trem['nome_trem'],
         'velocidade' => (float) $trem['velocidade'],
+        'temperatura' => (float) $trem['temperatura'],
+        'consumo' => (float) $trem['consumo'],
     ];
 }
 mysqli_free_result($resultado);

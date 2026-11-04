@@ -1286,8 +1286,10 @@ a.badge_funcionario:focus-visible {
 }
 
 .trens-topo {
-    height: 92px;
-    padding: 25px 34px;
+    height: 99px;
+    padding: 30px;
+    box-sizing: border-box;
+    align-items: flex-start;
 }
 
 .dashboard-topo {
@@ -2161,6 +2163,10 @@ a.trens-card-status:focus-visible {
     }
 
     .trens-topo {
+        padding: 30px;
+    }
+
+    .trens-topo {
         flex-direction: column;
         align-items: stretch !important;
         gap: 12px;
@@ -2304,6 +2310,10 @@ a.trens-card-status:focus-visible {
         width: 100%;
         border-radius: 16px;
         padding: 16px;
+    }
+
+    .trens-topo {
+        padding: 0;
     }
 
     .dashboard-grid,

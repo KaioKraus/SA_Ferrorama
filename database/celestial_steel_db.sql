@@ -18,6 +18,11 @@ CREATE TABLE usuarios (
     telefone VARCHAR(11) NOT NULL,
     cpf VARCHAR(11) NOT NULL UNIQUE,
     email VARCHAR(155) NOT NULL UNIQUE,
+    cep VARCHAR(9) NULL,
+    logradouro VARCHAR(255) NULL,
+    bairro VARCHAR(155) NULL,
+    cidade VARCHAR(155) NULL,
+    estado VARCHAR(2) NULL,
     senha VARCHAR(255) NULL,
     cargo_id INT NOT NULL,
     FOREIGN KEY (cargo_id) REFERENCES Cargos(id)

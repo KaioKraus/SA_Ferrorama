@@ -14,6 +14,122 @@ document.addEventListener('DOMContentLoaded', function () {
     const inputBuscaUsuario = document.getElementById('input_busca_usuario');
     const btnBuscaUsuario = document.getElementById('btn_busca_usuario');
     const tbodyUsuarios = document.getElementById('tbody_usuarios');
+    const inputCep = document.getElementById('input_cep');
+    const inputLogradouro = document.getElementById('input_logradouro');
+    const inputBairro = document.getElementById('input_bairro');
+    const inputCidade = document.getElementById('input_cidade');
+    const inputEstado = document.getElementById('input_estado');
+    const mensagemCep = document.getElementById('mensagem_cep');
+
+    function formatarCep(valor) {
+        const apenasDigitos = String(valor || '').replace(/\D/g, '').slice(0, 8);
+        if (apenasDigitos.length <= 5) {
+            return apenasDigitos;
+        }
+        return `${apenasDigitos.slice(0, 5)}-${apenasDigitos.slice(5)}`;
+    }
+
+    function atualizarStatusCep(texto, tipo) {
+        if (!mensagemCep) return;
+        mensagemCep.textContent = texto;
+        mensagemCep.className = 'small mt-n2 mb-3';
+
+        if (tipo === 'erro') {
+            mensagemCep.classList.add('text-danger');
+        } else if (tipo === 'sucesso') {
+            mensagemCep.classList.add('text-success');
+        } else if (tipo === 'info') {
+            mensagemCep.classList.add('text-info');
+        } else {
+            mensagemCep.classList.add('text-muted');
+        }
+    }
+
+    function limparCamposEndereco() {
+        if (inputLogradouro) inputLogradouro.value = '';
+        if (inputBairro) inputBairro.value = '';
+        if (inputCidade) inputCidade.value = '';
+        if (inputEstado) inputEstado.value = '';
+        atualizarLabelFlutuante(inputLogradouro);
+        atualizarLabelFlutuante(inputBairro);
+        atualizarLabelFlutuante(inputCidade);
+        atualizarLabelFlutuante(inputEstado);
+    }
+
+    function consultarCep() {
+        if (!inputCep) return;
+
+        const cep = String(inputCep.value || '').replace(/\D/g, '');
+        if (!cep) {
+            limparCamposEndereco();
+            atualizarStatusCep('', 'idle');
+            return;
+        }
+
+        if (cep.length !== 8) {
+            limparCamposEndereco();
+            return;
+        }
+
+        
+
+        fetch(`https://brasilapi.com.br/api/cep/v1/${cep}`)
+            .then(async response => {
+                const texto = await response.text();
+                if (!response.ok) {
+                    let mensagem = 'CEP não encontrado ou indisponível no momento.';
+                    try {
+                        const dados = JSON.parse(texto);
+                        if (dados && dados.message) {
+                            mensagem = dados.message;
+                        }
+                    } catch (erro) {
+                        console.warn('Resposta inesperada da BrasilAPI:', texto);
+                    }
+                    throw new Error(mensagem);
+                }
+
+                let dados;
+                try {
+                    dados = JSON.parse(texto);
+                } catch (erro) {
+                    throw new Error('Não foi possível processar a resposta da BrasilAPI.');
+                }
+
+                if (inputLogradouro) {
+                    inputLogradouro.value = dados.street || '';
+                    atualizarLabelFlutuante(inputLogradouro);
+                }
+                if (inputBairro) {
+                    inputBairro.value = dados.neighborhood || '';
+                    atualizarLabelFlutuante(inputBairro);
+                }
+                if (inputCidade) {
+                    inputCidade.value = dados.city || '';
+                    atualizarLabelFlutuante(inputCidade);
+                }
+                if (inputEstado) {
+                    inputEstado.value = (dados.state || '').toUpperCase();
+                    atualizarLabelFlutuante(inputEstado);
+                }
+
+                
+            })
+            .catch(error => {
+                limparCamposEndereco();
+                atualizarStatusCep(error && error.message ? error.message : 'Não foi possível consultar o CEP.', 'erro');
+            });
+    }
+
+    if (inputCep) {
+        inputCep.addEventListener('input', function () {
+            this.value = formatarCep(this.value);
+            if (this.value.length < 9) {
+                atualizarStatusCep('', 'idle');
+            }
+        });
+        inputCep.addEventListener('blur', consultarCep);
+    }
 
     if (inputBuscaUsuario && tbodyUsuarios) {
         const linhasUsuarios = Array.from(tbodyUsuarios.querySelectorAll('tr[data-user-row]'));
@@ -103,6 +219,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const inputTelefone = document.getElementById('input_telefone');
         const inputNome = document.getElementById('input_nome');
         const inputSenha = document.getElementById('input_senha');
+        const inputCep = document.getElementById('input_cep');
+        const inputLogradouro = document.getElementById('input_logradouro');
+        const inputBairro = document.getElementById('input_bairro');
+        const inputCidade = document.getElementById('input_cidade');
+        const inputEstado = document.getElementById('input_estado');
         const radioAdmin = document.getElementById('admin');
         const radioFunc = document.getElementById('funcionario');
 
@@ -121,6 +242,31 @@ document.addEventListener('DOMContentLoaded', function () {
         if (inputNome) {
             inputNome.value = nome;
             atualizarLabelFlutuante(inputNome);
+        }
+        if (inputCep) {
+            const cep = (row.dataset.cep || '').trim();
+            inputCep.value = cep ? formatarCep(cep) : '';
+            atualizarLabelFlutuante(inputCep);
+        }
+        if (inputLogradouro) {
+            const logradouro = (row.dataset.logradouro || '').trim();
+            inputLogradouro.value = logradouro;
+            atualizarLabelFlutuante(inputLogradouro);
+        }
+        if (inputBairro) {
+            const bairro = (row.dataset.bairro || '').trim();
+            inputBairro.value = bairro;
+            atualizarLabelFlutuante(inputBairro);
+        }
+        if (inputCidade) {
+            const cidade = (row.dataset.cidade || '').trim();
+            inputCidade.value = cidade;
+            atualizarLabelFlutuante(inputCidade);
+        }
+        if (inputEstado) {
+            const estado = (row.dataset.estado || '').trim();
+            inputEstado.value = estado.toUpperCase();
+            atualizarLabelFlutuante(inputEstado);
         }
         if (inputSenha) {
             inputSenha.value = '';
@@ -163,6 +309,11 @@ document.addEventListener('DOMContentLoaded', function () {
             if (modalTitle) modalTitle.textContent = 'Cadastro de Usuário';
             if (submitBtn) submitBtn.textContent = 'Adicionar';
             if (form) form.reset();
+            limparCamposEndereco();
+            if (mensagemCep) {
+                mensagemCep.textContent = '';
+                mensagemCep.className = 'small mt-n2 mb-3 text-muted';
+            }
             document.querySelectorAll('#form_cadastro_user .input-field input, #form_cadastro_user .input-field select, #form_cadastro_user .input-field textarea').forEach(campo => atualizarLabelFlutuante(campo));
             
             // Senha obrigatória no cadastro
@@ -188,12 +339,27 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
 
             const mensagemDiv = document.getElementById('mensagem_cadastro');
+            const camposObrigatorios = formCadastro.querySelectorAll('input[required], textarea[required], select[required]');
+            const campoVazio = Array.from(camposObrigatorios).find(campo => String(campo.value).trim() === '');
+
+            if (campoVazio) {
+                mensagemDiv.innerHTML = '';
+                campoVazio.focus();
+                campoVazio.reportValidity();
+                return;
+            }
+
             mensagemDiv.innerHTML = '<div class="spinner-border spinner-border-sm text-primary" role="status"><span class="visually-hidden">Carregando...</span></div>';
 
             const nome = document.getElementById('input_nome').value.trim();
             const cpf = document.getElementById('input_cpf').value.trim();
             const email = document.getElementById('input_email').value.trim();
             const telefone = document.getElementById('input_telefone').value.trim();
+            const cep = document.getElementById('input_cep') ? document.getElementById('input_cep').value.trim() : '';
+            const logradouro = document.getElementById('input_logradouro') ? document.getElementById('input_logradouro').value.trim() : '';
+            const bairro = document.getElementById('input_bairro') ? document.getElementById('input_bairro').value.trim() : '';
+            const cidade = document.getElementById('input_cidade') ? document.getElementById('input_cidade').value.trim() : '';
+            const estado = document.getElementById('input_estado') ? document.getElementById('input_estado').value.trim() : '';
             const senha = document.getElementById('input_senha').value.trim();
             const permissao = document.getElementById('admin').checked ? 'admin' : 'funcionario';
 
@@ -202,6 +368,11 @@ document.addEventListener('DOMContentLoaded', function () {
             formData.append('cpf', cpf);
             formData.append('email', email);
             formData.append('telefone', telefone);
+            formData.append('cep', cep);
+            formData.append('logradouro', logradouro);
+            formData.append('bairro', bairro);
+            formData.append('cidade', cidade);
+            formData.append('estado', estado);
             formData.append('permissao', permissao);
             
             const userId = document.getElementById('input_user_id').value;

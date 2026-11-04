@@ -26,6 +26,11 @@ $nome = trim($_POST['nome'] ?? '');
 $cpf = preg_replace('/\D/', '', trim($_POST['cpf'] ?? ''));
 $email = filter_var(trim($_POST['email'] ?? ''), FILTER_VALIDATE_EMAIL);
 $telefone = preg_replace('/\D/', '', trim($_POST['telefone'] ?? ''));
+$cep = preg_replace('/\D/', '', trim($_POST['cep'] ?? ''));
+$logradouro = trim($_POST['logradouro'] ?? '');
+$bairro = trim($_POST['bairro'] ?? '');
+$cidade = trim($_POST['cidade'] ?? '');
+$estado = strtoupper(trim($_POST['estado'] ?? ''));
 $senha = trim($_POST['senha'] ?? '');
 $id = intval($_POST['id'] ?? 0);
 $permissao = trim($_POST['permissao'] ?? '');
@@ -48,6 +53,16 @@ if (!$email) {
 
 if (!empty($telefone) && (strlen($telefone) < 10 || strlen($telefone) > 11)) {
     echo json_encode(['success' => false, 'message' => 'Telefone inválido']);
+    exit;
+}
+
+if (!empty($cep) && strlen($cep) !== 8) {
+    echo json_encode(['success' => false, 'message' => 'CEP inválido']);
+    exit;
+}
+
+if (!empty($estado) && !preg_match('/^[A-Z]{2}$/', $estado)) {
+    echo json_encode(['success' => false, 'message' => 'UF inválida']);
     exit;
 }
 
@@ -133,23 +148,27 @@ if ($id > 0) {
     if (!empty($senha)) {
         $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
         if ($cargo_id === null) {
-            $sql = "UPDATE usuarios SET nome = ?, telefone = ?, cpf = ?, email = ?, senha = ?, cargo_id = NULL WHERE usuario_id = ?";
+            $sql = "UPDATE usuarios SET nome = ?, telefone = ?, cpf = ?, email = ?, cep = ?, logradouro = ?, bairro = ?, cidade = ?, estado = ?, senha = ?, cargo_id = NULL WHERE usuario_id = ?";
             $stmt = mysqli_prepare($conexao, $sql);
-            mysqli_stmt_bind_param($stmt, 'sssssi', $nome, $telefone, $cpf, $email, $senha_hash, $id);
+            $tipos = str_repeat('s', 10) . 'i';
+            mysqli_stmt_bind_param($stmt, $tipos, $nome, $telefone, $cpf, $email, $cep, $logradouro, $bairro, $cidade, $estado, $senha_hash, $id);
         } else {
-            $sql = "UPDATE usuarios SET nome = ?, telefone = ?, cpf = ?, email = ?, senha = ?, cargo_id = ? WHERE usuario_id = ?";
+            $sql = "UPDATE usuarios SET nome = ?, telefone = ?, cpf = ?, email = ?, cep = ?, logradouro = ?, bairro = ?, cidade = ?, estado = ?, senha = ?, cargo_id = ? WHERE usuario_id = ?";
             $stmt = mysqli_prepare($conexao, $sql);
-            mysqli_stmt_bind_param($stmt, 'sssssii', $nome, $telefone, $cpf, $email, $senha_hash, $cargo_id, $id);
+            $tipos = str_repeat('s', 10) . 'ii';
+            mysqli_stmt_bind_param($stmt, $tipos, $nome, $telefone, $cpf, $email, $cep, $logradouro, $bairro, $cidade, $estado, $senha_hash, $cargo_id, $id);
         }
     } else {
         if ($cargo_id === null) {
-            $sql = "UPDATE usuarios SET nome = ?, telefone = ?, cpf = ?, email = ?, cargo_id = NULL WHERE usuario_id = ?";
+            $sql = "UPDATE usuarios SET nome = ?, telefone = ?, cpf = ?, email = ?, cep = ?, logradouro = ?, bairro = ?, cidade = ?, estado = ?, cargo_id = NULL WHERE usuario_id = ?";
             $stmt = mysqli_prepare($conexao, $sql);
-            mysqli_stmt_bind_param($stmt, 'ssssi', $nome, $telefone, $cpf, $email, $id);
+            $tipos = str_repeat('s', 9) . 'i';
+            mysqli_stmt_bind_param($stmt, $tipos, $nome, $telefone, $cpf, $email, $cep, $logradouro, $bairro, $cidade, $estado, $id);
         } else {
-            $sql = "UPDATE usuarios SET nome = ?, telefone = ?, cpf = ?, email = ?, cargo_id = ? WHERE usuario_id = ?";
+            $sql = "UPDATE usuarios SET nome = ?, telefone = ?, cpf = ?, email = ?, cep = ?, logradouro = ?, bairro = ?, cidade = ?, estado = ?, cargo_id = ? WHERE usuario_id = ?";
             $stmt = mysqli_prepare($conexao, $sql);
-            mysqli_stmt_bind_param($stmt, 'ssssii', $nome, $telefone, $cpf, $email, $cargo_id, $id);
+            $tipos = str_repeat('s', 9) . 'ii';
+            mysqli_stmt_bind_param($stmt, $tipos, $nome, $telefone, $cpf, $email, $cep, $logradouro, $bairro, $cidade, $estado, $cargo_id, $id);
         }
     }
     
@@ -163,13 +182,15 @@ if ($id > 0) {
     $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
     
     if ($cargo_id === null) {
-        $sql = "INSERT INTO usuarios (nome, telefone, cpf, email, senha, cargo_id) VALUES (?, ?, ?, ?, ?, NULL)";
+        $sql = "INSERT INTO usuarios (nome, telefone, cpf, email, cep, logradouro, bairro, cidade, estado, senha, cargo_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)";
         $stmt = mysqli_prepare($conexao, $sql);
-        mysqli_stmt_bind_param($stmt, 'sssss', $nome, $telefone, $cpf, $email, $senha_hash);
+        $tipos = str_repeat('s', 10);
+        mysqli_stmt_bind_param($stmt, $tipos, $nome, $telefone, $cpf, $email, $cep, $logradouro, $bairro, $cidade, $estado, $senha_hash);
     } else {
-        $sql = "INSERT INTO usuarios (nome, telefone, cpf, email, senha, cargo_id) VALUES (?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO usuarios (nome, telefone, cpf, email, cep, logradouro, bairro, cidade, estado, senha, cargo_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = mysqli_prepare($conexao, $sql);
-        mysqli_stmt_bind_param($stmt, 'sssssi', $nome, $telefone, $cpf, $email, $senha_hash, $cargo_id);
+        $tipos = str_repeat('s', 10) . 'i';
+        mysqli_stmt_bind_param($stmt, $tipos, $nome, $telefone, $cpf, $email, $cep, $logradouro, $bairro, $cidade, $estado, $senha_hash, $cargo_id);
     }
     
     if ($stmt && mysqli_stmt_execute($stmt)) {

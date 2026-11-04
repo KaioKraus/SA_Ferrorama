@@ -1215,14 +1215,11 @@ a.badge_funcionario:focus-visible {
 }
 
 .input-field input:focus ~ label,
-.input-field input:valid ~ label,
 .input-field input.has-value ~ label,
 .input-field select:focus ~ label,
 .input-field select.has-value ~ label,
-.input-field select:not([value=""]):valid ~ label,
 .input-field textarea:focus ~ label,
-.input-field textarea.has-value ~ label,
-.input-field textarea:not(:placeholder-shown) ~ label {
+.input-field textarea.has-value ~ label {
     transform: translateY(-51%) translateX(-10px) scale(0.8);
     background-color: #fff;
     padding: 0px 5px;

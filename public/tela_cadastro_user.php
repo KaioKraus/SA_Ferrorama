@@ -21,6 +21,11 @@ $sql = "SELECT
             u.email,
             u.cpf,
             u.telefone,
+            u.cep,
+            u.logradouro,
+            u.bairro,
+            u.cidade,
+            u.estado,
             c.nome AS cargo
         FROM usuarios u
         LEFT JOIN Cargos c ON u.cargo_id = c.id
@@ -203,7 +208,14 @@ if ($perfilFiltro !== '') {
             }
             ?>
 
-            <tr data-user-row data-id="<?= htmlspecialchars($usuario['usuario_id'], ENT_QUOTES, 'UTF-8') ?>" data-perfil="<?= htmlspecialchars((string) $cargo, ENT_QUOTES, 'UTF-8'); ?>">
+            <tr data-user-row 
+                data-id="<?= htmlspecialchars($usuario['usuario_id'], ENT_QUOTES, 'UTF-8') ?>"
+                data-perfil="<?= htmlspecialchars((string) $cargo, ENT_QUOTES, 'UTF-8'); ?>"
+                data-cep="<?= htmlspecialchars((string) ($usuario['cep'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
+                data-logradouro="<?= htmlspecialchars((string) ($usuario['logradouro'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
+                data-bairro="<?= htmlspecialchars((string) ($usuario['bairro'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
+                data-cidade="<?= htmlspecialchars((string) ($usuario['cidade'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
+                data-estado="<?= htmlspecialchars((string) ($usuario['estado'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>">
 
                 <td>
                     <?= htmlspecialchars($usuario['nome']) ?>
@@ -311,6 +323,44 @@ if ($perfilFiltro !== '') {
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-4 pe-2">
+                                    <div class="input-field">
+                                        <input required="" autocomplete="off" type="text" id="input_cep" name="cep" class="form-control" maxlength="9" inputmode="numeric" placeholder=" " />
+                                        <label for="input_cep">CEP</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-8 ps-2">
+                                    <div class="input-field">
+                                        <input required="" autocomplete="off" type="text" id="input_logradouro" name="logradouro" class="form-control" placeholder=" " />
+                                        <label for="input_logradouro">Logradouro</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-5 pe-2">
+                                    <div class="input-field">
+                                        <input required="" autocomplete="off" type="text" id="input_bairro" name="bairro" class="form-control" placeholder=" " />
+                                        <label for="input_bairro">Bairro</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-5 ps-2 pe-2">
+                                    <div class="input-field">
+                                        <input required="" autocomplete="off" type="text" id="input_cidade" name="cidade" class="form-control" placeholder=" " />
+                                        <label for="input_cidade">Cidade</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 ps-2">
+                                    <div class="input-field">
+                                        <input required="" autocomplete="off" type="text" id="input_estado" name="estado" class="form-control" maxlength="2" placeholder=" " />
+                                        <label for="input_estado">UF</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="mensagem_cep" class="small text-muted mt-n2 mb-3" aria-live="polite"></div>
 
                             <div class="d-flex justify-content-center mb-5 mt-4">
                                 <div class="toggle-container">

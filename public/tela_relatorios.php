@@ -169,6 +169,22 @@ if (!$resultadoRelatorios) {
         </nav>
 
      <section class="conteudo conteudo-relatorios">
+            <?php if (isset($_SESSION['mensagem_erro'])): ?>
+                <div class="alert alert-warning alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3"
+                    style="z-index: 9999; max-width: 600px;" role="alert">
+                    <strong>Atenção!</strong> <?= htmlspecialchars($_SESSION['mensagem_erro'], ENT_QUOTES, 'UTF-8'); ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+                </div>
+                <?php unset($_SESSION['mensagem_erro']); ?>
+            <?php endif; ?>
+            <?php if (isset($_SESSION['mensagem_sucesso'])): ?>
+                <div class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3"
+                    style="z-index: 9999; max-width: 600px;" role="alert">
+                    <strong>Sucesso!</strong> <?= htmlspecialchars($_SESSION['mensagem_sucesso'], ENT_QUOTES, 'UTF-8'); ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+                </div>
+                <?php unset($_SESSION['mensagem_sucesso']); ?>
+            <?php endif; ?>
             <div class="card_relatorios">
                 <form method="get" action="tela_relatorios.php" class="barra_busca">
                     <div class="barra_busca_filtro">
@@ -322,11 +338,11 @@ if (!$resultadoRelatorios) {
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p id="modal_confirm_text">Deseja realmente excluir este sensor?</p>
+                    <p id="modal_confirm_text">Deseja realmente excluir este relatório?</p>
                 </div>
                 <div class="modal-footer">
-                    <form id="form_delete_sensor" method="post" action="excluir_sensor.php">
-                        <input type="hidden" name="id" id="delete_sensor_id" value="">
+                    <form id="form_delete_relatorio" method="post" action="excluir_relatorio.php">
+                        <input type="hidden" name="id" id="delete_relatorio_id" value="">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-danger">Excluir</button>
                     </form>

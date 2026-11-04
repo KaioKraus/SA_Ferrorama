@@ -276,3 +276,25 @@ if (filtroTipoRelatorio) {
         }
     });
 }
+
+// Modal de confirmação de exclusão de relatório
+const modalConfirmDelete = document.getElementById('modal_confirm_delete');
+if (modalConfirmDelete && typeof bootstrap !== 'undefined') {
+    const bsModal = new bootstrap.Modal(modalConfirmDelete);
+    
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest && e.target.closest('[data-relatorio-excluir]');
+        if (!btn) return;
+        
+        const id = btn.getAttribute('data-relatorio-excluir') || '';
+        if (!id) return;
+        
+        const input = document.getElementById('delete_relatorio_id');
+        if (input) input.value = id;
+        
+        const textEl = document.getElementById('modal_confirm_text');
+        if (textEl) textEl.textContent = 'Deseja realmente excluir o relatório de ID ' + id + '?';
+        
+        bsModal.show();
+    });
+}

@@ -5,9 +5,21 @@ include __DIR__ . '/../infra/conexao.php';
 
 $usuarioNome = $_SESSION['usuario_nome'] ?? 'Usuário';
 $termoBusca = trim((string)($_GET['busca'] ?? ''));
+$statusParametro = $_GET['status'] ?? '';
+$statusFiltro = is_string($statusParametro) ? trim($statusParametro) : '';
+$statusPermitidos = ['Ativo', 'Inativo'];
+if (!in_array($statusFiltro, $statusPermitidos, true)) {
+    $statusFiltro = '';
+}
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Expires: 0');
+
+$baseParams = [];
+if ($termoBusca !== '') {
+    $baseParams['busca'] = $termoBusca;
+}
+$urlBaseSensores = 'tela_sensores.php' . (!empty($baseParams) ? '?' . http_build_query($baseParams) : '');
 
 $sqlSensores = 'SELECT sensor_id, nome_sensor, localizacao, tipo_dado, status FROM sensores';
 if ($termoBusca !== '') {
@@ -23,6 +35,13 @@ if ($resultadoSensores) {
         $sensores[] = $sensor;
     }
     mysqli_free_result($resultadoSensores);
+}
+
+if ($statusFiltro !== '') {
+    $sensores = array_values(array_filter($sensores, static function ($sensor) use ($statusFiltro) {
+        $statusSensor = (string) ($sensor['status'] ?? 'Inativo');
+        return $statusSensor === $statusFiltro;
+    }));
 }
 
 function normalizarVinculoLocalizacao(string $localizacao): array {
@@ -174,6 +193,7 @@ function normalizarTipoDado(string $tipoDado): string {
                                 $statusSensor = (string)($sensor['status'] ?? 'Ativo');
                                 $vinculoSensor = normalizarVinculoLocalizacao($localizacaoSensor);
                                 $statusClass = strtolower($statusSensor) === 'ativo' ? 'ativo' : 'inativo';
+                                $statusHref = $statusFiltro === $statusSensor ? $urlBaseSensores : '?status=' . rawurlencode((string) $statusSensor) . (!empty($baseParams) ? '&' . http_build_query($baseParams) : '');
                                 ?>
                                 <tr data-sensor-id="<?= htmlspecialchars((string)$sensorId, ENT_QUOTES, 'UTF-8') ?>"
                                     data-nome="<?= htmlspecialchars($nomeSensor, ENT_QUOTES, 'UTF-8') ?>"
@@ -185,7 +205,12 @@ function normalizarTipoDado(string $tipoDado): string {
                                     <td><?= htmlspecialchars($nomeSensor, ENT_QUOTES, 'UTF-8'); ?></td>
                                     <td><?= htmlspecialchars($localizacaoSensor, ENT_QUOTES, 'UTF-8'); ?></td>
                                     <td><?= htmlspecialchars($tipoDadoSensor, ENT_QUOTES, 'UTF-8'); ?></td>
-                                    <td><span class="trens-card-status <?= htmlspecialchars($statusClass, ENT_QUOTES, 'UTF-8'); ?>"><?= htmlspecialchars($statusSensor, ENT_QUOTES, 'UTF-8'); ?></span></td>
+                                    <td>
+                                        <a class="trens-card-status <?= htmlspecialchars($statusClass, ENT_QUOTES, 'UTF-8'); ?><?= $statusFiltro === $statusSensor ? ' filtro-selecionado' : ''; ?>"
+                                           href="<?= htmlspecialchars($statusHref, ENT_QUOTES, 'UTF-8'); ?>"
+                                           <?= $statusFiltro === $statusSensor ? 'aria-current="true"' : ''; ?>
+                                           aria-label="<?= $statusFiltro === $statusSensor ? 'Remover filtro de status ' : 'Filtrar sensores com status '; ?><?= htmlspecialchars((string) $statusSensor, ENT_QUOTES, 'UTF-8'); ?>"><?= htmlspecialchars($statusSensor, ENT_QUOTES, 'UTF-8'); ?></a>
+                                    </td>
                                     <?php if ($usuarioEhAdministrador): ?>
                                         <td>
                                             <button class="btn_edit" type="button" data-bs-toggle="modal" data-bs-target="#modal_cadastro_sensor" aria-label="Editar sensor <?= htmlspecialchars($nomeSensor, ENT_QUOTES, 'UTF-8'); ?>"><i class="bi bi-pencil-square"></i></button>

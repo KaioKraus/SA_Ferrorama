@@ -102,7 +102,7 @@ header('Expires: 0');
                     </div>
 
                     <div class="trilho">
-                        <img src="../assets/img/trilho2.png" alt="trilho" class="trilho-img img-fluid">
+                        <img src="../assets/img/trilho2.svg" alt="trilho" class="trilho-img img-fluid">
                     </div>
                 </div>
 

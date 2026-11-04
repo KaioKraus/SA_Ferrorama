@@ -425,7 +425,7 @@ if ($statusFiltro !== '') {
                     <div class="modal-body route-modal-body">
                         <div class="route-modal-layout">
                             <div class="route-visual" aria-label="Visualização do trem">
-                                <img src="../assets/img/trilho.png" alt="Imagem de trilho" class="route-track-image">
+                                <img src="../assets/img/trilho.svg" alt="Imagem de trilho" class="route-track-image">
                             </div>
 
                             <div class="route-info-panel">

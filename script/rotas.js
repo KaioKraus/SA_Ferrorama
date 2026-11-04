@@ -11,6 +11,156 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 5000);
     }
 
+    // Configuração das estações baseada no projeto trem-visual-controle (circuito XP500)
+    // Coordenadas extraídas do arquivo circuito.js com as posições das agulhas e para-choque
+    const stations = [
+        {
+            id: 'agulha-norte',
+            name: 'Agulha Norte',
+            x: 430,
+            y: 72,
+            viewBox: { width: 1661, height: 947 }
+        },
+        {
+            id: 'agulha-central',
+            name: 'Agulha Central',
+            x: 346,
+            y: 560,
+            viewBox: { width: 1661, height: 947 }
+        },
+        {
+            id: 'agulha-sul',
+            name: 'Agulha Sul',
+            x: 1092,
+            y: 862,
+            viewBox: { width: 1661, height: 947 }
+        },
+        {
+            id: 'para-choque',
+            name: 'Para-choque',
+            x: 1152.5,
+            y: 676.5,
+            viewBox: { width: 1661, height: 947 }
+        }
+    ];
+
+    let selectedDeparture = null;
+    let selectedArrival = null;
+
+    function initializeStationMarkers() {
+        const mapContainer = document.querySelector('.route-selector-map');
+        if (!mapContainer) return;
+
+        const mapImage = mapContainer.querySelector('.route-selector-image');
+        if (!mapImage) return;
+
+        // Aguarda o carregamento da imagem
+        const setupMarkers = function() {
+            const imageRect = mapImage.getBoundingClientRect();
+            const scaleX = imageRect.width / stations[0].viewBox.width;
+            const scaleY = imageRect.height / stations[0].viewBox.height;
+
+            // Remove marcadores antigos se existirem
+            mapContainer.querySelectorAll('.station-marker').forEach(m => m.remove());
+
+            stations.forEach(function(station) {
+                const marker = document.createElement('div');
+                marker.className = 'station-marker';
+                marker.dataset.stationId = station.id;
+                marker.dataset.stationName = station.name;
+                
+                const posX = (station.x * scaleX);
+                const posY = (station.y * scaleY);
+                
+                marker.style.left = posX + 'px';
+                marker.style.top = posY + 'px';
+
+                const label = document.createElement('span');
+                label.className = 'station-label';
+                label.textContent = station.name;
+                marker.appendChild(label);
+
+                marker.addEventListener('click', function() {
+                    handleStationClick(station.id, station.name, marker);
+                });
+
+                mapContainer.appendChild(marker);
+            });
+        };
+
+        if (mapImage.complete) {
+            setupMarkers();
+        } else {
+            mapImage.addEventListener('load', setupMarkers);
+        }
+
+        // Reposiciona marcadores ao redimensionar
+        let resizeTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(setupMarkers, 250);
+        });
+    }
+
+    function handleStationClick(stationId, stationName, markerElement) {
+        const selectPartida = document.getElementById('select_ponto_partida');
+        const selectChegada = document.getElementById('select_ponto_chegada');
+        
+        if (!selectPartida || !selectChegada) return;
+
+        // Remove seleções visuais anteriores
+        document.querySelectorAll('.station-marker').forEach(function(m) {
+            m.classList.remove('selected-departure', 'selected-arrival');
+        });
+
+        // Lógica de seleção: primeiro clique = partida, segundo = chegada
+        if (selectedDeparture === null) {
+            // Primeira seleção: Ponto de Partida
+            selectedDeparture = stationName;
+            selectPartida.value = stationName;
+            markerElement.classList.add('selected-departure');
+        } else if (selectedArrival === null && stationName !== selectedDeparture) {
+            // Segunda seleção: Ponto de Chegada (deve ser diferente)
+            selectedArrival = stationName;
+            selectChegada.value = stationName;
+            markerElement.classList.add('selected-arrival');
+            
+            // Marca novamente o ponto de partida
+            document.querySelectorAll('.station-marker').forEach(function(m) {
+                if (m.dataset.stationName === selectedDeparture) {
+                    m.classList.add('selected-departure');
+                }
+            });
+        } else {
+            // Reset: começar de novo
+            selectedDeparture = stationName;
+            selectedArrival = null;
+            selectPartida.value = stationName;
+            selectChegada.value = '';
+            markerElement.classList.add('selected-departure');
+        }
+    }
+
+    function resetStationSelection() {
+        selectedDeparture = null;
+        selectedArrival = null;
+        document.querySelectorAll('.station-marker').forEach(function(m) {
+            m.classList.remove('selected-departure', 'selected-arrival');
+        });
+        const selectPartida = document.getElementById('select_ponto_partida');
+        const selectChegada = document.getElementById('select_ponto_chegada');
+        if (selectPartida) selectPartida.value = '';
+        if (selectChegada) selectChegada.value = '';
+    }
+
+    // Inicializar marcadores quando o modal for aberto
+    const modalAddRota = document.getElementById('modalAddRota');
+    if (modalAddRota) {
+        modalAddRota.addEventListener('shown.bs.modal', function() {
+            setTimeout(initializeStationMarkers, 100);
+        });
+    }
+
     function preencherModalRota(rota) {
         const rotaIdEl = document.getElementById('modal_rota_id');
         const rotaTremEl = document.getElementById('modal_rota_trem');
@@ -146,6 +296,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (campoRotaId) campoRotaId.value = '';
         if (tituloModalRota) tituloModalRota.textContent = 'Cadastro de Rota';
         if (botaoSalvarRota) botaoSalvarRota.textContent = 'Adicionar';
+        resetStationSelection();
     }
 
     const botaoAdicionarRota = document.querySelector('[data-bs-target="#modalAddRota"]');
@@ -176,7 +327,26 @@ document.addEventListener('DOMContentLoaded', function () {
         if (status) status.checked = true;
         if (tituloModalRota) tituloModalRota.textContent = 'Editar Rota';
         if (botaoSalvarRota) botaoSalvarRota.textContent = 'Salvar';
+        
+        // Preencher seleção de estações no mapa
+        selectedDeparture = rota.ponto_partida || null;
+        selectedArrival = rota.ponto_chegada || null;
+        
         bootstrap.Modal.getOrCreateInstance(modalAddRota).show();
+        
+        // Atualizar marcadores visuais após o modal abrir
+        setTimeout(function() {
+            document.querySelectorAll('.station-marker').forEach(function(marker) {
+                const stationName = marker.dataset.stationName;
+                marker.classList.remove('selected-departure', 'selected-arrival');
+                if (stationName === selectedDeparture) {
+                    marker.classList.add('selected-departure');
+                }
+                if (stationName === selectedArrival) {
+                    marker.classList.add('selected-arrival');
+                }
+            });
+        }, 150);
     });
 
     if (formCadastroRota) {

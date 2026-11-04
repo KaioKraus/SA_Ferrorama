@@ -333,17 +333,14 @@ mysqli_stmt_close($stmt_rotas);
                                         </select>
                                     </div>
 
-                                    <div class="row mb-4">
-                                        <div class="col">
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
                                             <div class="input-field">
                                                 <input required type="text" name="nome" class="form-control" minlength="3">
                                                 <label>Nome</label>
                                             </div>
                                         </div>
-                                    </div>
-
-                                    <div class="row mb-4">
-                                        <div class="col">
+                                        <div class="col-md-6">
                                             <div class="input-field">
                                                 <select required name="trem_id" class="form-select">
                                                     <option value=""></option>
@@ -362,16 +359,16 @@ mysqli_stmt_close($stmt_rotas);
                                         </div>
                                     </div>
 
-                                    <div class="row mb-4">
+                                    <div class="row mb-3">
                                         <div class="col">
                                             <div class="input-field">
-                                                <textarea name="descricao" class="form-control" rows="3" style="resize: none;" placeholder=" "></textarea>
+                                                <textarea name="descricao" class="form-control" rows="1" style="resize: none;" placeholder=" "></textarea>
                                                 <label>Descrição</label>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="d-flex justify-content-center mb-5 mt-4">
+                                    <div class="d-flex justify-content-center mb-3 mt-3">
                                         <div class="toggle-container-status">
                                             <input type="radio" name="status" id="status_ativo" value="Ativo" checked>
                                             <label for="status_ativo">Ativo</label>

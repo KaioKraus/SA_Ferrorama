@@ -3,6 +3,7 @@ session_start();
 include __DIR__ . '/validar_acesso.php';
 require_once "../infra/conexao.php";
 $usuarioNome = $_SESSION['usuario_nome'] ?? 'Usuário';
+$estacoesMapa = ['Estação Norte', 'Estação Oeste', 'Estação Central', 'Estação Leste', 'Estação Sul'];
 
 $sql_trens = "SELECT trem_id, nome_trem FROM trens ORDER BY nome_trem ASC";
 $resultado_trens = mysqli_query($conexao, $sql_trens);
@@ -298,8 +299,8 @@ mysqli_stmt_close($stmt_rotas);
                 </div>
 
                 <div class="modal fade" id="modalAddRota" tabindex="-1" aria-labelledby="titulo_modal_rota" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content" style="border-radius: 15px; border: none;">
+                    <div class="modal-dialog modal-dialog-centered route-modal-dialog">
+                        <div class="modal-content" style="border-radius: 18px; border: none;">
                             <div class="modal-header border-0 pb-0">
                                 <h5 class="modal-title w-100 text-center text-dark" id="titulo_modal_rota">Cadastro de Rota</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" style="position: absolute; right: 20px; top: 20px;"></button>
@@ -307,33 +308,29 @@ mysqli_stmt_close($stmt_rotas);
                             <div class="modal-body px-5 pt-4 pb-4">
                                 <form method="POST" action="cadastrar_rota.php" id="form_cadastro_rota">
                                     <input type="hidden" name="rota_id" value="">
-                                    <div class="row mb-4">
-                                        <div class="col pe-2">
-                                            <div class="input-field">
-                                                <select required name="ponto_partida" class="form-select">
-                                                    <option value=""></option>
-                                                    <?php if (count($pontos) > 0): ?>
-                                                        <?php foreach($pontos as $ponto): ?>
-                                                            <option value="<?= htmlspecialchars($ponto) ?>"><?= htmlspecialchars($ponto) ?></option>
-                                                        <?php endforeach; ?>
-                                                    <?php endif; ?>
-                                                </select>
-                                                <label>Ponto de partida</label>
-                                            </div>
+
+                                    <div class="route-selector-panel mb-4">
+                                        <div class="route-selector-map" aria-label="Mapa da rota">
+                                            <img src="../assets/img/trilho.svg" alt="Mapa de trilho da rota" class="route-selector-image">
                                         </div>
-                                        <div class="col ps-2">
-                                            <div class="input-field">
-                                                <select required name="ponto_chegada" class="form-select">
-                                                    <option value=""></option>
-                                                    <?php if (count($pontos) > 0): ?>
-                                                        <?php foreach($pontos as $ponto): ?>
-                                                            <option value="<?= htmlspecialchars($ponto) ?>"><?= htmlspecialchars($ponto) ?></option>
-                                                        <?php endforeach; ?>
-                                                    <?php endif; ?>
-                                                </select>
-                                                <label>Ponto de chegada</label>
-                                            </div>
-                                        </div>
+
+                                    </div>
+
+                                    <div class="d-none">
+                                        <select required name="ponto_partida" id="select_ponto_partida">
+                                            <option value=""></option>
+                                            <?php $opcoesEstacoes = array_values(array_unique(array_merge($estacoesMapa, $pontos))); ?>
+                                            <?php foreach ($opcoesEstacoes as $ponto): ?>
+                                                <option value="<?= htmlspecialchars((string) $ponto) ?>"><?= htmlspecialchars((string) $ponto) ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                        <select required name="ponto_chegada" id="select_ponto_chegada">
+                                            <option value=""></option>
+                                            <?php $opcoesEstacoes = array_values(array_unique(array_merge($estacoesMapa, $pontos))); ?>
+                                            <?php foreach ($opcoesEstacoes as $ponto): ?>
+                                                <option value="<?= htmlspecialchars((string) $ponto) ?>"><?= htmlspecialchars((string) $ponto) ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
                                     </div>
 
                                     <div class="row mb-4">

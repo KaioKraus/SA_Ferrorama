@@ -67,9 +67,8 @@ if ($termoBusca !== '') {
     $termoBuscaSql = '%' . mysqli_real_escape_string($conexao, $termoBusca) . '%';
     $where[] = "(
         CAST(r.relatorio_id AS CHAR) LIKE '$termoBuscaSql'
-        OR r.data_relatorio LIKE '$termoBuscaSql'
+        OR CAST(f.falha_id AS CHAR) LIKE '$termoBuscaSql'
         OR s.tipo_dado LIKE '$termoBuscaSql'
-        OR t.nome_trem LIKE '$termoBuscaSql'
     )";
 }
 if ($tipoFiltro !== '' && $tipoFiltro !== 'todos') {
@@ -174,7 +173,7 @@ if (!$resultadoRelatorios) {
                 <form method="get" action="tela_relatorios.php" class="barra_busca">
                     <div class="barra_busca_filtro">
                         <div class="input-group dashboard-busca">
-                            <input id="input_busca_relatorio" name="buscar_relatorio" type="text" class="form-control dashboard-input" value="<?= htmlspecialchars($termoBusca, ENT_QUOTES, 'UTF-8'); ?>" placeholder="Buscar por ID, Data, Trem ou Falha" aria-label="Buscar por ID, Data, Trem ou Falha">
+                            <input id="input_busca_relatorio" name="buscar_relatorio" type="search" class="form-control dashboard-input" value="<?= htmlspecialchars($termoBusca, ENT_QUOTES, 'UTF-8'); ?>" placeholder="Buscar por ID ou tipo de falha" aria-label="Buscar por ID ou tipo de falha">
                             <button id="btn_busca_relatorio" class="btn dashboard-btn-busca" type="submit" aria-label="Buscar">
                                 <i class="bi bi-search"></i>
                             </button>
@@ -183,7 +182,7 @@ if (!$resultadoRelatorios) {
                             <select id="filtro_tipo_relatorio" name="tipo_relatorio" class="form-select filtro_busca_select" aria-label="Filtrar por tipo de sensor">
                                 <option value="todos" <?= ($tipoFiltro === 'todos' || $tipoFiltro === '') ? 'selected' : ''; ?>>Todos os tipos</option>
                                 <?php foreach ($tiposSensorRelatorio as $tipoSensor): ?>
-                                    <option value="<?= htmlspecialchars($tipoSensor['tipo_dado'], ENT_QUOTES, 'UTF-8'); ?>" <?= $tipoFiltro === htmlspecialchars($tipoSensor['tipo_dado'], ENT_QUOTES, 'UTF-8') ? 'selected' : ''; ?>>
+                                    <option value="<?= htmlspecialchars($tipoSensor['tipo_dado'], ENT_QUOTES, 'UTF-8'); ?>" <?= $tipoFiltro === $tipoSensor['tipo_dado'] ? 'selected' : ''; ?>>
                                         <?= htmlspecialchars($tipoSensor['tipo_dado'], ENT_QUOTES, 'UTF-8'); ?>
                                     </option>
                                 <?php endforeach; ?>
@@ -209,6 +208,7 @@ if (!$resultadoRelatorios) {
                                 <?php foreach ($relatorios as $relatorio): ?>
                                     <tr data-relatorio="true"
                                         data-relatorio-id="<?= (int) ($relatorio['relatorio_id'] ?? 0); ?>"
+                                        data-relatorio-falha-id="<?= (int) ($relatorio['falha_id'] ?? 0); ?>"
                                         data-relatorio-data="<?= htmlspecialchars((string) ($relatorio['data_relatorio'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
                                         data-relatorio-tipo="<?= htmlspecialchars((string) ($relatorio['tipo_dado'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
                                         data-relatorio-inicio="<?= htmlspecialchars((string) ($relatorio['data_inicio'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"

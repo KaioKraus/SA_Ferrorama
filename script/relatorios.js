@@ -16,8 +16,9 @@ function filtrarLinhasRelatorio() {
     const termo = buscaRelatorios.value.trim().toLocaleLowerCase();
     const tipo = filtroTipoRelatorio ? filtroTipoRelatorio.value : 'todos';
     tabelaRelatorios.querySelectorAll('tr[data-relatorio]').forEach((linha) => {
-        const correspondeBusca = termo === '' || linha.textContent.toLocaleLowerCase().includes(termo);
-        const correspondeTipo = tipo === 'todos' || linha.dataset.tipo === tipo;
+        const textoBusca = `${linha.dataset.relatorioId || ''} ${linha.dataset.relatorioFalhaId || ''} ${linha.dataset.relatorioTipo || linha.dataset.tipo || ''}`.toLocaleLowerCase();
+        const correspondeBusca = termo === '' || textoBusca.includes(termo);
+        const correspondeTipo = tipo === 'todos' || (linha.dataset.relatorioTipo || linha.dataset.tipo) === tipo;
         linha.hidden = !correspondeBusca || !correspondeTipo;
     });
 }
@@ -56,6 +57,9 @@ function renderizarRelatorios(relatorios) {
     relatorios.forEach((relatorio) => {
         const linha = document.createElement('tr');
         linha.dataset.relatorio = 'true';
+        linha.dataset.relatorioId = String(relatorio.relatorio_id ?? '');
+        linha.dataset.relatorioFalhaId = String(relatorio.falha_id ?? '');
+        linha.dataset.relatorioTipo = relatorio.tipo_dado || 'tipo';
         linha.dataset.tipo = relatorio.tipo_dado || 'tipo';
         linha.dataset.dataInicio = relatorio.data_inicio || '';
         linha.dataset.dataFim = relatorio.data_fim || '';

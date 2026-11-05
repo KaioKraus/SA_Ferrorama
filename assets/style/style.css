@@ -332,34 +332,55 @@ h3 {
     overflow: hidden;
 }
 
+/* Scrollpadrao do sistema para telas com tabela */
+.card_usuarios .table-wrapper,
+.relatorios-tabela-container,
+.table-wrapper,
+.scroll-panel,
+.lista-scroll {
+    scrollbar-color: #3f704d #ffffff;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+}
+
+.card_usuarios .table-wrapper::-webkit-scrollbar,
+.relatorios-tabela-container::-webkit-scrollbar,
+.table-wrapper::-webkit-scrollbar,
+.scroll-panel::-webkit-scrollbar,
+.lista-scroll::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.card_usuarios .table-wrapper::-webkit-scrollbar-track,
+.relatorios-tabela-container::-webkit-scrollbar-track,
+.table-wrapper::-webkit-scrollbar-track,
+.scroll-panel::-webkit-scrollbar-track,
+.lista-scroll::-webkit-scrollbar-track {
+    background-color: #ffffff;
+    border-radius: 10px;
+}
+
+.card_usuarios .table-wrapper::-webkit-scrollbar-thumb,
+.relatorios-tabela-container::-webkit-scrollbar-thumb,
+.table-wrapper::-webkit-scrollbar-thumb,
+.scroll-panel::-webkit-scrollbar-thumb,
+.lista-scroll::-webkit-scrollbar-thumb {
+    background-color: #3f704d;
+    border-radius: 10px;
+}
+
 /* Scroll para tabela de usuários e rotas */
 .card_usuarios .table-wrapper {
     height: calc(100% - 120px);
     overflow-y: auto;
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-color: #3f704d #ffffff;
-    scrollbar-width: thin;
     padding-right: 8px;
 }
 
 /* Ajuste para página de rotas com filtros adicionais */
 .rotas-page .table-wrapper {
     height: calc(100% - 180px);
-}
-
-.card_usuarios .table-wrapper::-webkit-scrollbar {
-    width: 8px;
-}
-
-.card_usuarios .table-wrapper::-webkit-scrollbar-track {
-    background-color: #ffffff;
-    border-radius: 10px;
-}
-
-.card_usuarios .table-wrapper::-webkit-scrollbar-thumb {
-    background-color: #3f704d;
-    border-radius: 10px;
 }
 
 .card_usuarios,
@@ -1111,6 +1132,28 @@ a.badge_funcionario:focus-visible {
     border-radius: 15px;
 }
 
+.modal-content {
+    overflow: hidden;
+}
+
+.modal-body {
+    scrollbar-gutter: stable both-edges;
+    padding-right: 0.9rem !important;
+    padding-left: 0.9rem !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+#modal_monitoramento .modal-body,
+#modal_visualizar_trem .modal-body,
+#modal_cadastro_sensor .modal-body,
+#modal_detalhes_relatorio .modal-body {
+    scrollbar-gutter: stable both-edges;
+    padding-right: 0.9rem !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
 .modal-ferroviario .modal-title,
 .modal-cadastro-ferroviario .modal-title {
     font-size: 2rem !important;
@@ -1722,6 +1765,22 @@ a.trens-card-status:focus-visible {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    scrollbar-color: #3f704d #ffffff;
+    scrollbar-width: thin;
+}
+
+.conteudo-relatorios::-webkit-scrollbar {
+    width: 8px;
+}
+
+.conteudo-relatorios::-webkit-scrollbar-track {
+    background-color: #ffffff;
+    border-radius: 10px;
+}
+
+.conteudo-relatorios::-webkit-scrollbar-thumb {
+    background-color: #3f704d;
+    border-radius: 10px;
 }
 
 .card_gerar_relatorios {
@@ -1904,17 +1963,18 @@ a.trens-card-status:focus-visible {
 
 .relatorios-tabela-container {
     width: 100%;
-    background-color: #ffffff;
+    background-color: transparent;
     border-radius: 12px;
     overflow-y: auto;
     overflow-x: auto;
-    border: 1px solid #e4e7e7;
+    border: 0;
     max-height: calc(100vh - 560px);
     margin-bottom: 18px;
     -webkit-overflow-scrolling: touch;
     scrollbar-color: #3f704d #ffffff;
     scrollbar-width: thin;
     padding-right: 8px;
+    box-sizing: border-box;
 }
 
 .relatorios-tabela-container::-webkit-scrollbar {
@@ -2122,8 +2182,8 @@ a.trens-card-status:focus-visible {
 }
 
 .route-modal-dialog {
-    max-width: 1180px;
-    width: min(92vw, 1180px);
+    max-width: 600px;
+    width: min(88vw, 600px);
 }
 
 .route-selector-panel {
@@ -2231,10 +2291,10 @@ a.trens-card-status:focus-visible {
 }
 
 #modalAddRota .input-field input:focus ~ label,
-#modalAddRota .input-field input:valid ~ label,
+#modalAddRota .input-field input:not(:placeholder-shown) ~ label,
 #modalAddRota .input-field input.has-value ~ label,
 #modalAddRota .input-field select:focus ~ label,
-#modalAddRota .input-field select:not([value=""]):valid ~ label,
+#modalAddRota .input-field select:valid ~ label,
 #modalAddRota .input-field select.has-value ~ label,
 #modalAddRota .input-field textarea:focus ~ label,
 #modalAddRota .input-field textarea:not(:placeholder-shown) ~ label,
@@ -2463,7 +2523,7 @@ a.trens-card-status:focus-visible {
 .relatorios-tabela-container {
     width: 100%;
     border-radius: 10px;
-    background-color: #ffffff;
+    background-color: transparent;
     border: none;
 }
 
@@ -2471,8 +2531,11 @@ a.trens-card-status:focus-visible {
     width: 100%;
     min-width: 540px;
     margin: 0;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     background-color: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
 }
 
 .card_relatorios .relatorios-table thead th {

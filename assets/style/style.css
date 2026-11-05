@@ -2070,8 +2070,8 @@ a.trens-card-status:focus-visible {
 }
 
 .route-modal-dialog {
-    max-width: 1180px;
-    width: min(92vw, 1180px);
+    max-width: 600px;
+    width: min(88vw, 600px);
 }
 
 .route-selector-panel {
@@ -2179,10 +2179,10 @@ a.trens-card-status:focus-visible {
 }
 
 #modalAddRota .input-field input:focus ~ label,
-#modalAddRota .input-field input:valid ~ label,
+#modalAddRota .input-field input:not(:placeholder-shown) ~ label,
 #modalAddRota .input-field input.has-value ~ label,
 #modalAddRota .input-field select:focus ~ label,
-#modalAddRota .input-field select:not([value=""]):valid ~ label,
+#modalAddRota .input-field select:valid ~ label,
 #modalAddRota .input-field select.has-value ~ label,
 #modalAddRota .input-field textarea:focus ~ label,
 #modalAddRota .input-field textarea:not(:placeholder-shown) ~ label,

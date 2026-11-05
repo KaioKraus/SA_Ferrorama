@@ -309,41 +309,47 @@ mysqli_stmt_close($stmt_rotas);
                                 <form method="POST" action="cadastrar_rota.php" id="form_cadastro_rota">
                                     <input type="hidden" name="rota_id" value="">
 
-                                    <div class="route-selector-panel mb-4">
-                                        <div class="route-selector-map" aria-label="Mapa da rota">
-                                            <img src="../assets/img/trilho.svg" alt="Mapa de trilho da rota" class="route-selector-image">
-                                        </div>
-
-                                    </div>
-
-                                    <div class="d-none">
-                                        <select required name="ponto_partida" id="select_ponto_partida">
-                                            <option value=""></option>
-                                            <?php $opcoesEstacoes = array_values(array_unique(array_merge($estacoesMapa, $pontos))); ?>
-                                            <?php foreach ($opcoesEstacoes as $ponto): ?>
-                                                <option value="<?= htmlspecialchars((string) $ponto) ?>"><?= htmlspecialchars((string) $ponto) ?></option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                        <select required name="ponto_chegada" id="select_ponto_chegada">
-                                            <option value=""></option>
-                                            <?php $opcoesEstacoes = array_values(array_unique(array_merge($estacoesMapa, $pontos))); ?>
-                                            <?php foreach ($opcoesEstacoes as $ponto): ?>
-                                                <option value="<?= htmlspecialchars((string) $ponto) ?>"><?= htmlspecialchars((string) $ponto) ?></option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
-
                                     <div class="row mb-3">
                                         <div class="col-md-6">
                                             <div class="input-field">
-                                                <input required type="text" name="nome" id="input_nome_rota" autocomplete="off" minlength="3" />
-                                                <label for="input_nome_rota">Nome</label>
+                                                <select required name="ponto_partida" id="select_ponto_partida" aria-label="Ponto de partida">
+                                                    <option value="" selected disabled></option>
+                                                    <?php $opcoesEstacoes = array_values(array_unique(array_merge($estacoesMapa, $pontos))); ?>
+                                                    <?php foreach ($opcoesEstacoes as $ponto): ?>
+                                                        <option value="<?= htmlspecialchars((string) $ponto) ?>"><?= htmlspecialchars((string) $ponto) ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                                <label for="select_ponto_partida">Ponto de partida</label>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="input-field">
-                                                <select required name="trem_id" id="input_trem_rota">
-                                                    <option value=""></option>
+                                                <select required name="ponto_chegada" id="select_ponto_chegada" aria-label="Ponto de chegada">
+                                                    <option value="" selected disabled></option>
+                                                    <?php $opcoesEstacoes = array_values(array_unique(array_merge($estacoesMapa, $pontos))); ?>
+                                                    <?php foreach ($opcoesEstacoes as $ponto): ?>
+                                                        <option value="<?= htmlspecialchars((string) $ponto) ?>"><?= htmlspecialchars((string) $ponto) ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                                <label for="select_ponto_chegada">Ponto de chegada</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <div class="input-field">
+                                                <input required type="text" name="nome" id="input_nome_rota" autocomplete="off" minlength="3" placeholder=" " />
+                                                <label for="input_nome_rota">Nome</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <div class="input-field">
+                                                <select required name="trem_id" id="input_trem_rota" aria-label="Trem">
+                                                    <option value="" selected disabled></option>
                                                     <?php 
                                                     mysqli_data_seek($resultado_trens, 0);
                                                     if ($resultado_trens && mysqli_num_rows($resultado_trens) > 0):
@@ -363,7 +369,7 @@ mysqli_stmt_close($stmt_rotas);
                                     <div class="row mb-3">
                                         <div class="col">
                                             <div class="input-field">
-                                                <textarea name="descricao" id="input_descricao_rota" rows="1" style="resize: none;" placeholder=""></textarea>
+                                                <textarea name="descricao" id="input_descricao_rota" rows="1" style="resize: none;" placeholder=" "></textarea>
                                                 <label for="input_descricao_rota">Descrição</label>
                                             </div>
                                         </div>
@@ -382,7 +388,7 @@ mysqli_stmt_close($stmt_rotas);
                                     </div>
 
                                     <div class="text-center">
-                                        <button type="submit" class="btn btn_adicionar px-5" id="btn_salvar_rota">Adicionar</button>
+                                        <button type="submit" class="btn btn_adicionar px-5 mt-3" id="btn_salvar_rota">Adicionar</button>
                                         <div id="mensagem_cadastro_rota" class="mt-3"></div>
                                     </div>
                                 </form>

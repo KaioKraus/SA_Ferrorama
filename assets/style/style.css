@@ -334,6 +334,11 @@ h3 {
     padding-right: 8px;
 }
 
+/* Ajuste para página de rotas com filtros adicionais */
+.rotas-page .table-wrapper {
+    height: calc(100% - 180px);
+}
+
 .card_usuarios .table-wrapper::-webkit-scrollbar {
     width: 8px;
 }
@@ -431,6 +436,14 @@ h3 {
     vertical-align: middle;
     text-align: center;
     color: #333;
+}
+
+.table tbody tr:last-child td:first-child {
+    border-radius: 0 0 0 10px;
+}
+
+.table tbody tr:last-child td:last-child {
+    border-radius: 0 0 10px 0;
 }
 
 .badge_admin {
@@ -1587,8 +1600,7 @@ a.trens-card-status:focus-visible {
     -webkit-box-orient: vertical;
     color: #000000;
 }
-    color: #000000;
-}
+
 
 .btn-close {
     position: absolute;
@@ -1668,26 +1680,30 @@ a.trens-card-status:focus-visible {
 
 .card_relatorios {
     background-color: #D9D9D9;
-    border-radius: 20px;
+    border-radius: 17px;
+    border: 1px solid #b6c0bd;
     padding: 30px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-card);
     min-height: 45vh;
     margin-bottom: 20px;
 }
 
 .conteudo-relatorios {
-    height: auto;
-    min-height: 100vh;
-    box-sizing: border-box;
-    overflow-x: hidden;
-    overflow-y: visible;
+    flex-grow: 1;
+    height: 100vh;
+    background-color: #CFD8D6;
+    padding: 40px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .card_gerar_relatorios {
     background-color: #D9D9D9;
-    border-radius: 20px;
+    border-radius: 10px;
+    border: 1px solid #b6c0bd;
     padding: 30px 35px 28px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-card);
     min-height: 30vh;
     margin-top: 10px;
     color: #000000;
@@ -2076,16 +2092,17 @@ a.trens-card-status:focus-visible {
 .card_relatorios,
 .card_gerar_relatorios {
     background-color: #D9D9D9;
-    border-radius: 14px;
+    border-radius: 17px;
+    border: 1px solid #b6c0bd;
     box-shadow: var(--shadow-card);
-    padding: 24px;
+    padding: 30px;
 }
 
 .relatorios-tabela-container {
     width: 100%;
     border-radius: 10px;
     background-color: #ffffff;
-    border: 1px solid #dee2e6;
+    border: none;
 }
 
 .card_relatorios .relatorios-table {

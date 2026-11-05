@@ -180,8 +180,8 @@ mysqli_stmt_close($stmt_rotas);
 
 
         <section class="conteudo">
-            <div class="card_usuarios">
-                <div class="barra_busca mb-3">
+            <div class="card_usuarios rotas-page">
+                <div class="barra_busca">
                     <div class="barra_busca_filtro">
                         <form method="GET" action="tela_rotas.php" class="input-group dashboard-busca">
                             <?php if ($statusFiltro !== ''): ?>

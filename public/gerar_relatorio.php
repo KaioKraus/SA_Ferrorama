@@ -103,11 +103,89 @@ if (!isset($_SESSION['usuario_id'])) {
 require_once __DIR__ . '/validar_acesso.php';
 
 try {
+    $relatorioId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
     $trem = trim((string) ($_GET['trem'] ?? 'todos'));
     $sensor = trim((string) ($_GET['sensor'] ?? 'todos'));
     $dataInicio = trim((string) ($_GET['data_inicio'] ?? ''));
     $dataFim = trim((string) ($_GET['data_fim'] ?? ''));
     $formato = (string) ($_GET['formato'] ?? '');
+
+    if ($relatorioId !== false && $relatorioId !== null && $formato === '') {
+        $formato = 'pdf';
+    }
+
+    if ($formato !== '' && !in_array($formato, ['csv', 'pdf'], true)) {
+        responderJson(400, ['success' => false, 'message' => 'O formato de arquivo selecionado é inválido.']);
+    }
+
+    if ($relatorioId !== false && $relatorioId !== null) {
+        $sql = 'SELECT r.relatorio_id, r.data_relatorio, f.falha_id, f.trem_id,
+                       t.nome_trem, f.sensor_id, s.nome_sensor, s.tipo_dado
+                FROM relatorio r
+                INNER JOIN falha f ON f.falha_id = r.falha_id
+                INNER JOIN sensores s ON s.sensor_id = f.sensor_id
+                INNER JOIN trens t ON t.trem_id = f.trem_id
+                WHERE r.relatorio_id = ?
+                LIMIT 1';
+
+        $stmt = mysqli_prepare($conexao, $sql);
+        if (!$stmt) {
+            throw new RuntimeException('Não foi possível preparar a consulta do relatório solicitado: ' . mysqli_error($conexao));
+        }
+
+        mysqli_stmt_bind_param($stmt, 'i', $relatorioId);
+        if (!mysqli_stmt_execute($stmt)) {
+            throw new RuntimeException('Não foi possível consultar o relatório solicitado: ' . mysqli_stmt_error($stmt));
+        }
+
+        $resultado = mysqli_stmt_get_result($stmt);
+        if (!$resultado) {
+            throw new RuntimeException('Não foi possível carregar o relatório solicitado: ' . mysqli_stmt_error($stmt));
+        }
+
+        $relatorios = mysqli_fetch_all($resultado, MYSQLI_ASSOC);
+        mysqli_free_result($resultado);
+        mysqli_stmt_close($stmt);
+
+        if (!$relatorios) {
+            responderJson(404, ['success' => false, 'message' => 'Relatório não encontrado.']);
+        }
+
+        if ($formato === 'pdf') {
+            $arquivoPdf = gerarPdfRelatorio($relatorios);
+            header('Content-Type: application/pdf');
+            header('Content-Disposition: attachment; filename="relatorio-' . (int) $relatorioId . '.pdf"');
+            header('Content-Length: ' . strlen($arquivoPdf));
+            echo $arquivoPdf;
+            exit;
+        }
+
+        if ($formato === 'csv') {
+            $arquivo = fopen('php://output', 'w');
+            if (!$arquivo) {
+                throw new RuntimeException('Não foi possível criar o arquivo CSV do relatório solicitado.');
+            }
+
+            header('Content-Type: text/csv; charset=utf-8');
+            header('Content-Disposition: attachment; filename="relatorio-' . (int) $relatorioId . '.csv"');
+            fwrite($arquivo, "\xEF\xBB\xBF");
+            fputcsv($arquivo, ['ID do relatório', 'Data', 'ID do trem', 'Trem', 'ID do sensor', 'Sensor', 'Tipo de dado', 'ID da falha'], ';', '"', '');
+            foreach ($relatorios as $relatorio) {
+                fputcsv($arquivo, [
+                    $relatorio['relatorio_id'],
+                    $relatorio['data_relatorio'],
+                    $relatorio['trem_id'],
+                    protegerCelulaCsv((string) $relatorio['nome_trem']),
+                    $relatorio['sensor_id'],
+                    protegerCelulaCsv((string) $relatorio['nome_sensor']),
+                    protegerCelulaCsv((string) $relatorio['tipo_dado']),
+                    $relatorio['falha_id']
+                ], ';', '"', '');
+            }
+            fclose($arquivo);
+            exit;
+        }
+    }
 
     if ($formato !== '' && !in_array($formato, ['csv', 'pdf'], true)) {
         responderJson(400, ['success' => false, 'message' => 'O formato de arquivo selecionado é inválido.']);

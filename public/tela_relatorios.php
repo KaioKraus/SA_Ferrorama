@@ -240,9 +240,9 @@ if (!$resultadoRelatorios) {
                                                     <i class="bi bi-trash"></i>
                                                 </button>
                                             <?php endif; ?>
-                                            <button type="button" class="trens-card-acao" data-relatorio-detalhes="<?= (int) ($relatorio['relatorio_id'] ?? 0); ?>" data-bs-toggle="modal" data-bs-target="#modal_detalhes_relatorio" aria-label="Detalhes do relatório">
+                                            <a href="detalhes_relatorio.php?id=<?= (int) ($relatorio['relatorio_id'] ?? 0); ?>" class="trens-card-acao" aria-label="Detalhes do relatório" title="Detalhes do relatório">
                                                 <i class="bi bi-info-lg"></i>
-                                            </button>
+                                            </a>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

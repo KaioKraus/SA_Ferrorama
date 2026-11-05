@@ -87,13 +87,11 @@ function renderizarRelatorios(relatorios) {
                     celula.appendChild(botaoExcluir);
                 }
 
-                const botaoDetalhes = document.createElement('button');
-                botaoDetalhes.type = 'button';
+                const botaoDetalhes = document.createElement('a');
+                botaoDetalhes.href = `detalhes_relatorio.php?id=${encodeURIComponent(String(relatorio.relatorio_id ?? ''))}`;
                 botaoDetalhes.className = 'trens-card-acao';
                 botaoDetalhes.setAttribute('aria-label', 'Detalhes do relatório');
-                botaoDetalhes.dataset.bsToggle = 'modal';
-                botaoDetalhes.dataset.bsTarget = '#modal_detalhes_relatorio';
-                botaoDetalhes.dataset.relatorioDetalhes = String(relatorio.relatorio_id ?? '');
+                botaoDetalhes.title = 'Detalhes do relatório';
                 botaoDetalhes.innerHTML = '<i class="bi bi-info-lg"></i>';
 
                 celula.appendChild(botaoDetalhes);

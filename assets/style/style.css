@@ -3615,12 +3615,29 @@ body {
             text-align: center;
             margin-top: 0;
             font-size: 0.9rem;
+            transition: box-shadow 0.2s ease, border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
         }
 
         .landing-header .landing-btn {
             background: linear-gradient(135deg, #599967 0%, #7ac28d 100%);
             color: #061515 !important;
             box-shadow: 0 10px 20px rgba(89, 153, 103, 0.25);
+        }
+
+        .landing-header .landing-btn:hover,
+        .landing-header .landing-btn:focus-visible,
+        .landing-header .landing-btn:active,
+        .landing-header .landing-btn-secondary:hover,
+        .landing-header .landing-btn-secondary:focus-visible,
+        .landing-header .landing-btn-secondary:active {
+            transform: translateY(-50%);
+            box-shadow: 0 10px 20px rgba(89, 153, 103, 0.25);
+        }
+
+        .landing-header .landing-btn:hover,
+        .landing-header .landing-btn:focus-visible {
+            background: linear-gradient(135deg, #7ecf8c 0%, #a9e6ae 100%);
+            box-shadow: 0 12px 24px rgba(126, 207, 140, 0.34);
         }
 
         .landing-header .landing-btn-secondary {

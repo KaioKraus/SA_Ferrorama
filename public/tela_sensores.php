@@ -235,26 +235,29 @@ function normalizarTipoDado(string $tipoDado): string {
         <?php if ($usuarioEhAdministrador): ?>
         <div class="modal fade" id="modal_cadastro_sensor" tabindex="-1" aria-labelledby="label_modal_cadastro_sensor" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content modal-ferroviario">
+                <div class="modal-content" style="border-radius: 15px; border: none;">
                     <div class="modal-header border-0 pb-0">
-                        <h5 class="modal-title w-100 text-center fw-bold text-dark" id="label_modal_cadastro_sensor">Cadastro de Sensor</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h5 class="modal-title w-100 text-center text-dark" id="label_modal_cadastro_sensor">Cadastro de Sensor</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="position: absolute; right: 20px; top: 20px;"></button>
                     </div>
                     <div class="modal-body px-5 pt-4 pb-4">
-                        <form id="form_cadastro_sensor" action="salvar_sensor.php" method="post">
+                        <form class="w-100" id="form_cadastro_sensor" action="salvar_sensor.php" method="post">
                             <input type="hidden" name="sensor_id" id="input_sensor_id">
-                            <div class="mb-3">
-                                <div class="input-field">
-                                    <input required autocomplete="off" type="text" id="input_nome_sensor" name="nome_sensor" />
-                                    <label for="input_nome_sensor">Nome</label>
+
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <div class="input-field">
+                                        <input required autocomplete="off" type="text" id="input_nome_sensor" name="nome_sensor" class="form-control" maxlength="155" />
+                                        <label for="input_nome_sensor">Nome</label>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="text-center mb-2">
-                                <label class="fw-bold">Localização</label>
+                            <div class="text-center mb-3">
+                                <label class="fw-bold text-dark">Localização</label>
                             </div>
 
-                            <div class="d-flex justify-content-center mb-3">
+                            <div class="d-flex justify-content-center mb-4">
                                 <div class="toggle-container">
                                     <input type="radio" name="tipo_vinculo" id="vinculo_trem" checked>
                                     <label for="vinculo_trem">Trem</label>
@@ -266,32 +269,36 @@ function normalizarTipoDado(string $tipoDado): string {
                                 </div>
                             </div>
 
-                            <div class="mb-3">
-                                <div class="input-field">
-                                    <select required id="input_localizacao_sensor" name="localizacao">
-                                        <option value="" disabled selected></option>
-                                    </select>
-                                    <label for="input_localizacao_sensor">Trem</label>
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <div class="input-field">
+                                        <select required id="input_localizacao_sensor" name="localizacao" class="form-select">
+                                            <option value="" disabled selected></option>
+                                        </select>
+                                        <label for="input_localizacao_sensor">Trem</label>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="mb-3">
-                                <div class="input-field">
-                                    <select required id="input_tipo_sensor" name="tipo_dado">
-                                        <option value="" disabled selected></option>
-                                        <option value="temperatura">Temperatura</option>
-                                        <option value="vibracao">Vibração</option>
-                                        <option value="velocidade">Velocidade</option>
-                                        <option value="pressao">Pressão</option>
-                                        <option value="umidade">Umidade</option>
-                                        <option value="energia">Energia</option>
-                                        <option value="outro">Outro</option>
-                                    </select>
-                                    <label for="input_tipo_sensor">Tipo de dado</label>
+                            <div class="row mb-4">
+                                <div class="col">
+                                    <div class="input-field">
+                                        <select required id="input_tipo_sensor" name="tipo_dado" class="form-select">
+                                            <option value="" disabled selected></option>
+                                            <option value="temperatura">Temperatura</option>
+                                            <option value="vibracao">Vibração</option>
+                                            <option value="velocidade">Velocidade</option>
+                                            <option value="pressao">Pressão</option>
+                                            <option value="umidade">Umidade</option>
+                                            <option value="energia">Energia</option>
+                                            <option value="outro">Outro</option>
+                                        </select>
+                                        <label for="input_tipo_sensor">Tipo de dado</label>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="d-flex justify-content-center mb-3">
+                            <div class="d-flex justify-content-center mb-4">
                                 <div class="toggle-container">
                                     <input type="radio" name="status_sensor" id="status_sensor_ativo" value="Ativo" checked>
                                     <label for="status_sensor_ativo">Ativo</label>
@@ -303,7 +310,7 @@ function normalizarTipoDado(string $tipoDado): string {
                                 </div>
                             </div>
 
-                            <div class="text-center mt-4">
+                            <div class="text-center">
                                 <button id="btn_salvar_sensor" type="submit" class="btn btn_adicionar px-5">Adicionar</button>
                                 <div id="mensagem_cadastro_sensor" class="mt-3"></div>
                             </div>

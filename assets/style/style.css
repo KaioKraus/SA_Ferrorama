@@ -1472,7 +1472,7 @@ a.badge_funcionario:focus-visible {
     max-width: none;
     height: 310px;
     padding: 10px;
-    background-color: #f3f3f3;
+    background-color: #ffffff;
     border-radius: 12px;
     box-shadow: var(--shadow-card);
     display: flex;
@@ -1695,27 +1695,31 @@ a.trens-card-status:focus-visible {
     background-color: #D9D9D9;
     border-radius: 17px;
     border: 1px solid #b6c0bd;
-    padding: 30px;
+    padding: 24px 20px 16px;
     box-shadow: var(--shadow-card);
     min-height: 45vh;
     margin-bottom: 20px;
+    max-height: calc(100vh - 440px);
+    overflow: hidden;
 }
 
 .conteudo-relatorios {
     flex-grow: 1;
     height: 100vh;
     background-color: #CFD8D6;
-    padding: 40px;
-    overflow: hidden;
+    padding: 24px 26px 28px;
+    overflow-y: auto;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
 }
 
 .card_gerar_relatorios {
     background-color: #D9D9D9;
     border-radius: 10px;
     border: 1px solid #b6c0bd;
-    padding: 30px 35px 28px;
+    padding: 24px 28px 18px;
     box-shadow: var(--shadow-card);
     min-height: 30vh;
     margin-top: 10px;
@@ -1723,22 +1727,288 @@ a.trens-card-status:focus-visible {
 }
 
 .card_gerar_relatorios .card-title {
-    font-size: 1.6rem;
+    font-size: 2rem;
     font-weight: 700;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
     color: #0A3D3D;
+    text-align: center;
 }
 
-/* Center the card title like users table pattern */
 .card_relatorios .card-title,
 .card_gerar_relatorios .card-title {
     text-align: center;
     color: #333 !important;
-    padding: 10px 16px;
-    background: #D9D9D9;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
     display: block;
+}
+
+.barra_busca {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    gap: 20px;
+}
+
+.barra_busca_filtro {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+}
+
+.filtro_busca {
+    display: flex;
+    align-items: center;
+    min-width: 220px;
+    flex: 0 0 220px;
+}
+
+.filtro_busca_select {
+    width: 100%;
+    height: 39px;
+    border-radius: 7px;
+    border: 1px solid #cfcfcf;
+    background-color: #ffffff;
+    color: #000;
+    font-size: 15px;
+    padding: 0 12px;
+}
+
+.filtro_busca_select:focus {
+    border-color: #7a7a7a;
+    box-shadow: none;
+}
+
+.input_buscar {
+    width: 300px;
+    border-radius: 10px;
+    border: 1px solid #ced4da;
+    padding: 5px 15px;
+}
+
+.btn_buscar {
+    background-color: #0A3D3D;
+    color: white;
+    border-radius: 10px;
+    width: 29px;
+    height: 29px;
+    border: none;
+    margin-left: 10px;
+}
+
+.btn_add {
+    background-color: #0A3D3D;
+    color: white;
+    border-radius: 10px;
+    width: 29px;
+    height: 29px;
+    border: none;
+}
+
+.table {
+    margin-top: 20px;
+}
+
+.table thead th {
+    border-bottom: 2px solid #dee2e6;
+    text-align: center;
+    color: #333;
+    padding: 12px;
+}
+
+.table thead th:first-child {
+    border-radius: 10px 0 0 0;
+}
+
+.table thead th:last-child {
+    border-radius: 0 10px 0 0;
+}
+
+.table tbody td {
+    vertical-align: middle;
+    text-align: center;
+    color: #333;
+}
+
+.table tbody tr:last-child td:first-child {
+    border-radius: 0 0 0 10px;
+}
+
+.table tbody tr:last-child td:last-child {
+    border-radius: 0 0 10px 0;
+}
+
+.relatorios-tabela-container {
+    width: 100%;
+    background-color: #ffffff;
+    border-radius: 12px;
+    overflow-x: auto;
+    overflow-y: auto;
+    border: 1px solid #e4e7e7;
+    max-height: calc(100vh - 560px);
+    margin-bottom: 18px;
+}
+
+.card_relatorios .relatorios-table {
+    width: 100%;
+    min-width: 520px;
+    margin: 0;
+    border-collapse: collapse;
+    background-color: #ffffff;
+}
+
+.card_relatorios .relatorios-table thead th {
+    padding: 12px 10px;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: #ffffff;
+    color: #111111;
+    font-weight: 700;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.card_relatorios .relatorios-table thead th:last-child {
+    width: 130px;
+    min-width: 130px;
+}
+
+.card_relatorios .relatorios-table tbody td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: #ffffff;
+    color: #333333;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.card_relatorios .relatorios-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.card_relatorios .relatorios-table tbody td:last-child {
+    width: 130px;
+    white-space: nowrap;
+}
+
+.card_relatorios .relatorios-table .acoes-relatorio {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.card_relatorios .relatorios-table .acoes-relatorio .btn_delete,
+.card_relatorios .relatorios-table .acoes-relatorio .trens-card-acao {
+    width: 35px;
+    height: 35px;
+    min-width: 35px;
+    min-height: 35px;
+    border-radius: 5px;
+    padding: 0;
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card_gerar_relatorios .card-text {
+    margin-bottom: 18px;
+    color: #2b2b2b;
+    font-size: 1.08rem;
+    text-align: left;
+}
+
+.form-relatorio-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+.form-relatorio-group {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.form-relatorio-group-full {
+    margin-bottom: 20px;
+}
+
+.form-relatorio-group label {
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #1f1f1f;
+}
+
+.input-relatorio {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid #b5b5b5;
+    background-color: #fff;
+    color: #000;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    min-height: 45px;
+}
+
+.form-relatorio-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+    gap: 12px;
+}
+
+.form-relatorio-actions .btn_adicionar {
+    min-width: 180px;
+}
+
+.btn-relatorios-adicionar {
+    background-color: #0A3D3D;
+    color: white;
+    border-radius: 10px;
+    padding: 5px 20px;
+    border: none;
+    margin-left: 10px;
+}
+
+.btn_adicionar {
+    background-color: #0A3D3D;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 22px;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+.btn_adicionar:hover,
+.btn_adicionar:focus,
+.btn_adicionar:active {
+    background-color: #062f2f;
+    color: #ffffff;
+}
+
+#btn_exportar_relatorio {
+    background-color: #0A3D3D;
+    color: #ffffff;
+    border: 1px solid #0A3D3D;
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-weight: 600;
+}
+
+#btn_exportar_relatorio:hover,
+#btn_exportar_relatorio:focus,
+#btn_exportar_relatorio:active {
+    background-color: #062f2f;
+    border-color: #062f2f;
+    color: #ffffff;
 }
 
 .route-modal-body {
@@ -2128,8 +2398,8 @@ a.trens-card-status:focus-visible {
 
 .card_relatorios .relatorios-table thead th {
     padding: 12px;
-    border-bottom: 2px solid #dee2e6;
-    background-color: #f4f6f6;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: #ffffff;
     color: #072727;
     font-weight: 700;
     text-align: center;
@@ -2145,7 +2415,7 @@ a.trens-card-status:focus-visible {
 
 .card_relatorios .relatorios-table tbody td {
     padding: 12px;
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 1px solid #e0e0e0;
     color: #333333;
     text-align: center;
     vertical-align: middle;

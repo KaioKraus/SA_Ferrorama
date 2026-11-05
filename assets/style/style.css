@@ -2015,12 +2015,14 @@ a.trens-card-status:focus-visible {
 }
 
 .relatorio-content-panel {
+    width: calc(100% - 18px);
+    margin: 0 auto;
     background: #ffffff;
     border: 1px solid rgba(19, 31, 27, 0.08);
     border-radius: 12px;
     padding: 18px 18px 20px;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
-    min-height: 720px;
+    min-height: 670px;
 }
 
 .relatorio-preview-header {

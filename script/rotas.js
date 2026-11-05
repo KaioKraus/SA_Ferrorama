@@ -199,9 +199,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Inicializar marcadores quando o modal for aberto
-    const modalAddRota = document.getElementById('modalAddRota');
-    if (modalAddRota) {
-        modalAddRota.addEventListener('shown.bs.modal', function() {
+    if (document.getElementById('modalAddRota')) {
+        document.getElementById('modalAddRota').addEventListener('shown.bs.modal', function() {
             setTimeout(initializeStationMarkers, 100);
         });
     }
@@ -296,12 +295,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    if (filtroPartidaRota) {
-        filtroPartidaRota.addEventListener('change', aplicarFiltroRotas);
-    }
-
-    if (filtroDestinoRota) {
-        filtroDestinoRota.addEventListener('change', aplicarFiltroRotas);
+    const btnBuscaRota = document.getElementById('btn_busca_rota');
+    if (btnBuscaRota && btnBuscaRota.form) {
+        btnBuscaRota.addEventListener('click', function (event) {
+            event.preventDefault();
+            btnBuscaRota.form.submit();
+        });
     }
 
     const modalEl = document.getElementById('modal_confirm_delete');

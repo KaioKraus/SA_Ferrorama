@@ -190,7 +190,7 @@ if (!$resultadoRelatorios) {
                     <div class="barra_busca_filtro">
                         <div class="input-group dashboard-busca">
                             <input id="input_busca_relatorio" name="buscar_relatorio" type="search" class="form-control dashboard-input" value="<?= htmlspecialchars($termoBusca, ENT_QUOTES, 'UTF-8'); ?>" placeholder="Buscar por ID ou tipo de falha" aria-label="Buscar por ID ou tipo de falha">
-                            <button id="btn_busca_relatorio" class="btn dashboard-btn-busca" type="submit" aria-label="Buscar">
+                            <button id="btn_busca_relatorio" class="btn dashboard-btn-busca" type="button" aria-label="Buscar">
                                 <i class="bi bi-search"></i>
                             </button>
                         </div>

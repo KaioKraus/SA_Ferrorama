@@ -9,6 +9,21 @@ document.addEventListener('DOMContentLoaded', function () {
     var filtroResponsavelTrem = document.getElementById('filtro_responsavel_trem');
     var trensGrid = document.querySelector('.trens-grid');
 
+    // Função idêntica à do modal de usuários
+    function atualizarLabelFlutuante(campo) {
+        if (!campo) return;
+        const valor = campo.value ?? '';
+        campo.classList.toggle('has-value', String(valor).trim() !== '');
+    }
+
+    // Aplicar em todos os campos quando a página carregar
+    document.querySelectorAll('.input-field input, .input-field select, .input-field textarea').forEach(campo => {
+        atualizarLabelFlutuante(campo);
+        campo.addEventListener('input', () => atualizarLabelFlutuante(campo));
+        campo.addEventListener('change', () => atualizarLabelFlutuante(campo));
+    });
+
+
     if (filtroResponsavelTrem && filtroResponsavelTrem.form) {
         filtroResponsavelTrem.addEventListener('change', function () {
             filtroResponsavelTrem.form.submit();
@@ -166,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 responsavelEl.selectedIndex = 0;
             }
-            responsavelEl.classList.toggle('has-value', !!responsavel);
+            atualizarLabelFlutuante(responsavelEl);
         }
 
         configurarPermissaoModal();
@@ -177,6 +192,14 @@ document.addEventListener('DOMContentLoaded', function () {
             var botao = event.relatedTarget;
             var card = botao ? botao.closest('.trens-card-trem') : null;
             preencherModalTrem(card);
+            
+            // Atualizar labels após preencher
+            var nomeEl = document.getElementById('modal_trem_nome');
+            var statusEl = document.getElementById('modal_trem_status');
+            var responsavelEl = document.getElementById('modal_trem_responsavel');
+            if (nomeEl) atualizarLabelFlutuante(nomeEl);
+            if (statusEl) atualizarLabelFlutuante(statusEl);
+            if (responsavelEl) atualizarLabelFlutuante(responsavelEl);
         });
     }
 

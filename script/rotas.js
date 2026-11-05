@@ -2,6 +2,36 @@ document.addEventListener('DOMContentLoaded', function () {
     const rotasDb = Array.isArray(window.rotasDb) ? window.rotasDb : [];
     const avisoExclusaoRota = document.getElementById('aviso_exclusao_rota');
 
+    // Função para atualizar label flutuante - IGUAL AO usuarios.js
+    function atualizarLabelFlutuante(campo) {
+        if (!campo) return;
+        const valor = campo.value ?? '';
+        const temValor = String(valor).trim() !== '';
+        console.log('atualizarLabelFlutuante:', campo.id, 'valor:', valor, 'temValor:', temValor);
+        campo.classList.toggle('has-value', temValor);
+    }
+
+    // Aplicar em TODOS os campos .input-field - IGUAL AO usuarios.js
+    document.querySelectorAll('.input-field input, .input-field select, .input-field textarea').forEach(campo => {
+        console.log('Registrando listeners para:', campo.id);
+        atualizarLabelFlutuante(campo);
+        campo.addEventListener('input', function() {
+            console.log('Evento input disparado em:', this.id);
+            atualizarLabelFlutuante(this);
+        });
+        campo.addEventListener('change', function() {
+            console.log('Evento change disparado em:', this.id);
+            atualizarLabelFlutuante(this);
+        });
+        // Para textarea, também escutar blur para garantir atualização
+        if (campo.tagName.toLowerCase() === 'textarea') {
+            campo.addEventListener('blur', function() {
+                console.log('Evento blur disparado em:', this.id);
+                atualizarLabelFlutuante(this);
+            });
+        }
+    });
+
     if (avisoExclusaoRota) {
         window.setTimeout(function () {
             avisoExclusaoRota.classList.remove('show');
@@ -304,50 +334,68 @@ document.addEventListener('DOMContentLoaded', function () {
         botaoAdicionarRota.addEventListener('click', definirModoCadastroRota);
     }
 
-    document.addEventListener('click', function (event) {
-        const botaoEditar = event.target.closest && event.target.closest('.btn_edit');
-        if (!botaoEditar || !modalAddRota || !formCadastroRota || !campoRotaId) return;
+    // Listener para quando o modal abrir
+    if (modalAddRota) {
+        modalAddRota.addEventListener('show.bs.modal', function (event) {
+            const botaoEditar = event.relatedTarget;
+            
+            // Se não for botão de editar, não faz nada (deixa o modal limpo para cadastro)
+            if (!botaoEditar || !botaoEditar.classList.contains('btn_edit')) {
+                return;
+            }
 
-        const linha = botaoEditar.closest('tr[data-rota-id]');
-        const rota = linha && rotasDb.find(function (item) {
-            return String(item.rota_id) === String(linha.dataset.rotaId);
-        });
-        if (!rota) return;
-
-        formCadastroRota.elements.ponto_partida.value = rota.ponto_partida || '';
-        formCadastroRota.elements.ponto_chegada.value = rota.ponto_chegada || '';
-        formCadastroRota.elements.nome.value = rota.nome || '';
-        formCadastroRota.elements.trem_id.value = rota.trem_id || '';
-        formCadastroRota.elements.descricao.value = rota.descricao || '';
-        campoRotaId.value = rota.rota_id;
-
-        const status = Array.from(formCadastroRota.querySelectorAll('[name="status"]')).find(function (opcao) {
-            return opcao.value === rota.status;
-        });
-        if (status) status.checked = true;
-        if (tituloModalRota) tituloModalRota.textContent = 'Editar Rota';
-        if (botaoSalvarRota) botaoSalvarRota.textContent = 'Salvar';
-        
-        // Preencher seleção de estações no mapa
-        selectedDeparture = rota.ponto_partida || null;
-        selectedArrival = rota.ponto_chegada || null;
-        
-        bootstrap.Modal.getOrCreateInstance(modalAddRota).show();
-        
-        // Atualizar marcadores visuais após o modal abrir
-        setTimeout(function() {
-            document.querySelectorAll('.station-marker').forEach(function(marker) {
-                const stationName = marker.dataset.stationName;
-                marker.classList.remove('selected-departure', 'selected-arrival');
-                if (stationName === selectedDeparture) {
-                    marker.classList.add('selected-departure');
-                }
-                if (stationName === selectedArrival) {
-                    marker.classList.add('selected-arrival');
-                }
+            const linha = botaoEditar.closest('tr[data-rota-id]');
+            const rota = linha && rotasDb.find(function (item) {
+                return String(item.rota_id) === String(linha.dataset.rotaId);
             });
-        }, 150);
-    });
+            
+            if (!rota) return;
+
+            formCadastroRota.elements.ponto_partida.value = rota.ponto_partida || '';
+            formCadastroRota.elements.ponto_chegada.value = rota.ponto_chegada || '';
+            formCadastroRota.elements.nome.value = rota.nome || '';
+            formCadastroRota.elements.trem_id.value = rota.trem_id || '';
+            formCadastroRota.elements.descricao.value = rota.descricao || '';
+            campoRotaId.value = rota.rota_id;
+
+            const status = Array.from(formCadastroRota.querySelectorAll('[name="status"]')).find(function (opcao) {
+                return opcao.value === rota.status;
+            });
+            if (status) status.checked = true;
+            if (tituloModalRota) tituloModalRota.textContent = 'Editar Rota';
+            if (botaoSalvarRota) botaoSalvarRota.textContent = 'Salvar';
+            
+            // Atualizar labels após preencher - IGUAL AO trens.js
+            const inputNome = document.getElementById('input_nome_rota');
+            const selectTrem = document.getElementById('input_trem_rota');
+            const textareaDescricao = document.getElementById('input_descricao_rota');
+            
+            // Usar setTimeout para garantir que o DOM foi atualizado
+            setTimeout(function() {
+                if (inputNome) atualizarLabelFlutuante(inputNome);
+                if (selectTrem) atualizarLabelFlutuante(selectTrem);
+                if (textareaDescricao) atualizarLabelFlutuante(textareaDescricao);
+            }, 50);
+            
+            // Preencher seleção de estações no mapa
+            selectedDeparture = rota.ponto_partida || null;
+            selectedArrival = rota.ponto_chegada || null;
+            
+            // Atualizar marcadores visuais
+            setTimeout(function() {
+                document.querySelectorAll('.station-marker').forEach(function(marker) {
+                    const stationName = marker.dataset.stationName;
+                    marker.classList.remove('selected-departure', 'selected-arrival');
+                    if (stationName === selectedDeparture) {
+                        marker.classList.add('selected-departure');
+                    }
+                    if (stationName === selectedArrival) {
+                        marker.classList.add('selected-arrival');
+                    }
+                });
+            }, 150);
+        });
+    }
 
     if (formCadastroRota) {
         formCadastroRota.addEventListener('submit', function (e) {

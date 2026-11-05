@@ -282,7 +282,7 @@ mysqli_stmt_close($stmt_rotas);
                                     </td>
                                     <td>
                                         <?php if ($usuarioEhAdministrador): ?>
-                                            <button class="btn_edit" type="button" aria-label="Editar rota"><i class="bi bi-pencil-square"></i></button>
+                                            <button class="btn_edit" type="button" data-bs-toggle="modal" data-bs-target="#modalAddRota" aria-label="Editar rota"><i class="bi bi-pencil-square"></i></button>
                                             <button class="btn_delete mx-2" type="button" data-bs-toggle="modal" data-bs-target="#modal_confirm_delete" data-id="<?= (int) ($rota['rota_id'] ?? 0); ?>" aria-label="Excluir rota"><i class="bi bi-trash"></i></button>
                                         <?php endif; ?>
                                         <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_monitoramento" data-rota-id="<?= (int) ($rota['rota_id'] ?? 0); ?>" aria-label="Informações da rota"><i class="bi bi-info-lg"></i></button>
@@ -336,15 +336,16 @@ mysqli_stmt_close($stmt_rotas);
                                     <div class="row mb-3">
                                         <div class="col-md-6">
                                             <div class="input-field">
-                                                <input required type="text" name="nome" class="form-control" minlength="3">
-                                                <label>Nome</label>
+                                                <input required type="text" name="nome" id="input_nome_rota" autocomplete="off" minlength="3" />
+                                                <label for="input_nome_rota">Nome</label>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="input-field">
-                                                <select required name="trem_id" class="form-select">
+                                                <select required name="trem_id" id="input_trem_rota">
                                                     <option value=""></option>
                                                     <?php 
+                                                    mysqli_data_seek($resultado_trens, 0);
                                                     if ($resultado_trens && mysqli_num_rows($resultado_trens) > 0):
                                                         while($trem = mysqli_fetch_assoc($resultado_trens)): 
                                                     ?>
@@ -354,7 +355,7 @@ mysqli_stmt_close($stmt_rotas);
                                                     endif; 
                                                     ?>
                                                 </select>
-                                                <label>Trem</label>
+                                                <label for="input_trem_rota">Trem</label>
                                             </div>
                                         </div>
                                     </div>
@@ -362,8 +363,8 @@ mysqli_stmt_close($stmt_rotas);
                                     <div class="row mb-3">
                                         <div class="col">
                                             <div class="input-field">
-                                                <textarea name="descricao" class="form-control" rows="1" style="resize: none;" placeholder=" "></textarea>
-                                                <label>Descrição</label>
+                                                <textarea name="descricao" id="input_descricao_rota" rows="1" style="resize: none;" placeholder=""></textarea>
+                                                <label for="input_descricao_rota">Descrição</label>
                                             </div>
                                         </div>
                                     </div>

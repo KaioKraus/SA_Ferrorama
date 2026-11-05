@@ -71,7 +71,6 @@ if (input_telefone) {
 const form_cadastro_sensor = document.getElementById("form_cadastro_sensor");
 const mensagem_cadastro_sensor = document.getElementById("mensagem_cadastro_sensor");
 const select_localizacao_sensor = document.getElementById("input_localizacao_sensor");
-const select_status_sensor = document.getElementById("input_status_sensor");
 const vinculo_trem_radio = document.getElementById("vinculo_trem");
 const vinculo_rota_radio = document.getElementById("vinculo_rota");
 
@@ -111,13 +110,14 @@ if (select_localizacao_sensor && vinculo_trem_radio && vinculo_rota_radio) {
 }
 
 if (form_cadastro_sensor) {
-    form_cadastro_sensor.addEventListener('submit', function (event) {
+    form_cadastro_sensor.addEventListener('submit', async function (event) {
         event.preventDefault();
 
         const nome_sensor = document.getElementById("input_nome_sensor").value.trim();
         const localizacao_sensor = select_localizacao_sensor.value;
         const tipo_sensor = document.getElementById("input_tipo_sensor").value;
-        const status_sensor = select_status_sensor ? select_status_sensor.value : "Ativo";
+        const statusSelecionado = form_cadastro_sensor.querySelector('input[name="status_sensor"]:checked');
+        const status_sensor = statusSelecionado ? statusSelecionado.value : '';
 
         mensagem_cadastro_sensor.innerHTML = "";
 
@@ -137,20 +137,46 @@ if (form_cadastro_sensor) {
             return;
         }
 
-        mensagem_cadastro_sensor.innerHTML = "<div class='text-success fw-bold'>Sensor cadastrado com sucesso! Status: " + status_sensor + ".</div>";
+        const botaoSalvar = document.getElementById('btn_salvar_sensor');
+        const textoBotao = botaoSalvar ? botaoSalvar.textContent : '';
+        if (botaoSalvar) {
+            botaoSalvar.disabled = true;
+            botaoSalvar.textContent = 'Salvando...';
+        }
 
-        setTimeout(() => {
-            form_cadastro_sensor.reset();
-            if (select_status_sensor) {
-                select_status_sensor.value = 'Ativo';
+        const dados = new FormData(form_cadastro_sensor);
+        const localizacaoSelecionada = select_localizacao_sensor.options[select_localizacao_sensor.selectedIndex];
+        const localizacao = dados.get('sensor_id') && form_cadastro_sensor.dataset.localizacaoChave === localizacao_sensor
+            ? form_cadastro_sensor.dataset.localizacaoOriginal
+            : localizacaoSelecionada.textContent.trim();
+        dados.set('localizacao', localizacao);
+        const selectTipoSensor = document.getElementById('input_tipo_sensor');
+        const tipoSelecionado = selectTipoSensor.options[selectTipoSensor.selectedIndex];
+        const tipoDado = dados.get('sensor_id') && form_cadastro_sensor.dataset.tipoChave === tipo_sensor
+            ? form_cadastro_sensor.dataset.tipoOriginal
+            : tipoSelecionado.textContent.trim();
+        dados.set('tipo_dado', tipoDado);
+
+        try {
+            const resposta = await fetch(form_cadastro_sensor.action, {
+                method: 'POST',
+                body: dados,
+                headers: { 'Accept': 'application/json' }
+            });
+            const resultado = await resposta.json();
+            if (!resposta.ok || !resultado.success) {
+                throw new Error(resultado.message || 'Não foi possível salvar o sensor.');
             }
-            preencher_select_localizacao(opcoes_localizacao_trem);
-            mensagem_cadastro_sensor.innerHTML = "";
-            const modal_element = document.getElementById('modal_cadastro_sensor');
-            if (typeof bootstrap !== 'undefined') {
-                const modal = bootstrap.Modal.getOrCreateInstance(modal_element);
-                modal.hide();
+
+            mensagem_cadastro_sensor.innerHTML = "<div class='text-success fw-bold'>Sensor salvo com sucesso! Status: " + status_sensor + ".</div>";
+            window.location.reload();
+        } catch (erro) {
+            mensagem_cadastro_sensor.innerHTML = "<div class='text-danger fw-bold'>" + erro.message + "</div>";
+        } finally {
+            if (botaoSalvar) {
+                botaoSalvar.disabled = false;
+                botaoSalvar.textContent = textoBotao;
             }
-        }, 1200);
+        }
     });
 }

@@ -1200,6 +1200,14 @@ a.badge_funcionario:focus-visible {
     transform: translateX(100%);
 }
 
+#status_sensor_ativo:checked~.slider {
+    transform: translateX(0);
+}
+
+#status_sensor_inativo:checked~.slider {
+    transform: translateX(100%);
+}
+
 /*fim animaçõa select*/
 
 .input-field {

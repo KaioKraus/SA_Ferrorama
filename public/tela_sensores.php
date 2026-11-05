@@ -76,7 +76,7 @@ function normalizarTipoDado(string $tipoDado): string {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="../assets/style/style.css">
+    <link rel="stylesheet" href="../assets/style/style.css?v=<?php echo filemtime(__DIR__ . '/../assets/style/style.css'); ?>">
     <title>Celestial Steel</title>
 </head>
 
@@ -199,7 +199,9 @@ function normalizarTipoDado(string $tipoDado): string {
                                     data-nome="<?= htmlspecialchars($nomeSensor, ENT_QUOTES, 'UTF-8') ?>"
                                     data-vinculo="<?= htmlspecialchars($vinculoSensor['vinculo'], ENT_QUOTES, 'UTF-8') ?>"
                                     data-localizacao="<?= htmlspecialchars($vinculoSensor['localizacao'], ENT_QUOTES, 'UTF-8') ?>"
+                                    data-localizacao-original="<?= htmlspecialchars($localizacaoSensor, ENT_QUOTES, 'UTF-8') ?>"
                                     data-tipo="<?= htmlspecialchars(normalizarTipoDado($tipoDadoSensor), ENT_QUOTES, 'UTF-8') ?>"
+                                    data-tipo-original="<?= htmlspecialchars($tipoDadoSensor, ENT_QUOTES, 'UTF-8') ?>"
                                     data-status="<?= htmlspecialchars($statusSensor, ENT_QUOTES, 'UTF-8') ?>">
                                     <td><?= htmlspecialchars((string)$sensorId, ENT_QUOTES, 'UTF-8'); ?></td>
                                     <td><?= htmlspecialchars($nomeSensor, ENT_QUOTES, 'UTF-8'); ?></td>
@@ -239,10 +241,11 @@ function normalizarTipoDado(string $tipoDado): string {
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body px-5 pt-4 pb-4">
-                        <form id="form_cadastro_sensor">
+                        <form id="form_cadastro_sensor" action="salvar_sensor.php" method="post">
+                            <input type="hidden" name="sensor_id" id="input_sensor_id">
                             <div class="mb-3">
                                 <div class="input-field">
-                                    <input required autocomplete="off" type="text" id="input_nome_sensor" />
+                                    <input required autocomplete="off" type="text" id="input_nome_sensor" name="nome_sensor" />
                                     <label for="input_nome_sensor">Nome</label>
                                 </div>
                             </div>
@@ -265,7 +268,7 @@ function normalizarTipoDado(string $tipoDado): string {
 
                             <div class="mb-3">
                                 <div class="input-field">
-                                    <select required id="input_localizacao_sensor">
+                                    <select required id="input_localizacao_sensor" name="localizacao">
                                         <option value="" disabled selected></option>
                                     </select>
                                     <label for="input_localizacao_sensor">Trem</label>
@@ -274,7 +277,7 @@ function normalizarTipoDado(string $tipoDado): string {
 
                             <div class="mb-3">
                                 <div class="input-field">
-                                    <select required id="input_tipo_sensor">
+                                    <select required id="input_tipo_sensor" name="tipo_dado">
                                         <option value="" disabled selected></option>
                                         <option value="temperatura">Temperatura</option>
                                         <option value="vibracao">Vibração</option>
@@ -361,9 +364,9 @@ function normalizarTipoDado(string $tipoDado): string {
     <?php include __DIR__ . '/_modal_perfil.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../script/nav.js?v=20261006"></script>
-    <script src="../script/sensores.js?v=20261021"></script>
+    <script src="../script/sensores.js?v=<?php echo filemtime(__DIR__ . '/../script/sensores.js'); ?>"></script>
 
-    <script src="../script/validacao.js?v=20261006"></script>
+    <script src="../script/validacao.js?v=<?php echo filemtime(__DIR__ . '/../script/validacao.js'); ?>"></script>
 </body>
 
 </html>

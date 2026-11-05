@@ -40,9 +40,15 @@ document.addEventListener('DOMContentLoaded', function () {
         const titulo = document.getElementById('label_modal_cadastro_sensor');
         const botaoSalvar = document.getElementById('btn_salvar_sensor');
         const mensagem = document.getElementById('mensagem_cadastro_sensor');
+        const sensorId = document.getElementById('input_sensor_id');
         if (titulo) titulo.textContent = 'Cadastro de Sensor';
         if (botaoSalvar) botaoSalvar.textContent = 'Adicionar';
         if (mensagem) mensagem.textContent = '';
+        if (sensorId) sensorId.value = '';
+        delete formCadastroSensor.dataset.localizacaoChave;
+        delete formCadastroSensor.dataset.localizacaoOriginal;
+        delete formCadastroSensor.dataset.tipoChave;
+        delete formCadastroSensor.dataset.tipoOriginal;
 
         const radioTrem = document.getElementById('vinculo_trem');
         if (radioTrem) {
@@ -101,6 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const titulo = document.getElementById('label_modal_cadastro_sensor');
             const botaoSalvar = document.getElementById('btn_salvar_sensor');
             const mensagem = document.getElementById('mensagem_cadastro_sensor');
+            const sensorId = document.getElementById('input_sensor_id');
             const radioTrem = document.getElementById('vinculo_trem');
             const radioRota = document.getElementById('vinculo_rota');
             const vinculo = linha.dataset.vinculo;
@@ -108,6 +115,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const inputNome = document.getElementById('input_nome_sensor');
             inputNome.value = linha.dataset.nome || '';
+            if (sensorId) sensorId.value = linha.dataset.sensorId || '';
+            formCadastroSensor.dataset.localizacaoChave = linha.dataset.localizacao || '';
+            formCadastroSensor.dataset.localizacaoOriginal = linha.dataset.localizacaoOriginal || '';
+            formCadastroSensor.dataset.tipoChave = linha.dataset.tipo || '';
+            formCadastroSensor.dataset.tipoOriginal = linha.dataset.tipoOriginal || '';
 
             if (radioVinculo) {
                 radioVinculo.checked = true;

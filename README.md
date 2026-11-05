@@ -64,7 +64,7 @@ Possui uma tela para consultar as rotas relacionadas ao sistema ferroviário.
 
 ### Sensores
 
-Possui uma área destinada à visualização das informações dos sensores.
+Possui uma área para cadastrar, editar e visualizar sensores. Administradores podem definir o status como ativo ou inativo, e as alterações são persistidas no banco de dados.
 
 ### Relatórios
 

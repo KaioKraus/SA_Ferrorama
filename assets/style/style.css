@@ -295,7 +295,7 @@ h3 {
 }
 
 .nav1 .dropdown-item {
-    color: #ffffff;
+    color: #ffffff !important;
     background-color: transparent;
     border-radius: 6px;
     margin: 2px 6px;

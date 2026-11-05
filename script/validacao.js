@@ -78,7 +78,8 @@ const vinculo_rota_radio = document.getElementById("vinculo_rota");
 // RN03: Todo sensor deve estar vinculado a um trem ou a um trecho da ferrovia.
 // O toggle Trem/Rota controla quais opções aparecem no select de Localização.
 const opcoes_localizacao_trem = [
-    { value: "", label: "Trem", disabled: true },
+    { value: "", label: " ", disabled: true },
+    { value: "", label: "Trem" },
     { value: "trem_5823", label: "Trem - ID 5823" }
 ];
 

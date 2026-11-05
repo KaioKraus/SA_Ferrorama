@@ -241,18 +241,14 @@ function normalizarTipoDado(string $tipoDado): string {
                     <div class="modal-body px-5 pt-4 pb-4">
                         <form id="form_cadastro_sensor">
                             <div class="mb-3">
-                                <input required autocomplete="off" type="text" id="input_nome_sensor" class="form-control" placeholder="Nome">
+                                <div class="input-field">
+                                    <input required autocomplete="off" type="text" id="input_nome_sensor" />
+                                    <label for="input_nome_sensor">Nome</label>
+                                </div>
                             </div>
 
                             <div class="text-center mb-2">
-                                <label for="input_localizacao_sensor" class="fw-bold">Localização</label>
-                            </div>
-
-                            <!-- RN03: Todo sensor deve estar vinculado a um trem ou a um trecho da ferrovia -->
-                            <div class="mb-3">
-                                <select required id="input_localizacao_sensor" class="form-select">
-                                    <option value="" selected disabled>Trem</option>
-                                </select>
+                                <label class="fw-bold">Localização</label>
                             </div>
 
                             <div class="d-flex justify-content-center mb-3">
@@ -268,24 +264,40 @@ function normalizarTipoDado(string $tipoDado): string {
                             </div>
 
                             <div class="mb-3">
-                                <select required id="input_tipo_sensor" class="form-select">
-                                    <option value="" selected disabled>Tipo de dado</option>
-                                    <option value="temperatura">Temperatura</option>
-                                    <option value="vibracao">Vibração</option>
-                                    <option value="velocidade">Velocidade</option>
-                                    <option value="pressao">Pressão</option>
-                                    <option value="umidade">Umidade</option>
-                                    <option value="energia">Energia</option>
-                                    <option value="outro">Outro</option>
-                                </select>
+                                <div class="input-field">
+                                    <select required id="input_localizacao_sensor">
+                                        <option value="" disabled selected></option>
+                                    </select>
+                                    <label for="input_localizacao_sensor">Trem</label>
+                                </div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="input_status_sensor" class="fw-bold d-block text-center mb-2">Status da transmissão</label>
-                                <select required id="input_status_sensor" class="form-select">
-                                    <option value="Ativo" selected>Ativo</option>
-                                    <option value="Inativo">Inativo</option>
-                                </select>
+                                <div class="input-field">
+                                    <select required id="input_tipo_sensor">
+                                        <option value="" disabled selected></option>
+                                        <option value="temperatura">Temperatura</option>
+                                        <option value="vibracao">Vibração</option>
+                                        <option value="velocidade">Velocidade</option>
+                                        <option value="pressao">Pressão</option>
+                                        <option value="umidade">Umidade</option>
+                                        <option value="energia">Energia</option>
+                                        <option value="outro">Outro</option>
+                                    </select>
+                                    <label for="input_tipo_sensor">Tipo de dado</label>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-center mb-3">
+                                <div class="toggle-container">
+                                    <input type="radio" name="status_sensor" id="status_sensor_ativo" value="Ativo" checked>
+                                    <label for="status_sensor_ativo">Ativo</label>
+
+                                    <input type="radio" name="status_sensor" id="status_sensor_inativo" value="Inativo">
+                                    <label for="status_sensor_inativo">Inativo</label>
+
+                                    <div class="slider"></div>
+                                </div>
                             </div>
 
                             <div class="text-center mt-4">

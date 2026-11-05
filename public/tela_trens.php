@@ -228,7 +228,7 @@ if ($statusFiltro !== '') {
                         <?php endif; ?>
                         <div class="input-group dashboard-busca trens-busca">
                             <input id="input_busca_trem" name="q" type="text" class="form-control dashboard-input trens-input" value="<?= htmlspecialchars($termoBusca, ENT_QUOTES, 'UTF-8'); ?>" placeholder="Buscar por ID ou Nome" aria-label="Buscar por ID ou Nome">
-                            <button id="btn_busca_trem" class="btn dashboard-btn-busca trens-btn-busca" type="submit" aria-label="Buscar">
+                            <button id="btn_busca_trem" class="btn dashboard-btn-busca trens-btn-busca" type="button" aria-label="Buscar">
                                 <i class="bi bi-search"></i>
                             </button>
                         </div>

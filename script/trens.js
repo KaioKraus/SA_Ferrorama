@@ -24,9 +24,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-    if (filtroResponsavelTrem && filtroResponsavelTrem.form) {
-        filtroResponsavelTrem.addEventListener('change', function () {
-            filtroResponsavelTrem.form.submit();
+    if (btnBuscaTrem && btnBuscaTrem.form) {
+        btnBuscaTrem.addEventListener('click', function (event) {
+            event.preventDefault();
+            btnBuscaTrem.form.submit();
         });
     }
 

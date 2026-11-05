@@ -32,6 +32,9 @@ $statusPermitidos = ['Ativo', 'Manutenção', 'Inativo'];
 if (!in_array($statusFiltro, $statusPermitidos, true)) {
     $statusFiltro = '';
 }
+
+$partidaFiltro = isset($_GET['ponto_partida']) && is_string($_GET['ponto_partida']) ? trim($_GET['ponto_partida']) : '';
+$destinoFiltro = isset($_GET['ponto_chegada']) && is_string($_GET['ponto_chegada']) ? trim($_GET['ponto_chegada']) : '';
 $termoBusca = isset($_GET['q']) && is_string($_GET['q']) ? trim($_GET['q']) : '';
 $filtroBusca = '%' . $termoBusca . '%';
 
@@ -40,6 +43,8 @@ $sql_rotas = "SELECT r.rota_id, r.nome, r.ponto_partida, r.ponto_chegada, r.desc
     LEFT JOIN trens t ON t.trem_id = r.trem_id
     WHERE (? = '' OR r.status = ?)
     AND (? = '' OR r.nome LIKE ? OR r.ponto_partida LIKE ? OR r.ponto_chegada LIKE ?)
+    AND (? = '' OR r.ponto_partida = ?)
+    AND (? = '' OR r.ponto_chegada = ?)
     ORDER BY r.rota_id ASC";
 $stmt_rotas = mysqli_prepare($conexao, $sql_rotas);
 if (!$stmt_rotas) {
@@ -49,13 +54,17 @@ if (!$stmt_rotas) {
 }
 mysqli_stmt_bind_param(
     $stmt_rotas,
-    'ssssss',
+    'ssssssssss',
     $statusFiltro,
     $statusFiltro,
     $termoBusca,
     $filtroBusca,
     $filtroBusca,
-    $filtroBusca
+    $filtroBusca,
+    $partidaFiltro,
+    $partidaFiltro,
+    $destinoFiltro,
+    $destinoFiltro
 );
 if (!mysqli_stmt_execute($stmt_rotas)) {
     error_log('Erro ao consultar rotas: ' . mysqli_stmt_error($stmt_rotas));
@@ -183,33 +192,37 @@ mysqli_stmt_close($stmt_rotas);
             <div class="card_usuarios rotas-page">
                 <div class="barra_busca">
                     <div class="barra_busca_filtro">
-                        <form method="GET" action="tela_rotas.php" class="input-group dashboard-busca">
+                        <form method="GET" action="tela_rotas.php" class="input-group dashboard-busca" id="form_busca_rota">
                             <?php if ($statusFiltro !== ''): ?>
                                 <input type="hidden" name="status" value="<?= htmlspecialchars($statusFiltro, ENT_QUOTES, 'UTF-8'); ?>">
                             <?php endif; ?>
                             <input id="input_busca_rota" name="q" type="search" class="form-control dashboard-input" value="<?= htmlspecialchars($termoBusca, ENT_QUOTES, 'UTF-8'); ?>" placeholder="Buscar por nome ou estação" aria-label="Buscar por nome ou estação">
-                            <button id="btn_busca_rota" class="btn dashboard-btn-busca" type="submit" aria-label="Buscar rota">
+                            <button id="btn_busca_rota" class="btn dashboard-btn-busca" type="button" aria-label="Buscar rota">
                                 <i class="bi bi-search"></i>
                             </button>
+
+                            <div class="filtro_busca">
+                                <select id="filtro_partida_rota" name="ponto_partida" class="form-select filtro_busca_select" aria-label="Filtrar por ponto de partida">
+                                    <option value="">Todos os pontos de partida</option>
+                                    <?php foreach ($pontosFiltro as $ponto): ?>
+                                        <option value="<?= htmlspecialchars($ponto, ENT_QUOTES, 'UTF-8'); ?>" <?= $partidaFiltro === $ponto ? 'selected' : ''; ?>>
+                                            <?= htmlspecialchars($ponto, ENT_QUOTES, 'UTF-8'); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div class="filtro_busca">
+                                <select id="filtro_destino_rota" name="ponto_chegada" class="form-select filtro_busca_select" aria-label="Filtrar por ponto de chegada">
+                                    <option value="">Todos os pontos de chegada</option>
+                                    <?php foreach ($pontosFiltro as $ponto): ?>
+                                        <option value="<?= htmlspecialchars($ponto, ENT_QUOTES, 'UTF-8'); ?>" <?= $destinoFiltro === $ponto ? 'selected' : ''; ?>>
+                                            <?= htmlspecialchars($ponto, ENT_QUOTES, 'UTF-8'); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
                         </form>
-
-                        <div class="filtro_busca">
-                            <select id="filtro_partida_rota" class="form-select filtro_busca_select" aria-label="Filtrar por ponto de partida">
-                                <option value="">Todos os pontos de partida</option>
-                                <?php foreach ($pontosFiltro as $ponto): ?>
-                                    <option value="<?= htmlspecialchars($ponto, ENT_QUOTES, 'UTF-8'); ?>"><?= htmlspecialchars($ponto, ENT_QUOTES, 'UTF-8'); ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-
-                        <div class="filtro_busca">
-                            <select id="filtro_destino_rota" class="form-select filtro_busca_select" aria-label="Filtrar por ponto de chegada">
-                                <option value="">Todos os pontos de chegada</option>
-                                <?php foreach ($pontosFiltro as $ponto): ?>
-                                    <option value="<?= htmlspecialchars($ponto, ENT_QUOTES, 'UTF-8'); ?>"><?= htmlspecialchars($ponto, ENT_QUOTES, 'UTF-8'); ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
                     </div>
 
                     <?php if ($usuarioEhAdministrador): ?>

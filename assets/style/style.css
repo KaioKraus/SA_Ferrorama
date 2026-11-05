@@ -1820,18 +1820,70 @@ a.trens-card-status:focus-visible {
     gap: 20px;
 }
 
+#form_busca_rota {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    width: 100%;
+    flex-wrap: nowrap;
+}
+
+#form_busca_rota > .dashboard-input,
+#form_busca_rota > .dashboard-btn-busca {
+    margin: 0;
+}
+
 .barra_busca_filtro {
     display: flex;
     align-items: center;
     gap: 18px;
     width: 100%;
+    flex-wrap: nowrap;
+}
+
+#form_busca_rota.dashboard-busca {
+    width: auto;
+    min-width: 240px;
+    flex: 1 1 340px;
+}
+
+#input_busca_rota {
+    min-width: 0;
+    width: 320px;
+    max-width: 320px;
+    height: 38px;
+    border-radius: 7px 0 0 7px !important;
+    margin-right: 0;
+    border-right: 0;
+}
+
+#btn_busca_rota {
+    width: 40px;
+    min-width: 40px;
+    height: 38px;
+    border-radius: 0 7px 7px 0 !important;
+    margin-left: 0;
+    border-left: 0;
 }
 
 .filtro_busca {
     display: flex;
     align-items: center;
-    min-width: 220px;
-    flex: 0 0 220px;
+    min-width: 180px;
+    flex: 1 1 200px;
+    max-width: 260px;
+    margin-left: 0;
+}
+
+#form_busca_rota > #btn_busca_rota + .filtro_busca,
+#form_busca_rota > .filtro_busca + .filtro_busca {
+    margin-left: 10px;
+}
+
+.filtro_busca_select {
+    width: 100%;
+    min-width: 180px;
+    height: 38px;
 }
 
 .filtro_busca_select {

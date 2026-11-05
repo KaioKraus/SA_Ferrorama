@@ -6,7 +6,8 @@ $error = '';
 $animarLogin = false;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = filter_var(trim($_POST['email'] ?? ''), FILTER_VALIDATE_EMAIL);
-    $senha = trim($_POST['senha'] ?? '');
+    $senhaRecebida = $_POST['senha'] ?? '';
+    $senha = is_string($senhaRecebida) ? $senhaRecebida : '';
 
     if (!$email || strlen($senha) < 8) {
         $error = 'Email ou senha inválidos.';
@@ -19,17 +20,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user = mysqli_fetch_assoc($result);
 
             if ($user) {
-                if (array_key_exists('senha', $user)) {
-                    $hash = $user['senha'];
-                    if (password_verify($senha, $hash) || $senha === $hash) {
-                        $_SESSION['usuario_id'] = $user['usuario_id'];
-                        $_SESSION['usuario_nome'] = $user['nome'];
-                        $_SESSION['usuario_email'] = strtolower(trim($user['email'] ?? ''));
-                        $_SESSION['usuario_cargo_id'] = (int)($user['cargo_id'] ?? 0);
-                        $animarLogin = true;
-                    } else {
-                        $error = 'Credenciais incorretas.';
+                $senhaArmazenada = (string) ($user['senha'] ?? '');
+                $senhaJaHash = password_get_info($senhaArmazenada)['algo'] !== null;
+                $senhaValida = $senhaJaHash
+                    ? password_verify($senha, $senhaArmazenada)
+                    : hash_equals($senhaArmazenada, $senha);
+
+                if ($senhaValida) {
+                    if (!$senhaJaHash || password_needs_rehash($senhaArmazenada, PASSWORD_DEFAULT)) {
+                        $novoHash = password_hash($senha, PASSWORD_DEFAULT);
+                        $stmtHash = mysqli_prepare(
+                            $conexao,
+                            'UPDATE usuarios SET senha = ? WHERE usuario_id = ? AND senha = ? LIMIT 1'
+                        );
+                        if ($stmtHash === false) {
+                            error_log('Erro ao preparar migração do hash de senha: ' . mysqli_error($conexao));
+                        } else {
+                            $usuarioId = (int) $user['usuario_id'];
+                            mysqli_stmt_bind_param($stmtHash, 'sis', $novoHash, $usuarioId, $senhaArmazenada);
+                            if (!mysqli_stmt_execute($stmtHash)) {
+                                error_log('Erro ao atualizar hash de senha: ' . mysqli_stmt_error($stmtHash));
+                            }
+                            mysqli_stmt_close($stmtHash);
+                        }
                     }
+
+                    $_SESSION['usuario_id'] = $user['usuario_id'];
+                    $_SESSION['usuario_nome'] = $user['nome'];
+                    $_SESSION['usuario_email'] = strtolower(trim($user['email'] ?? ''));
+                    $_SESSION['usuario_cargo_id'] = (int)($user['cargo_id'] ?? 0);
+                    $animarLogin = true;
+                } else {
+                    $error = 'Credenciais incorretas.';
                 }
             } else {
                 $error = 'Credenciais incorretas.';

@@ -43,7 +43,7 @@ Para desenvolver o projeto foram utilizadas as seguintes tecnologias:
 
 ### Login
 
-O sistema possui uma tela de login para permitir o acesso do usuário.
+O sistema possui uma tela de login para permitir o acesso do usuário. As senhas são protegidas por hashes irreversíveis com `password_hash` e verificadas com `password_verify` (não são criptografadas para posterior descriptografia). Senhas antigas em texto puro são convertidas automaticamente em hash após um login válido.
 
 ### Cadastro de Usuários
 

@@ -67,9 +67,83 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    document.querySelectorAll('[data-bs-target="#modal_cadastro_sensor"]').forEach(function (botao) {
-        botao.addEventListener('click', prepararCadastroSensor);
-    });
+    function preencherModalSensorDaLinha(linha) {
+        if (!linha || !formCadastroSensor) return;
+
+        const titulo = document.getElementById('label_modal_cadastro_sensor');
+        const botaoSalvar = document.getElementById('btn_salvar_sensor');
+        const mensagem = document.getElementById('mensagem_cadastro_sensor');
+        const sensorId = document.getElementById('input_sensor_id');
+        const radioTrem = document.getElementById('vinculo_trem');
+        const radioRota = document.getElementById('vinculo_rota');
+        const vinculo = linha.dataset.vinculo;
+        const radioVinculo = vinculo === 'rota' ? radioRota : radioTrem;
+
+        const inputNome = document.getElementById('input_nome_sensor');
+        if (inputNome) inputNome.value = linha.dataset.nome || '';
+        if (sensorId) sensorId.value = linha.dataset.sensorId || '';
+        formCadastroSensor.dataset.localizacaoChave = linha.dataset.localizacao || '';
+        formCadastroSensor.dataset.localizacaoOriginal = linha.dataset.localizacaoOriginal || '';
+        formCadastroSensor.dataset.tipoChave = linha.dataset.tipo || '';
+        formCadastroSensor.dataset.tipoOriginal = linha.dataset.tipoOriginal || '';
+
+        if (radioVinculo) {
+            radioVinculo.checked = true;
+            radioVinculo.dispatchEvent(new Event('change'));
+        }
+
+        const localizacao = document.getElementById('input_localizacao_sensor');
+        if (localizacao) {
+            const valorLocalizacao = linha.dataset.localizacao || '';
+            if (!Array.from(localizacao.options).some(function (option) {
+                return option.value === valorLocalizacao;
+            })) {
+                const opcaoAtual = document.createElement('option');
+                opcaoAtual.value = valorLocalizacao;
+                opcaoAtual.textContent = linha.cells[2].textContent.trim();
+                localizacao.appendChild(opcaoAtual);
+            }
+            localizacao.value = valorLocalizacao;
+        }
+
+        const tipoEl = document.getElementById('input_tipo_sensor');
+        if (tipoEl) {
+            tipoEl.value = linha.dataset.tipo || '';
+        }
+
+        const statusValue = linha.dataset.status || 'Ativo';
+        const statusAtivo = document.getElementById('status_sensor_ativo');
+        const statusInativo = document.getElementById('status_sensor_inativo');
+        if (statusValue === 'Inativo' && statusInativo) {
+            statusInativo.checked = true;
+        } else if (statusAtivo) {
+            statusAtivo.checked = true;
+        }
+
+        setTimeout(function () {
+            if (inputNome) atualizarLabelFlutuante(inputNome);
+            if (localizacao) atualizarLabelFlutuante(localizacao);
+            if (tipoEl) atualizarLabelFlutuante(tipoEl);
+        }, 50);
+
+        if (titulo) titulo.textContent = 'Editar Sensor';
+        if (botaoSalvar) botaoSalvar.textContent = 'Salvar alterações';
+        if (mensagem) mensagem.textContent = '';
+    }
+
+    if (modalCadastroSensor && typeof bootstrap !== 'undefined') {
+        modalCadastroSensor.addEventListener('show.bs.modal', function (event) {
+            const botao = event.relatedTarget;
+            const linha = botao && botao.closest ? botao.closest('tr[data-sensor-id]') : null;
+
+            if (linha) {
+                preencherModalSensorDaLinha(linha);
+                return;
+            }
+
+            prepararCadastroSensor();
+        });
+    }
 
     // Adicionar listeners para o toggle Trem/Rota mudar o label do select
     const radioTrem = document.getElementById('vinculo_trem');
@@ -95,81 +169,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Inicializar o label correto
     atualizarLabelLocalizacao();
-
-    if (tbodySensores && modalCadastroSensor && typeof bootstrap !== 'undefined') {
-        tbodySensores.addEventListener('click', function (event) {
-            const botaoEditar = event.target.closest('.btn_edit');
-            if (!botaoEditar) return;
-
-            const linha = botaoEditar.closest('tr[data-sensor-id]');
-            if (!linha || !formCadastroSensor) return;
-
-            const titulo = document.getElementById('label_modal_cadastro_sensor');
-            const botaoSalvar = document.getElementById('btn_salvar_sensor');
-            const mensagem = document.getElementById('mensagem_cadastro_sensor');
-            const sensorId = document.getElementById('input_sensor_id');
-            const radioTrem = document.getElementById('vinculo_trem');
-            const radioRota = document.getElementById('vinculo_rota');
-            const vinculo = linha.dataset.vinculo;
-            const radioVinculo = vinculo === 'rota' ? radioRota : radioTrem;
-
-            const inputNome = document.getElementById('input_nome_sensor');
-            inputNome.value = linha.dataset.nome || '';
-            if (sensorId) sensorId.value = linha.dataset.sensorId || '';
-            formCadastroSensor.dataset.localizacaoChave = linha.dataset.localizacao || '';
-            formCadastroSensor.dataset.localizacaoOriginal = linha.dataset.localizacaoOriginal || '';
-            formCadastroSensor.dataset.tipoChave = linha.dataset.tipo || '';
-            formCadastroSensor.dataset.tipoOriginal = linha.dataset.tipoOriginal || '';
-
-            if (radioVinculo) {
-                radioVinculo.checked = true;
-                radioVinculo.dispatchEvent(new Event('change'));
-            }
-
-            const localizacao = document.getElementById('input_localizacao_sensor');
-            if (localizacao) {
-                const valorLocalizacao = linha.dataset.localizacao || '';
-                if (!Array.from(localizacao.options).some(function (option) {
-                    return option.value === valorLocalizacao;
-                })) {
-                    const opcaoAtual = document.createElement('option');
-                    opcaoAtual.value = valorLocalizacao;
-                    opcaoAtual.textContent = linha.cells[2].textContent.trim();
-                    localizacao.appendChild(opcaoAtual);
-                }
-                localizacao.value = valorLocalizacao;
-            }
-
-            const tipoEl = document.getElementById('input_tipo_sensor');
-            
-            if (tipoEl) {
-                tipoEl.value = linha.dataset.tipo || '';
-            }
-            
-            // Definir status usando os radio buttons
-            const statusValue = linha.dataset.status || 'Ativo';
-            const statusAtivo = document.getElementById('status_sensor_ativo');
-            const statusInativo = document.getElementById('status_sensor_inativo');
-            if (statusValue === 'Inativo' && statusInativo) {
-                statusInativo.checked = true;
-            } else if (statusAtivo) {
-                statusAtivo.checked = true;
-            }
-            
-            // Atualizar labels após preencher os campos
-            setTimeout(function() {
-                if (inputNome) atualizarLabelFlutuante(inputNome);
-                if (localizacao) atualizarLabelFlutuante(localizacao);
-                if (tipoEl) atualizarLabelFlutuante(tipoEl);
-            }, 50);
-            
-            if (titulo) titulo.textContent = 'Editar Sensor';
-            if (botaoSalvar) botaoSalvar.textContent = 'Salvar alterações';
-            if (mensagem) mensagem.textContent = '';
-
-            bootstrap.Modal.getOrCreateInstance(modalCadastroSensor).show();
-        });
-    }
 
     if (inputBuscaSensor && tbodySensores) {
         const linhasSensores = Array.from(tbodySensores.querySelectorAll('tr'));

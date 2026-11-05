@@ -51,7 +51,7 @@ Possui uma tela para realizar o cadastro de novos usuários.
 
 ### Dashboard
 
-O dashboard funciona como o painel principal do sistema, permitindo acessar as principais funcionalidades. Os gráficos consultam os valores atuais dos trens pela API PHP a cada cinco segundos e atualizam as séries de velocidade e consumo sem recarregar a página. O gráfico de consumo mantém os 12 registros mais recentes recebidos durante a sessão.
+O dashboard funciona como o painel principal do sistema, permitindo acessar as principais funcionalidades. Os gráficos consultam os valores atuais dos trens pela API PHP a cada cinco segundos e atualizam as séries de velocidade e consumo sem recarregar a página. O gráfico de consumo mantém os 12 registros mais recentes recebidos durante a sessão. O cartão existente de temperatura mostra a temperatura atual de Joinville/SC no medidor, enquanto condição, precipitação, localização, horários da observação e consulta e atribuição da fonte aparecem de forma compacta abaixo da visualização do trilho. Os dados meteorológicos são atualizados a cada 15 minutos por meio da API Open-Meteo, cuja API gratuita se destina a projetos não comerciais.
 
 ### Trens
 

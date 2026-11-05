@@ -6,12 +6,18 @@ const LIMITES = {
 const INTERVALO_ATUALIZACAO = 5000; // 5 segundos
 
 // Elementos do DOM
-const metricaTemperatura = document.getElementById('metrica_temperatura');
 const metricaConsumo = document.getElementById('metrica_consumo');
-const medidorTemperatura = document.getElementById('medidor_temperatura');
-const barraTemperatura = document.getElementById('barra_temperatura');
 const mensagemConsumo = document.getElementById('mensagem-grafico-consumo');
 const avisoConsumoDemo = document.getElementById('aviso-consumo-demo');
+const climaTemperatura = document.getElementById('clima-temperatura');
+const climaTemperaturaBarra = document.getElementById('clima-temperatura-barra');
+const climaMedidor = climaTemperaturaBarra?.parentElement;
+const climaCondicao = document.getElementById('clima-condicao');
+const climaLocalizacao = document.getElementById('clima-localizacao');
+const climaPrecipitacao = document.getElementById('clima-precipitacao');
+const climaAtualizacao = document.getElementById('clima-atualizacao');
+const climaIcone = document.getElementById('clima-icone');
+const climaMensagem = document.getElementById('clima-mensagem');
 const statusIcone = document.getElementById('status_icone');
 const statusTexto = document.getElementById('status_texto');
 const cardStatus = statusIcone?.closest('.dashboard-card-status');
@@ -20,10 +26,65 @@ const cardStatus = statusIcone?.closest('.dashboard-card-status');
 let miniGraficoConsumo;
 let graficoVelocidade;
 let quantidadePontos = 12;
+const INTERVALO_ATUALIZACAO_CLIMA = 15 * 60 * 1000;
 let cores = [
     '#0A3D3D', '#599967', '#D97706', '#2563EB', '#9333EA',
     '#DC2626', '#0891B2', '#4D7C0F', '#C026D3', '#475569'
 ];
+
+function atualizarClima() {
+    fetch('dados_clima.php', {
+        cache: 'no-store',
+        headers: { 'Accept': 'application/json' }
+    })
+    .then(function (response) {
+        return response.json().then(function (data) {
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || 'Não foi possível consultar o clima.');
+            }
+            return data;
+        });
+    })
+    .then(function (data) {
+        const temperatura = Number(data.temperatura);
+        if (climaTemperatura) {
+            climaTemperatura.textContent = temperatura.toLocaleString('pt-BR', {
+                minimumFractionDigits: 1,
+                maximumFractionDigits: 1
+            }) + '°C';
+        }
+        if (climaMedidor && climaTemperaturaBarra) {
+            const temperaturaLimitada = Math.max(-10, Math.min(temperatura, 45));
+            climaMedidor.setAttribute('aria-valuenow', temperaturaLimitada.toFixed(1));
+            climaTemperaturaBarra.style.left = ((temperaturaLimitada + 10) / 55 * 100) + '%';
+        }
+        if (climaCondicao) climaCondicao.textContent = data.condicao;
+        if (climaLocalizacao) climaLocalizacao.textContent = data.localizacao;
+        if (climaPrecipitacao) {
+            climaPrecipitacao.textContent = data.precipitacao_mm === null
+                ? ''
+                : 'Precipitação: ' + Number(data.precipitacao_mm).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' mm';
+        }
+        if (climaAtualizacao) {
+            climaAtualizacao.textContent = 'Observado em ' + data.observado_em
+                + ' · Consultado em ' + data.consultado_em;
+        }
+        if (climaIcone) climaIcone.className = 'bi ' + data.icone;
+        if (climaMensagem) {
+            climaMensagem.hidden = true;
+            climaMensagem.textContent = '';
+        }
+    })
+    .catch(function (error) {
+        console.error('Erro ao atualizar o clima:', error);
+        if (climaCondicao) climaCondicao.textContent = 'Não foi possível consultar as condições.';
+        if (climaAtualizacao) climaAtualizacao.textContent = 'Consulta indisponível';
+        if (climaMensagem) {
+            climaMensagem.textContent = error.message || 'Tente novamente mais tarde.';
+            climaMensagem.hidden = false;
+        }
+    });
+}
 
 // Função para criar mini gráfico
 function criarMiniGrafico(canvasId, cor) {
@@ -80,16 +141,8 @@ function determinarStatus(temperatura) {
 
 // Função para atualizar indicadores visuais
 function atualizarIndicadores(temperatura, consumo, rotuloHorario, historicoConsumo) {
-    if (metricaTemperatura) {
-        metricaTemperatura.textContent = temperatura.toFixed(0);
-    }
     if (metricaConsumo) {
         metricaConsumo.textContent = consumo.toFixed(0);
-    }
-    if (medidorTemperatura && barraTemperatura) {
-        const temperaturaLimitada = Math.max(0, Math.min(temperatura, LIMITES.TEMPERATURA_MAX));
-        medidorTemperatura.setAttribute('aria-valuenow', temperaturaLimitada.toFixed(0));
-        barraTemperatura.style.width = (temperaturaLimitada / LIMITES.TEMPERATURA_MAX * 100) + '%';
     }
 
     if (miniGraficoConsumo && Array.isArray(historicoConsumo) && historicoConsumo.length > 0) {
@@ -244,6 +297,9 @@ function atualizarVelocidades() {
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', function() {
+    atualizarClima();
+    setInterval(atualizarClima, INTERVALO_ATUALIZACAO_CLIMA);
+
     if (typeof Chart === 'undefined') {
         console.error('Chart.js não está carregado');
         return;

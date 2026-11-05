@@ -1297,6 +1297,8 @@ a.badge_funcionario:focus-visible {
 }
 
 .dashboard-scroll-wrapper {
+    display: flex;
+    flex-direction: column;
     flex: 1;
     min-height: 0;
     margin: 0 30px;
@@ -1670,6 +1672,10 @@ a.trens-card-status:focus-visible {
 }
 
 .trilho {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    min-height: 0;
     padding: 20px 40px 40px;
     box-sizing: border-box;
     overflow: hidden;
@@ -1682,7 +1688,7 @@ a.trens-card-status:focus-visible {
     margin: 0 auto;
     object-fit: contain;
     max-width: 100%;
-    max-height: 600px;
+    max-height: 100%;
 }
 
 .card_relatorios {
@@ -2358,6 +2364,7 @@ a.trens-card-status:focus-visible {
     }
 
     .dashboard-scroll-wrapper {
+        display: block;
         flex: initial;
         min-height: auto;
         margin: 0;
@@ -2849,6 +2856,10 @@ a.trens-card-status:focus-visible {
     color: #111111;
 }
 
+.dashboard-card-temperatura {
+    justify-content: space-between;
+}
+
 .metrica-cabecalho {
     display: flex;
     align-items: center;
@@ -2880,20 +2891,83 @@ a.trens-card-status:focus-visible {
     line-height: 1;
 }
 
+.clima-temperatura-valor {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    color: #111111;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.clima-conteudo {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 0;
+}
+
+.clima-condicao {
+    color: #5d6a67;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.2;
+    text-align: center;
+}
+
+.dashboard-card-temperatura .metrica-cabecalho i {
+    color: #111111;
+    font-size: 15px;
+}
+
 .temperatura-medidor {
+    width: 78%;
     height: 5px;
-    overflow: hidden;
+    position: relative;
+    flex-shrink: 0;
     border-radius: 999px;
-    background: #e5e9e7;
+    background: linear-gradient(90deg, #e5e9e7 0%, #cfe6d8 22%, #43c77a 50%, #cfe6d8 78%, #e5e9e7 100%);
 }
 
 .temperatura-medidor span {
-    display: block;
-    width: 0;
-    height: 100%;
-    border-radius: inherit;
-    background: linear-gradient(90deg, #ccebd8, #42c77a);
-    transition: width 0.3s ease;
+    position: absolute;
+    top: -2px;
+    left: 0;
+    width: 2px;
+    height: 9px;
+    border-radius: 2px;
+    background: #43c77a;
+    transition: left 0.3s ease;
+}
+
+.clima-mensagem {
+    color: #9b2c2c;
+}
+
+.dashboard-clima-detalhes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 12px;
+    flex-shrink: 0;
+    padding: 0 6px 12px;
+    color: #5d6a67;
+    font-size: 10px;
+    line-height: 1.3;
+}
+
+.dashboard-clima-detalhes > span:empty {
+    display: none;
+}
+
+.clima-credito {
+    color: #0a3d3d !important;
+    font-size: 9px;
+    text-decoration: underline !important;
 }
 
 .consumo-conteudo {

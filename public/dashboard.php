@@ -89,25 +89,27 @@ header('Expires: 0');
                         <p id="mensagem-grafico-velocidade" class="velocidade-mensagem" hidden></p>
                     </div>
 
-                    <div class="dashboard-card-metrica dashboard-card-temperatura">
+                    <section class="dashboard-card-metrica dashboard-card-temperatura" aria-label="Condições meteorológicas">
                         <div class="metrica-cabecalho">
                             <h3 class="metrica-titulo">Temperatura (°C)</h3>
-                            <i class="bi bi-thermometer-half" aria-hidden="true"></i>
+                            <i id="clima-icone" class="bi bi-thermometer-half" aria-hidden="true"></i>
                         </div>
-                        <div class="temperatura-valor">
-                            <span id="metrica_temperatura" aria-live="polite">--</span>°C
+                        <div class="clima-conteudo">
+                            <div class="clima-temperatura-valor">
+                                <span id="clima-temperatura" aria-live="polite">--°C</span>
+                            </div>
+                            <span id="clima-condicao" class="clima-condicao">Consultando condições...</span>
+                            <div
+                                class="temperatura-medidor"
+                                role="meter"
+                                aria-label="Temperatura atual em Joinville"
+                                aria-valuemin="-10"
+                                aria-valuemax="45"
+                                aria-valuenow="0">
+                                <span id="clima-temperatura-barra"></span>
+                            </div>
                         </div>
-                        <div
-                            class="temperatura-medidor"
-                            id="medidor_temperatura"
-                            role="meter"
-                            aria-label="Temperatura média dos trens"
-                            aria-valuemin="0"
-                            aria-valuemax="85"
-                            aria-valuenow="0">
-                            <span id="barra_temperatura"></span>
-                        </div>
-                    </div>
+                    </section>
 
                     <div class="dashboard-card-metrica dashboard-card-consumo">
                         <div class="metrica-cabecalho">
@@ -143,6 +145,13 @@ header('Expires: 0');
                 <div class="dashboard-scroll-wrapper">
                     <div class="trilho">
                         <img src="../assets/img/trilho2.svg" alt="Visualização do trilho ferroviário" class="trilho-img img-fluid">
+                        </div>
+                        <div class="dashboard-clima-detalhes" aria-live="polite">
+                            <span id="clima-localizacao">Joinville, Santa Catarina</span>
+                        <span id="clima-precipitacao"></span>
+                        <span id="clima-atualizacao">Aguardando atualização</span>
+                        <span id="clima-mensagem" class="clima-mensagem" role="status" hidden></span>
+                        <a class="clima-credito" href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Dados: Open-Meteo · CC BY 4.0</a>
                     </div>
                 </div>
 

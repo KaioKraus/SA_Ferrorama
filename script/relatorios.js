@@ -252,28 +252,13 @@ if (botaoExportarRelatorio && modalFormatoRelatorio) {
 
 if (botaoBuscaRelatorios) {
     botaoBuscaRelatorios.addEventListener('click', (evento) => {
+        evento.preventDefault();
         if (buscaRelatorios && buscaRelatorios.form) {
             buscaRelatorios.form.submit();
         }
     });
 }
-if (buscaRelatorios) {
-    buscaRelatorios.addEventListener('keydown', (evento) => {
-        if (evento.key === 'Enter') {
-            evento.preventDefault();
-            if (buscaRelatorios.form) {
-                buscaRelatorios.form.submit();
-            }
-        }
-    });
-}
-if (filtroTipoRelatorio) {
-    filtroTipoRelatorio.addEventListener('change', () => {
-        if (filtroTipoRelatorio.form) {
-            filtroTipoRelatorio.form.submit();
-        }
-    });
-}
+// O filtro por tipo só é aplicado quando o usuário clica no botão de busca.
 
 // Modal de confirmação de exclusão de relatório
 const modalConfirmDelete = document.getElementById('modal_confirm_delete');

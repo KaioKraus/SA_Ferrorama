@@ -159,7 +159,7 @@ function normalizarTipoDado(string $tipoDado): string {
                 <div class="barra_busca">
                     <form class="input-group dashboard-busca" method="get" action="tela_sensores.php" id="form_busca_sensor">
                         <input type="text" id="input_busca_sensor" name="busca" value="<?= htmlspecialchars($termoBusca, ENT_QUOTES, 'UTF-8'); ?>" class="form-control dashboard-input" placeholder="Buscar por ID, nome, localização ou tipo de dado" aria-label="Buscar por ID, nome, localização ou tipo de dado">
-                        <button class="btn dashboard-btn-busca" id="btn_busca_sensor" type="submit" aria-label="Buscar">
+                        <button class="btn dashboard-btn-busca" id="btn_busca_sensor" type="button" aria-label="Buscar">
                             <i class="bi bi-search"></i>
                         </button>
                     </form>

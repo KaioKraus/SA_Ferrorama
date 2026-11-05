@@ -5,31 +5,31 @@ document.addEventListener('DOMContentLoaded', function () {
     // Função para atualizar label flutuante - IGUAL AO usuarios.js
     function atualizarLabelFlutuante(campo) {
         if (!campo) return;
-        const valor = campo.value ?? '';
-        const temValor = String(valor).trim() !== '';
-        console.log('atualizarLabelFlutuante:', campo.id, 'valor:', valor, 'temValor:', temValor);
+
+        const tag = campo.tagName.toLowerCase();
+        let temValor = false;
+
+        if (tag === 'select') {
+            temValor = campo.value !== '' && campo.selectedIndex !== -1 && campo.value !== null;
+        } else {
+            temValor = String(campo.value ?? '').trim() !== '';
+        }
+
         campo.classList.toggle('has-value', temValor);
     }
 
-    // Aplicar em TODOS os campos .input-field - IGUAL AO usuarios.js
+    // Aplicar em TODOS os campos .input-field - igual aos outros modais
     document.querySelectorAll('.input-field input, .input-field select, .input-field textarea').forEach(campo => {
-        console.log('Registrando listeners para:', campo.id);
         atualizarLabelFlutuante(campo);
         campo.addEventListener('input', function() {
-            console.log('Evento input disparado em:', this.id);
             atualizarLabelFlutuante(this);
         });
         campo.addEventListener('change', function() {
-            console.log('Evento change disparado em:', this.id);
             atualizarLabelFlutuante(this);
         });
-        // Para textarea, também escutar blur para garantir atualização
-        if (campo.tagName.toLowerCase() === 'textarea') {
-            campo.addEventListener('blur', function() {
-                console.log('Evento blur disparado em:', this.id);
-                atualizarLabelFlutuante(this);
-            });
-        }
+        campo.addEventListener('blur', function() {
+            atualizarLabelFlutuante(this);
+        });
     });
 
     if (avisoExclusaoRota) {
@@ -76,6 +76,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let selectedDeparture = null;
     let selectedArrival = null;
+
+    function normalizarNomeEstacao(valor) {
+        const mapaAliases = {
+            'Agulha Norte': 'Estação Norte',
+            'Agulha Central': 'Estação Central',
+            'Agulha Sul': 'Estação Sul',
+            'Para-choque': 'Estação Leste',
+            'Agulha Oeste': 'Estação Oeste'
+        };
+
+        const nome = String(valor || '').trim();
+        return mapaAliases[nome] || nome;
+    }
 
     function initializeStationMarkers() {
         const mapContainer = document.querySelector('.route-selector-map');
@@ -144,28 +157,30 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // Lógica de seleção: primeiro clique = partida, segundo = chegada
+        const nomePartida = normalizarNomeEstacao(stationName);
+
         if (selectedDeparture === null) {
             // Primeira seleção: Ponto de Partida
-            selectedDeparture = stationName;
-            selectPartida.value = stationName;
+            selectedDeparture = nomePartida;
+            selectPartida.value = nomePartida;
             markerElement.classList.add('selected-departure');
-        } else if (selectedArrival === null && stationName !== selectedDeparture) {
+        } else if (selectedArrival === null && nomePartida !== selectedDeparture) {
             // Segunda seleção: Ponto de Chegada (deve ser diferente)
-            selectedArrival = stationName;
-            selectChegada.value = stationName;
+            selectedArrival = nomePartida;
+            selectChegada.value = nomePartida;
             markerElement.classList.add('selected-arrival');
             
             // Marca novamente o ponto de partida
             document.querySelectorAll('.station-marker').forEach(function(m) {
-                if (m.dataset.stationName === selectedDeparture) {
+                if (normalizarNomeEstacao(m.dataset.stationName) === selectedDeparture) {
                     m.classList.add('selected-departure');
                 }
             });
         } else {
             // Reset: começar de novo
-            selectedDeparture = stationName;
+            selectedDeparture = nomePartida;
             selectedArrival = null;
-            selectPartida.value = stationName;
+            selectPartida.value = nomePartida;
             selectChegada.value = '';
             markerElement.classList.add('selected-departure');
         }
@@ -184,9 +199,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Inicializar marcadores quando o modal for aberto
-    const modalAddRota = document.getElementById('modalAddRota');
-    if (modalAddRota) {
-        modalAddRota.addEventListener('shown.bs.modal', function() {
+    if (document.getElementById('modalAddRota')) {
+        document.getElementById('modalAddRota').addEventListener('shown.bs.modal', function() {
             setTimeout(initializeStationMarkers, 100);
         });
     }
@@ -281,37 +295,37 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    if (filtroPartidaRota) {
-        filtroPartidaRota.addEventListener('change', aplicarFiltroRotas);
-    }
-
-    if (filtroDestinoRota) {
-        filtroDestinoRota.addEventListener('change', aplicarFiltroRotas);
+    const btnBuscaRota = document.getElementById('btn_busca_rota');
+    if (btnBuscaRota && btnBuscaRota.form) {
+        btnBuscaRota.addEventListener('click', function (event) {
+            event.preventDefault();
+            btnBuscaRota.form.submit();
+        });
     }
 
     const modalEl = document.getElementById('modal_confirm_delete');
-    if (!modalEl || typeof bootstrap === 'undefined') return;
+    if (modalEl && typeof bootstrap !== 'undefined') {
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
 
-    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        document.addEventListener('click', function (event) {
+            const btn = event.target.closest && event.target.closest('.btn_delete');
+            if (!btn) return;
 
-    document.addEventListener('click', function (event) {
-        const btn = event.target.closest && event.target.closest('.btn_delete');
-        if (!btn) return;
+            const row = btn.closest('tr');
+            const id = (btn.dataset && btn.dataset.id) || (row && row.dataset && row.dataset.id) ||
+                (row && row.querySelector('td') ? row.querySelector('td').textContent.trim() : '');
 
-        const row = btn.closest('tr');
-        const id = (btn.dataset && btn.dataset.id) || (row && row.dataset && row.dataset.id) ||
-            (row && row.querySelector('td') ? row.querySelector('td').textContent.trim() : '');
+            const input = document.getElementById('delete_route_id');
+            if (input) input.value = id;
 
-        const input = document.getElementById('delete_route_id');
-        if (input) input.value = id;
+            const textEl = document.getElementById('modal_confirm_text');
+            if (textEl) {
+                textEl.textContent = 'Deseja realmente excluir a rota de ID ' + id + '?';
+            }
 
-        const textEl = document.getElementById('modal_confirm_text');
-        if (textEl) {
-            textEl.textContent = 'Deseja realmente excluir a rota de ID ' + id + '?';
-        }
-
-        modal.show();
-    });
+            modal.show();
+        });
+    }
 
 
     // Formulário de cadastro de rota
@@ -378,13 +392,13 @@ document.addEventListener('DOMContentLoaded', function () {
             }, 50);
             
             // Preencher seleção de estações no mapa
-            selectedDeparture = rota.ponto_partida || null;
-            selectedArrival = rota.ponto_chegada || null;
+            selectedDeparture = normalizarNomeEstacao(rota.ponto_partida || null);
+            selectedArrival = normalizarNomeEstacao(rota.ponto_chegada || null);
             
             // Atualizar marcadores visuais
             setTimeout(function() {
                 document.querySelectorAll('.station-marker').forEach(function(marker) {
-                    const stationName = marker.dataset.stationName;
+                    const stationName = normalizarNomeEstacao(marker.dataset.stationName);
                     marker.classList.remove('selected-departure', 'selected-arrival');
                     if (stationName === selectedDeparture) {
                         marker.classList.add('selected-departure');
@@ -401,39 +415,36 @@ document.addEventListener('DOMContentLoaded', function () {
         formCadastroRota.addEventListener('submit', function (e) {
             e.preventDefault();
 
+            const botaoAdicionar = formCadastroRota.querySelector('button[type="submit"]');
+            if (botaoAdicionar) {
+                botaoAdicionar.disabled = true;
+            }
+
             fetch(formCadastroRota.action, {
                 method: 'POST',
                 body: new FormData(formCadastroRota)
             })
-            .then(async response => {
+            .then(async function (response) {
                 const text = await response.text();
                 try {
                     const data = JSON.parse(text);
                     if (data.success) {
-                        if (data.reload) {
-                            const modalCadastro = bootstrap.Modal.getInstance(modalAddRota);
-                            if (modalCadastro) {
-                                modalCadastro.hide();
-                            }
-                            location.reload();
-                        } else {
-                            const mensagemDiv = document.getElementById('mensagem_cadastro_rota');
-                            if (mensagemDiv) {
-                                mensagemDiv.innerHTML = '<div class="alert alert-success" style="background-color: #d1e7dd; border-radius: 8px; border: none;">' + data.message + '</div>';
-                            }
-                            setTimeout(() => {
-                                const modalCadastro = bootstrap.Modal.getInstance(modalAddRota);
-                                if (modalCadastro) {
-                                    modalCadastro.hide();
-                                }
-                                location.reload();
-                            }, 2000);
+                        const modalCadastro = modalAddRota && typeof bootstrap !== 'undefined'
+                            ? bootstrap.Modal.getInstance(modalAddRota)
+                            : null;
+                        if (modalCadastro) {
+                            modalCadastro.hide();
                         }
-                    } else {
-                        const mensagemDiv = document.getElementById('mensagem_cadastro_rota');
-                        if (mensagemDiv) {
-                            mensagemDiv.innerHTML = '<div class="alert alert-danger" style="border-radius: 8px;">' + data.message + '</div>';
-                        }
+                        location.reload();
+                        return;
+                    }
+
+                    const mensagemDiv = document.getElementById('mensagem_cadastro_rota');
+                    if (mensagemDiv) {
+                        mensagemDiv.innerHTML = '<div class="alert alert-danger" style="border-radius: 8px;">' + (data.message || 'Erro ao cadastrar rota.') + '</div>';
+                    }
+                    if (botaoAdicionar) {
+                        botaoAdicionar.disabled = false;
                     }
                 } catch (err) {
                     console.error('Resposta inválida do servidor:', text);
@@ -441,13 +452,19 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (mensagemDiv) {
                         mensagemDiv.innerHTML = '<div class="alert alert-danger" style="border-radius: 8px;">Erro do servidor. Verifique os dados e tente novamente.</div>';
                     }
+                    if (botaoAdicionar) {
+                        botaoAdicionar.disabled = false;
+                    }
                 }
             })
-            .catch(error => {
-                console.error('Erro:', error);
+            .catch(function (error) {
+                console.error('Erro no cadastro da rota:', error);
                 const mensagemDiv = document.getElementById('mensagem_cadastro_rota');
                 if (mensagemDiv) {
-                    mensagemDiv.innerHTML = '<div class="alert alert-danger" style="border-radius: 8px;">Erro ao processar requisição</div>';
+                    mensagemDiv.innerHTML = '<div class="alert alert-danger" style="border-radius: 8px;">Erro ao processar requisição.</div>';
+                }
+                if (botaoAdicionar) {
+                    botaoAdicionar.disabled = false;
                 }
             });
         });

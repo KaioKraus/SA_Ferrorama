@@ -145,13 +145,6 @@ header('Expires: 0');
                 <div class="dashboard-scroll-wrapper">
                     <div class="trilho">
                         <img src="../assets/img/trilho2.svg" alt="Visualização do trilho ferroviário" class="trilho-img img-fluid">
-                        </div>
-                        <div class="dashboard-clima-detalhes" aria-live="polite">
-                            <span id="clima-localizacao">Joinville, Santa Catarina</span>
-                        <span id="clima-precipitacao"></span>
-                        <span id="clima-atualizacao">Aguardando atualização</span>
-                        <span id="clima-mensagem" class="clima-mensagem" role="status" hidden></span>
-                        <a class="clima-credito" href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Dados: Open-Meteo · CC BY 4.0</a>
                     </div>
                 </div>
 

@@ -289,16 +289,25 @@ h3 {
     width: 227px !important;
     margin: 5px !important;
     background-color: #000000;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    padding: 8px 0;
 }
 
 .nav1 .dropdown-item {
     color: #ffffff;
+    background-color: transparent;
+    border-radius: 6px;
+    margin: 2px 6px;
+    transition: all 0.2s ease;
 }
 
 .nav1 .dropdown-item:hover,
-.nav1 .dropdown-item:focus {
-    background-color: #333333;
-    color: #ffffff;
+.nav1 .dropdown-item:focus,
+.nav1 .dropdown-item:active,
+.nav1 .dropdown-item.active {
+    background-color: #ffffff;
+    color: #000000;
 }
 
 /*Cadastro de usuários*/

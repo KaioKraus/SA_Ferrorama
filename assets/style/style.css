@@ -1845,11 +1845,29 @@ a.trens-card-status:focus-visible {
     width: 100%;
     background-color: #ffffff;
     border-radius: 12px;
-    overflow-x: auto;
     overflow-y: auto;
+    overflow-x: auto;
     border: 1px solid #e4e7e7;
     max-height: calc(100vh - 560px);
     margin-bottom: 18px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-color: #3f704d #ffffff;
+    scrollbar-width: thin;
+    padding-right: 8px;
+}
+
+.relatorios-tabela-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.relatorios-tabela-container::-webkit-scrollbar-track {
+    background-color: #ffffff;
+    border-radius: 10px;
+}
+
+.relatorios-tabela-container::-webkit-scrollbar-thumb {
+    background-color: #3f704d;
+    border-radius: 10px;
 }
 
 .card_relatorios .relatorios-table {

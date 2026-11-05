@@ -63,8 +63,38 @@ while ($trem = mysqli_fetch_assoc($resultado)) {
 }
 mysqli_free_result($resultado);
 
+$consumoSimulado = count($trens) > 0;
+foreach ($trens as $trem) {
+    if ($trem['consumo'] != 0.0) {
+        $consumoSimulado = false;
+        break;
+    }
+}
+
+$historicoConsumo = [];
+if ($consumoSimulado) {
+    $intervaloAtual = (int) floor(time() / 5);
+    for ($deslocamento = -11; $deslocamento <= 0; $deslocamento++) {
+        $historicoConsumo[] = [
+            'horario' => date('H:i:s', ($intervaloAtual + $deslocamento) * 5),
+            'valor' => round(
+                215 + sin($deslocamento * M_PI / 6) * 18 + sin($deslocamento * M_PI / 3) * 5,
+                2
+            ),
+        ];
+    }
+
+    $consumoAtual = $historicoConsumo[count($historicoConsumo) - 1]['valor'];
+    foreach ($trens as &$trem) {
+        $trem['consumo'] = $consumoAtual;
+    }
+    unset($trem);
+}
+
 echo json_encode([
     'success' => true,
     'timestamp' => date('H:i:s'),
     'trens' => $trens,
+    'consumo_simulado' => $consumoSimulado,
+    'historico_consumo' => $historicoConsumo,
 ], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);

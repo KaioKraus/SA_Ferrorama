@@ -8,12 +8,15 @@ const INTERVALO_ATUALIZACAO = 5000; // 5 segundos
 // Elementos do DOM
 const metricaTemperatura = document.getElementById('metrica_temperatura');
 const metricaConsumo = document.getElementById('metrica_consumo');
+const medidorTemperatura = document.getElementById('medidor_temperatura');
+const barraTemperatura = document.getElementById('barra_temperatura');
+const mensagemConsumo = document.getElementById('mensagem-grafico-consumo');
+const avisoConsumoDemo = document.getElementById('aviso-consumo-demo');
 const statusIcone = document.getElementById('status_icone');
 const statusTexto = document.getElementById('status_texto');
 const cardStatus = statusIcone?.closest('.dashboard-card-status');
 
 // Gráficos
-let miniGraficoTemperatura;
 let miniGraficoConsumo;
 let graficoVelocidade;
 let quantidadePontos = 12;
@@ -30,11 +33,11 @@ function criarMiniGrafico(canvasId, cor) {
     return new Chart(ctx, {
         type: 'line',
         data: {
-            labels: Array(10).fill(''),
+            labels: [],
             datasets: [{
-                data: Array(10).fill(0),
+                data: [],
                 borderColor: cor,
-                backgroundColor: cor + '20',
+                backgroundColor: 'rgba(89, 153, 103, 0.22)',
                 borderWidth: 2,
                 fill: true,
                 tension: 0.4,
@@ -58,12 +61,16 @@ function criarMiniGrafico(canvasId, cor) {
 }
 
 // Função para atualizar mini gráfico
-function atualizarMiniGrafico(grafico, novoValor) {
+function atualizarMiniGrafico(grafico, novoValor, rotuloHorario) {
     if (!grafico) return;
-    
-    grafico.data.datasets[0].data.shift();
+
+    grafico.data.labels.push(rotuloHorario);
     grafico.data.datasets[0].data.push(novoValor);
-    grafico.update();
+    if (grafico.data.labels.length > quantidadePontos) {
+        grafico.data.labels.shift();
+        grafico.data.datasets[0].data.shift();
+    }
+    grafico.update('none');
 }
 
 // Função para determinar status do sistema
@@ -72,16 +79,30 @@ function determinarStatus(temperatura) {
 }
 
 // Função para atualizar indicadores visuais
-function atualizarIndicadores(temperatura, consumo) {
+function atualizarIndicadores(temperatura, consumo, rotuloHorario, historicoConsumo) {
     if (metricaTemperatura) {
         metricaTemperatura.textContent = temperatura.toFixed(0);
     }
     if (metricaConsumo) {
         metricaConsumo.textContent = consumo.toFixed(0);
     }
-    
-    atualizarMiniGrafico(miniGraficoTemperatura, temperatura);
-    atualizarMiniGrafico(miniGraficoConsumo, consumo);
+    if (medidorTemperatura && barraTemperatura) {
+        const temperaturaLimitada = Math.max(0, Math.min(temperatura, LIMITES.TEMPERATURA_MAX));
+        medidorTemperatura.setAttribute('aria-valuenow', temperaturaLimitada.toFixed(0));
+        barraTemperatura.style.width = (temperaturaLimitada / LIMITES.TEMPERATURA_MAX * 100) + '%';
+    }
+
+    if (miniGraficoConsumo && Array.isArray(historicoConsumo) && historicoConsumo.length > 0) {
+        miniGraficoConsumo.data.labels = historicoConsumo.map(function (ponto) {
+            return ponto.horario;
+        });
+        miniGraficoConsumo.data.datasets[0].data = historicoConsumo.map(function (ponto) {
+            return ponto.valor;
+        });
+        miniGraficoConsumo.update('none');
+    } else {
+        atualizarMiniGrafico(miniGraficoConsumo, consumo, rotuloHorario);
+    }
     
     const status = determinarStatus(temperatura);
     const eAlerta = status === 'ALERTA';
@@ -186,7 +207,17 @@ function atualizarVelocidades() {
         if (count > 0) {
             const tempMedia = somaTemp / count;
             const consumoMedio = somaConsumo / count;
-            atualizarIndicadores(tempMedia, consumoMedio);
+            atualizarIndicadores(tempMedia, consumoMedio, rotuloHorario, data.historico_consumo);
+            if (mensagemConsumo) {
+                mensagemConsumo.hidden = true;
+                mensagemConsumo.textContent = '';
+            }
+        } else if (mensagemConsumo) {
+            mensagemConsumo.textContent = 'Nenhum trem cadastrado.';
+            mensagemConsumo.hidden = false;
+        }
+        if (avisoConsumoDemo) {
+            avisoConsumoDemo.hidden = !data.consumo_simulado;
         }
         
         if (mensagem) {
@@ -197,6 +228,10 @@ function atualizarVelocidades() {
     .catch(function (error) {
         console.error('Erro ao atualizar:', error);
         if (status) status.textContent = 'Falha na atualização';
+        if (mensagemConsumo) {
+            mensagemConsumo.textContent = error.message || 'Não foi possível atualizar o consumo.';
+            mensagemConsumo.hidden = false;
+        }
         if (mensagem) {
             mensagem.textContent = error.message || 'Não foi possível atualizar.';
             mensagem.hidden = false;
@@ -261,8 +296,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Criar mini gráficos
-    miniGraficoTemperatura = criarMiniGrafico('mini_grafico_temperatura', '#e74c3c');
-    miniGraficoConsumo = criarMiniGrafico('mini_grafico_consumo', '#599967');
+    miniGraficoConsumo = criarMiniGrafico('mini_grafico_consumo', '#111111');
     
     // Buscar dados inicial
     atualizarVelocidades();

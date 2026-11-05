@@ -15,7 +15,7 @@ header('Expires: 0');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="../assets/style/style.css">
+    <link rel="stylesheet" href="../assets/style/style.css?v=<?php echo filemtime(__DIR__ . '/../assets/style/style.css'); ?>">
     <title>Celestial Steel</title>
 </head>
 
@@ -89,10 +89,42 @@ header('Expires: 0');
                         <p id="mensagem-grafico-velocidade" class="velocidade-mensagem" hidden></p>
                     </div>
 
-                    <div class="dashboard-card-metrica">
+                    <div class="dashboard-card-metrica dashboard-card-temperatura">
+                        <div class="metrica-cabecalho">
+                            <h3 class="metrica-titulo">Temperatura (°C)</h3>
+                            <i class="bi bi-thermometer-half" aria-hidden="true"></i>
+                        </div>
+                        <div class="temperatura-valor">
+                            <span id="metrica_temperatura" aria-live="polite">--</span>°C
+                        </div>
+                        <div
+                            class="temperatura-medidor"
+                            id="medidor_temperatura"
+                            role="meter"
+                            aria-label="Temperatura média dos trens"
+                            aria-valuemin="0"
+                            aria-valuemax="85"
+                            aria-valuenow="0">
+                            <span id="barra_temperatura"></span>
+                        </div>
                     </div>
 
-                    <div class="dashboard-card-metrica">
+                    <div class="dashboard-card-metrica dashboard-card-consumo">
+                        <div class="metrica-cabecalho">
+                            <h3 class="metrica-titulo">Consumo de Energia (kW/h)</h3>
+                            <span id="aviso-consumo-demo" class="consumo-demo" title="Valores simulados enquanto não há leituras no banco" hidden>DEMO</span>
+                            <i class="bi bi-lightning-charge-fill" aria-hidden="true"></i>
+                        </div>
+                        <div class="consumo-conteudo">
+                            <div class="metrica-grafico">
+                                <canvas id="mini_grafico_consumo" aria-label="Histórico recente do consumo médio de energia dos trens" role="img"></canvas>
+                            </div>
+                            <div class="consumo-valor">
+                                <span id="metrica_consumo" aria-live="polite">--</span>
+                                <span class="consumo-unidade">kW/h</span>
+                            </div>
+                        </div>
+                        <p id="mensagem-grafico-consumo" class="metrica-mensagem" role="status" hidden></p>
                     </div>
 
                     <div class="dashboard-card-status">
@@ -148,7 +180,7 @@ header('Expires: 0');
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
     <script src="../script/nav.js"></script>
-    <script src="../script/dashboard.js"></script>
+    <script src="../script/dashboard.js?v=<?php echo filemtime(__DIR__ . '/../script/dashboard.js'); ?>"></script>
 </body>
 
 </html>

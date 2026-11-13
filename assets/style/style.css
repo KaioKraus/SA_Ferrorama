@@ -93,6 +93,12 @@ body {
 }
 
 .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1;
+    padding: 0 0 3px;
     margin-top: 32px;
     width: 150px;
     height: 55px;
@@ -102,6 +108,11 @@ body {
     color: white;
     font-size: 24px;
     font-weight: bold;
+}
+
+.button:hover,
+.button:focus-visible {
+    background-color: #477a53;
 }
 
 .logo-login-animando {
@@ -1449,9 +1460,13 @@ a.badge_funcionario:focus-visible {
 }
 
 .trens-btn-add {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
     width: 139px;
     height: 39px;
-    padding: 0;
+    padding: 0 0 2px;
     border: 2px solid #599967;
     border-radius: 7px;
     background-color: #ffffff;
@@ -2498,11 +2513,15 @@ a.trens-card-status:focus-visible {
 }
 
 .btn_adicionar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
     background-color: #0A3D3D;
     color: #ffffff;
     border: none;
     border-radius: 10px;
-    padding: 10px 22px;
+    padding: 8px 22px 12px;
     font-weight: 600;
     transition: background-color 0.2s ease;
 }
@@ -4142,14 +4161,24 @@ body {
         }
 
         .landing-header .landing-btn {
-            background: linear-gradient(135deg, #599967 0%, #7ac28d 100%);
-            color: #061515 !important;
-            box-shadow: 0 10px 20px rgba(89, 153, 103, 0.25);
+            text-align: center;
+            line-height: 1;
+            width: 150px;
+            min-width: 150px;
+            max-width: 150px;
+            height: 55px;
+            padding: 0 0 3px;
+            border: none;
+            border-radius: 30px;
+            background: #599967;
+            color: #ffffff !important;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: none;
+            transition: none;
+            animation: none;
         }
 
-        .landing-header .landing-btn:hover,
-        .landing-header .landing-btn:focus-visible,
-        .landing-header .landing-btn:active,
         .landing-header .landing-btn-secondary:hover,
         .landing-header .landing-btn-secondary:focus-visible,
         .landing-header .landing-btn-secondary:active {
@@ -4158,9 +4187,12 @@ body {
         }
 
         .landing-header .landing-btn:hover,
-        .landing-header .landing-btn:focus-visible {
-            background: linear-gradient(135deg, #7ecf8c 0%, #a9e6ae 100%);
-            box-shadow: 0 12px 24px rgba(126, 207, 140, 0.34);
+        .landing-header .landing-btn:focus-visible,
+        .landing-header .landing-btn:active {
+            transform: translateY(-50%);
+            background: #477a53;
+            color: #ffffff !important;
+            box-shadow: none;
         }
 
         .landing-header .landing-btn-secondary {

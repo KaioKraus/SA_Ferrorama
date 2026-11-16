@@ -145,6 +145,50 @@ async function consultarRelatorios(filtros, mensagemElemento) {
     }
 }
 
+async function criarRelatorios(filtros, mensagemElemento) {
+    const formulario = mensagemElemento?.closest('form');
+    const botao = formulario?.querySelector('[type="submit"]');
+    if (botao) botao.disabled = true;
+    mostrarMensagemRelatorio(mensagemElemento, 'Criando relatório...', 'secondary');
+
+    try {
+        const resposta = await fetch('gerar_relatorio.php', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+            },
+            body: new URLSearchParams(filtros),
+            cache: 'no-store'
+        });
+        const resultado = await resposta.json();
+        if (!resposta.ok || !resultado.success) {
+            throw new Error(resultado.message || 'Não foi possível criar o relatório.');
+        }
+
+        const existentes = Array.from(tabelaRelatorios.querySelectorAll('tr[data-relatorio]'), (linha) => ({
+            relatorio_id: linha.dataset.relatorioId,
+            data_relatorio: linha.dataset.relatorioData,
+            falha_id: linha.dataset.relatorioFalhaId,
+            tipo_dado: linha.dataset.relatorioTipo,
+            data_inicio: linha.dataset.relatorioInicio,
+            data_fim: linha.dataset.relatorioFim
+        }));
+        renderizarRelatorios([...resultado.data, ...existentes]);
+        mostrarMensagemRelatorio(
+            mensagemElemento,
+            `${resultado.message} ${resultado.data.length} registro(s) criado(s).`,
+            resultado.message.includes('não permite salvar o período') ? 'warning' : 'success'
+        );
+        return true;
+    } catch (erro) {
+        mostrarMensagemRelatorio(mensagemElemento, erro.message, 'danger');
+        return false;
+    } finally {
+        if (botao) botao.disabled = false;
+    }
+}
+
 function configurarFormularioRelatorio(formulario, prefixo, mensagemId) {
     if (!formulario) return;
 
@@ -159,14 +203,14 @@ function configurarFormularioRelatorio(formulario, prefixo, mensagemId) {
             return;
         }
 
-        const consultou = await consultarRelatorios({
+        const criado = await criarRelatorios({
             trem: document.getElementById(`${prefixo}trem`).value,
             sensor: document.getElementById(`${prefixo}sensor`).value,
             data_inicio: dataInicio,
             data_fim: dataFim
         }, mensagem);
 
-        if (consultou && formulario.id === 'form_relatorio_modal') {
+        if (criado && formulario.id === 'form_relatorio_modal') {
             const modalElemento = document.getElementById('modal_relatorio');
             if (typeof bootstrap !== 'undefined' && modalElemento) {
                 bootstrap.Modal.getOrCreateInstance(modalElemento).hide();

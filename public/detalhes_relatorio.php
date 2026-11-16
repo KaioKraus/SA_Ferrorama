@@ -8,8 +8,23 @@ $relatorioId = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT);
 $relatorio = null;
 
 if ($relatorioId !== false && $relatorioId !== null) {
+    $colunasRelatorio = mysqli_query($conexao, 'SHOW COLUMNS FROM relatorio');
+    if (!$colunasRelatorio) {
+        error_log('Erro ao consultar as colunas dos relatórios: ' . mysqli_error($conexao));
+        http_response_code(500);
+        die('Não foi possível carregar os detalhes do relatório.');
+    }
+    $nomesColunasRelatorio = [];
+    while ($coluna = mysqli_fetch_assoc($colunasRelatorio)) {
+        $nomesColunasRelatorio[] = $coluna['Field'];
+    }
+    mysqli_free_result($colunasRelatorio);
+    $expressaoDataInicio = in_array('data_inicio', $nomesColunasRelatorio, true) ? 'r.data_inicio' : 'NULL';
+    $expressaoDataFim = in_array('data_fim', $nomesColunasRelatorio, true) ? 'r.data_fim' : 'NULL';
+
     $sqlRelatorio = "
-        SELECT r.relatorio_id, r.data_relatorio, r.data_inicio, r.data_fim,
+        SELECT r.relatorio_id, r.data_relatorio,
+               {$expressaoDataInicio} AS data_inicio, {$expressaoDataFim} AS data_fim,
                f.falha_id, f.trem_id, f.sensor_id,
                t.nome_trem, s.nome_sensor, s.tipo_dado, s.localizacao,
                s.status AS status_sensor

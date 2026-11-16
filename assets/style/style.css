@@ -1,4 +1,4 @@
-﻿/*Formatação*/
+/* geral */
 :root {
     --shadow-card: 0 0 14px rgba(0, 0, 0, 0.2);
     --shadow-card-hover: 0 0 18px rgba(0, 0, 0, 0.24);
@@ -16,7 +16,7 @@ body {
     background-color: #cfd8d6;
 }
 
-/*Login*/
+/* login */
 .body_login {
     background: linear-gradient(#101111, #072A2A, #072A2A);
     height: 100vh;
@@ -149,8 +149,7 @@ body {
 }
 
 
-/*Tela Geral*/
-/*Main*/
+/* menu lateral */
 main {
     display: flex;
 }
@@ -295,7 +294,7 @@ h3 {
     font-size: 18px;
 }
 
-/* Dropdown Customizado */
+/* dropdown do usuario */
 .nav1 .dropdown-menu {
     width: 227px !important;
     margin: 5px !important;
@@ -321,7 +320,7 @@ h3 {
     color: #ffffff;
 }
 
-/*Cadastro de usuários*/
+/* usuarios e rotas */
 .conteudo {
     flex-grow: 1;
     height: 100vh;
@@ -343,7 +342,7 @@ h3 {
     overflow: hidden;
 }
 
-/* Scrollpadrao do sistema para telas com tabela */
+/* tabelas e scroll */
 .card_usuarios .table-wrapper,
 .relatorios-tabela-container,
 .table-wrapper,
@@ -394,6 +393,7 @@ h3 {
     height: calc(100% - 180px);
 }
 
+/* busca, botoes e tabelas */
 .card_usuarios,
 .dashboard-painel,
 .trens-painel,
@@ -588,6 +588,7 @@ a.badge_funcionario:focus-visible {
     line-height: 1;
 }
 
+/* modais */
 .modal-content {
     border-radius: 15px;
     box-shadow: var(--shadow-modal);
@@ -855,6 +856,7 @@ a.badge_funcionario:focus-visible {
     cursor: default !important;
 }
 
+/* sensores */
 /* Input de localização no modal de sensores com overflow visível */
 #modal_cadastro_sensor .modal-body {
     overflow: visible !important;
@@ -933,7 +935,7 @@ a.badge_funcionario:focus-visible {
     color: #333333 !important;
 }
 
-/* Modal: Editar Perfil */
+/* perfil */
 #modal_editar_perfil .modal-dialog {
     max-width: 620px;
     margin: 1.25rem auto;
@@ -1143,6 +1145,7 @@ a.badge_funcionario:focus-visible {
     text-shadow: 0 0 25px #FB4242;
 }
 
+/* formularios e controles */
 .modal-ferroviario {
     border: none;
     border-radius: 15px;
@@ -1335,7 +1338,7 @@ a.badge_funcionario:focus-visible {
 }
 
 
-/* Dashboard e Trens */
+/* dashboard e trens */
 .dashboard-conteudo {
     flex-grow: 1;
     height: 100vh;
@@ -1388,6 +1391,7 @@ a.badge_funcionario:focus-visible {
     border-radius: 10px;
 }
 
+/* tela de trens */
 .trens-topo {
     height: 99px;
     padding: 30px;
@@ -1689,6 +1693,7 @@ a.trens-card-status:focus-visible {
     top: 20px;
 }
 
+/* dashboard */
 .dashboard-graficos {
     margin: 20px 65px 0px;
     display: flex;
@@ -1763,6 +1768,7 @@ a.trens-card-status:focus-visible {
     max-height: 100%;
 }
 
+/* relatorios */
 .card_relatorios {
     background-color: #D9D9D9;
     border-radius: 17px;
@@ -1973,6 +1979,7 @@ a.trens-card-status:focus-visible {
     border-radius: 10px;
 }
 
+/* visualizar relatorio */
 .relatorio-preview-page {
     background: #c8d0ce;
     padding: 28px 24px;
@@ -2550,6 +2557,7 @@ a.trens-card-status:focus-visible {
     color: #ffffff;
 }
 
+/* rotas */
 .route-modal-body {
     padding: 0 1.5rem 2rem;
 }
@@ -2581,6 +2589,7 @@ a.trens-card-status:focus-visible {
     filter: none;
 }
 
+/* cadastro de rota */
 .route-modal-dialog {
     max-width: 600px;
     width: min(88vw, 600px);
@@ -2995,6 +3004,7 @@ a.trens-card-status:focus-visible {
     justify-content: center;
 }
 
+/* ajustes pra telas menores */
 @media (min-width: 821px) and (max-width: 1040px) {
     .body_login .form1 {
         width: min(70vw, 760px);
@@ -3635,9 +3645,7 @@ a.trens-card-status:focus-visible {
     }
 }
 
-/* ========================================
-   INDICADORES VISUAIS DO DASHBOARD
-   ======================================== */
+/* indicadores do dashboard */
 
 .dashboard-metricas {
     display: grid;
@@ -4037,7 +4045,7 @@ a.trens-card-status:focus-visible {
     }
 }
 
-/* Landing page */
+/* pagina inicial */
 body {
             margin: 0;
             font-family: 'Segoe UI', Arial, sans-serif;

@@ -193,9 +193,6 @@ mysqli_stmt_close($stmt_rotas);
                 <div class="barra_busca">
                     <div class="barra_busca_filtro">
                         <form method="GET" action="tela_rotas.php" class="trens-filtros rotas-filtros" id="form_busca_rota">
-                            <?php if ($statusFiltro !== ''): ?>
-                                <input type="hidden" name="status" value="<?= htmlspecialchars($statusFiltro, ENT_QUOTES, 'UTF-8'); ?>">
-                            <?php endif; ?>
                             <div class="input-group dashboard-busca trens-busca">
                                 <input id="input_busca_rota" name="q" type="text" class="form-control dashboard-input trens-input" value="<?= htmlspecialchars($termoBusca, ENT_QUOTES, 'UTF-8'); ?>" placeholder="Buscar por nome ou estação" aria-label="Buscar por nome ou estação">
                                 <button id="btn_busca_rota" class="btn dashboard-btn-busca trens-btn-busca" type="button" aria-label="Buscar rota">
@@ -217,6 +214,15 @@ mysqli_stmt_close($stmt_rotas);
                                 <?php foreach ($pontosFiltro as $ponto): ?>
                                     <option value="<?= htmlspecialchars($ponto, ENT_QUOTES, 'UTF-8'); ?>" <?= $destinoFiltro === $ponto ? 'selected' : ''; ?>>
                                         <?= htmlspecialchars($ponto, ENT_QUOTES, 'UTF-8'); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+
+                            <select id="filtro_status_rota" name="status" class="form-select trens-filtro-responsavel" aria-label="Filtrar rotas por status">
+                                <option value="">Todos os status</option>
+                                <?php foreach ($statusPermitidos as $status): ?>
+                                    <option value="<?= htmlspecialchars($status, ENT_QUOTES, 'UTF-8'); ?>" <?= $statusFiltro === $status ? 'selected' : ''; ?>>
+                                        <?= htmlspecialchars($status, ENT_QUOTES, 'UTF-8'); ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -284,12 +290,9 @@ mysqli_stmt_close($stmt_rotas);
                                     <td><?= htmlspecialchars((string) ($rota['ponto_chegada'] ?? '')) ?></td>
                                     <td><?= htmlspecialchars((string) $nomeTrem) ?></td>
                                     <td>
-                                        <a class="trens-card-status rota-status-filtro <?= htmlspecialchars($statusClasse); ?><?= $statusFiltro === ($rota['status'] ?? '') ? ' filtro-selecionado' : ''; ?>"
-                                            href="<?= $statusFiltro === ($rota['status'] ?? '') ? 'tela_rotas.php' . ($termoBusca !== '' ? '?q=' . rawurlencode($termoBusca) : '') : '?status=' . rawurlencode((string) ($rota['status'] ?? '')) . ($termoBusca !== '' ? '&q=' . rawurlencode($termoBusca) : ''); ?>"
-                                            <?= $statusFiltro === ($rota['status'] ?? '') ? 'aria-current="true"' : ''; ?>
-                                            aria-label="<?= $statusFiltro === ($rota['status'] ?? '') ? 'Remover filtro de status ' : 'Filtrar rotas com status '; ?><?= htmlspecialchars((string) ($rota['status'] ?? '')) ?: 'Sem status'; ?>">
+                                        <span class="trens-card-status rota-status-filtro <?= htmlspecialchars($statusClasse); ?>">
                                             <?= htmlspecialchars((string) ($rota['status'] ?? '')) ?: 'Sem status' ?>
-                                        </a>
+                                        </span>
                                     </td>
                                     <td>
                                         <?php if ($usuarioEhAdministrador): ?>

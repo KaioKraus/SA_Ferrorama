@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     const inputBuscaSensor = document.getElementById('input_busca_sensor');
     const btnBuscaSensor = document.getElementById('btn_busca_sensor');
+    const filtroStatusSensor = document.getElementById('filtro_status_sensor');
     const tbodySensores = document.getElementById('tbody_sensores');
     const modalCadastroSensor = document.getElementById('modal_cadastro_sensor');
     const formCadastroSensor = document.getElementById('form_cadastro_sensor');
@@ -210,6 +211,12 @@ document.addEventListener('DOMContentLoaded', function () {
         if (btnBuscaSensor) {
             btnBuscaSensor.addEventListener('click', filtrarSensores);
         }
+    }
+
+    if (filtroStatusSensor && filtroStatusSensor.form) {
+        filtroStatusSensor.addEventListener('change', function () {
+            filtroStatusSensor.form.submit();
+        });
     }
 
     var deleteModalEl = document.getElementById('modal_confirm_delete');

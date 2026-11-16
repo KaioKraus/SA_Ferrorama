@@ -113,9 +113,9 @@ foreach ($trens as $trem):
         <article class="trens-card-trem" data-id="<?= $tremId; ?>" data-nome="<?= $nomeTrem; ?>" data-responsavel="<?= $responsavelId; ?>" data-status="<?= htmlspecialchars($statusTrem, ENT_QUOTES, 'UTF-8'); ?>" data-rota="<?= htmlspecialchars($rotaNome, ENT_QUOTES, 'UTF-8'); ?>" data-quantidade-rotas="<?= $quantidadeRotas; ?>" data-velocidade="<?= htmlspecialchars((string) $velocidadeTrem, ENT_QUOTES, 'UTF-8'); ?>" data-temperatura="<?= htmlspecialchars((string) $temperaturaTrem, ENT_QUOTES, 'UTF-8'); ?>" data-consumo="<?= htmlspecialchars((string) $consumoTrem, ENT_QUOTES, 'UTF-8'); ?>" data-rota-ativa="<?= $rotaAtiva ? '1' : '0'; ?>">
             <div class="trens-card-cabecalho">
                 <div class="trens-card-header-row">
-                    <a class="trens-card-status <?= htmlspecialchars($statusClasseTrem, ENT_QUOTES, 'UTF-8'); ?>"
-                       href="tela_trens.php?status=<?= rawurlencode((string) $statusTrem); ?>"
-                       aria-label="Filtrar trens com status <?= htmlspecialchars((string) $statusTrem, ENT_QUOTES, 'UTF-8'); ?>"><?= $statusTrem; ?></a>
+                    <span class="trens-card-status <?= htmlspecialchars($statusClasseTrem, ENT_QUOTES, 'UTF-8'); ?>">
+                        <?= htmlspecialchars($statusTrem, ENT_QUOTES, 'UTF-8'); ?>
+                    </span>
                     <div class="trens-card-acoes">
                         <?php if ($usuarioEhAdministrador): ?>
                             <button class="btn_edit" type="button" aria-label="Editar trem">

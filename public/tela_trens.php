@@ -32,14 +32,6 @@ $statusPermitidos = ['Ativo', 'Manutenção', 'Inativo'];
 if (!in_array($statusFiltro, $statusPermitidos, true)) {
     $statusFiltro = '';
 }
-$baseParams = [];
-if ($termoBusca !== '') {
-    $baseParams['q'] = $termoBusca;
-}
-if ($responsavelSelecionado > 0) {
-    $baseParams['responsavel'] = (int) $responsavelSelecionado;
-}
-$urlBaseTrens = 'tela_trens.php' . (!empty($baseParams) ? '?' . http_build_query($baseParams) : '');
 $trens = [];
 
 $colunasTrens = mysqli_query($conexao, 'SHOW COLUMNS FROM trens');
@@ -223,9 +215,6 @@ if ($statusFiltro !== '') {
 
                 <div class="trens-topo d-flex align-items-center justify-content-between">
                     <form method="GET" action="tela_trens.php" class="trens-filtros" autocomplete="off">
-                        <?php if ($statusFiltro !== ''): ?>
-                            <input type="hidden" name="status" value="<?= htmlspecialchars($statusFiltro, ENT_QUOTES, 'UTF-8'); ?>">
-                        <?php endif; ?>
                         <div class="input-group dashboard-busca trens-busca">
                             <input id="input_busca_trem" name="q" type="text" class="form-control dashboard-input trens-input" value="<?= htmlspecialchars($termoBusca, ENT_QUOTES, 'UTF-8'); ?>" placeholder="Buscar por ID ou Nome" aria-label="Buscar por ID ou Nome">
                             <button id="btn_busca_trem" class="btn dashboard-btn-busca trens-btn-busca" type="button" aria-label="Buscar">
@@ -237,6 +226,14 @@ if ($statusFiltro !== '') {
                             <?php foreach ($usuarios as $usuario): ?>
                                 <option value="<?= (int) $usuario['usuario_id']; ?>" <?= (int) $responsavelSelecionado === (int) $usuario['usuario_id'] ? 'selected' : ''; ?>>
                                     <?= htmlspecialchars((string) $usuario['nome'], ENT_QUOTES, 'UTF-8'); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <select id="filtro_status_trem" name="status" class="form-select trens-filtro-responsavel" aria-label="Filtrar trens por status">
+                            <option value="">Todos os status</option>
+                            <?php foreach ($statusPermitidos as $status): ?>
+                                <option value="<?= htmlspecialchars($status, ENT_QUOTES, 'UTF-8'); ?>" <?= $statusFiltro === $status ? 'selected' : ''; ?>>
+                                    <?= htmlspecialchars($status, ENT_QUOTES, 'UTF-8'); ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
@@ -275,16 +272,14 @@ if ($statusFiltro !== '') {
                                 $rotaNome = (string) ($trem['rota_nome'] ?? 'Sem rota');
                                 $quantidadeRotas = (int) ($trem['quantidade_rotas'] ?? 0);
                                 $mostrarBotaoExcluir = !($statusTrem === 'Ativo' && $rotaAtiva);
-                                $statusHref = $statusFiltro === $statusTrem ? $urlBaseTrens : '?status=' . rawurlencode((string) $statusTrem) . (!empty($baseParams) ? '&' . http_build_query($baseParams) : '');
                                 ?>
                                 <div class="col">
                                     <article class="trens-card-trem" data-id="<?= $tremId; ?>" data-nome="<?= $nomeTrem; ?>" data-responsavel="<?= $responsavelId; ?>" data-status="<?= htmlspecialchars($statusTrem, ENT_QUOTES, 'UTF-8'); ?>" data-rota="<?= htmlspecialchars($rotaNome, ENT_QUOTES, 'UTF-8'); ?>" data-quantidade-rotas="<?= $quantidadeRotas; ?>" data-velocidade="<?= htmlspecialchars((string) $velocidadeTrem, ENT_QUOTES, 'UTF-8'); ?>" data-temperatura="<?= htmlspecialchars((string) $temperaturaTrem, ENT_QUOTES, 'UTF-8'); ?>" data-consumo="<?= htmlspecialchars((string) $consumoTrem, ENT_QUOTES, 'UTF-8'); ?>" data-rota-ativa="<?= $rotaAtiva ? '1' : '0'; ?>">
                                         <div class="trens-card-cabecalho">
                                             <div class="trens-card-header-row">
-                                                <a class="trens-card-status <?= htmlspecialchars($statusClasseTrem, ENT_QUOTES, 'UTF-8'); ?><?= $statusFiltro === $statusTrem ? ' filtro-selecionado' : ''; ?>"
-                                                   href="<?= htmlspecialchars($statusHref, ENT_QUOTES, 'UTF-8'); ?>"
-                                                   <?= $statusFiltro === $statusTrem ? 'aria-current="true"' : ''; ?>
-                                                   aria-label="<?= $statusFiltro === $statusTrem ? 'Remover filtro de status ' : 'Filtrar trens com status '; ?><?= htmlspecialchars((string) $statusTrem, ENT_QUOTES, 'UTF-8'); ?>"><?= $statusTrem; ?></a>
+                                                <span class="trens-card-status <?= htmlspecialchars($statusClasseTrem, ENT_QUOTES, 'UTF-8'); ?>">
+                                                    <?= htmlspecialchars($statusTrem, ENT_QUOTES, 'UTF-8'); ?>
+                                                </span>
                                                 <div class="trens-card-acoes">
                                                     <?php if ($usuarioEhAdministrador): ?>
                                                         <button class="btn_edit" type="button" aria-label="Editar trem">

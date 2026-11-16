@@ -10,6 +10,7 @@ $usuarioNome = $_SESSION['usuario_nome'] ?? 'Usuário';
 
 $perfilParametro = $_GET['perfil'] ?? '';
 $perfilFiltro = is_string($perfilParametro) ? trim($perfilParametro) : '';
+$termoBusca = isset($_GET['q']) && is_string($_GET['q']) ? trim($_GET['q']) : '';
 $perfilPermitidos = ['Administrador', 'Funcionário', 'Funcionario'];
 if (!in_array($perfilFiltro, $perfilPermitidos, true)) {
     $perfilFiltro = '';
@@ -150,12 +151,19 @@ if ($perfilFiltro !== '') {
         <section class="conteudo">
             <div class="card_usuarios">
                 <div class="barra_busca">
-                    <div class="input-group dashboard-busca">
-                        <input type="text" id="input_busca_usuario" class="form-control dashboard-input" placeholder="Buscar por ID ou Nome" aria-label="Buscar por ID ou Nome">
-                        <button class="btn dashboard-btn-busca" id="btn_busca_usuario" type="button" aria-label="Buscar funcionário">
-                            <i class="bi bi-search"></i>
-                        </button>
-                    </div>
+                    <form method="GET" action="tela_cadastro_user.php" class="trens-filtros" id="form_busca_usuario" autocomplete="off">
+                        <div class="input-group dashboard-busca">
+                            <input type="text" id="input_busca_usuario" name="q" value="<?= htmlspecialchars($termoBusca, ENT_QUOTES, 'UTF-8'); ?>" class="form-control dashboard-input" placeholder="Buscar por ID ou Nome" aria-label="Buscar por ID ou Nome">
+                            <button class="btn dashboard-btn-busca" id="btn_busca_usuario" type="button" aria-label="Buscar funcionário">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                        <select id="filtro_cargo_usuario" name="perfil" class="form-select trens-filtro-responsavel" aria-label="Filtrar usuários por cargo">
+                            <option value="">Todos os cargos</option>
+                            <option value="Administrador" <?= $perfilFiltro === 'Administrador' ? 'selected' : ''; ?>>Administrador</option>
+                            <option value="Funcionário" <?= in_array($perfilFiltro, ['Funcionário', 'Funcionario'], true) ? 'selected' : ''; ?>>Funcionário</option>
+                        </select>
+                    </form>
 
                     <?php if ($usuarioEhAdministrador): ?>
                     <button class="btn trens-btn-add" type="button" data-bs-toggle="modal" data-bs-target="#modal_cadastro">Adicionar</button>
@@ -191,9 +199,6 @@ if ($perfilFiltro !== '') {
 
             $cpf = $usuario['cpf'];
             $telefone = $usuario['telefone'] ?? '';
-            $perfilSelecionado = $perfilFiltro === $perfilCargo;
-            $perfilHref = $perfilSelecionado ? 'tela_cadastro_user.php' : '?perfil=' . rawurlencode((string) $perfilCargo);
-
             if (strlen($cpf) === 11) {
                 $cpf = substr($cpf, 0, 3) . '.' .
                        substr($cpf, 3, 3) . '.' .
@@ -234,11 +239,9 @@ if ($perfilFiltro !== '') {
                 </td>
 
                 <td>
-                    <a class="<?= $classe_cargo ?><?= $perfilSelecionado ? ' filtro-selecionado' : ''; ?>"
-                       href="<?= htmlspecialchars($perfilHref, ENT_QUOTES, 'UTF-8'); ?>"
-                       aria-label="<?= $perfilSelecionado ? 'Remover filtro de perfil ' : 'Filtrar usuários com perfil '; ?><?= htmlspecialchars((string) $perfilCargo, ENT_QUOTES, 'UTF-8'); ?>">
+                    <span class="<?= $classe_cargo ?>">
                         <?= htmlspecialchars($cargo) ?>
-                    </a>
+                    </span>
                 </td>
 
                 <td>

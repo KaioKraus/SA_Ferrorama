@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const inputBuscaUsuario = document.getElementById('input_busca_usuario');
     const btnBuscaUsuario = document.getElementById('btn_busca_usuario');
+    const filtroCargoUsuario = document.getElementById('filtro_cargo_usuario');
     const tbodyUsuarios = document.getElementById('tbody_usuarios');
     const inputCep = document.getElementById('input_cep');
     const inputLogradouro = document.getElementById('input_logradouro');
@@ -164,6 +165,14 @@ document.addEventListener('DOMContentLoaded', function () {
         if (btnBuscaUsuario) {
             btnBuscaUsuario.addEventListener('click', filtrarUsuarios);
         }
+
+        if (filtroCargoUsuario && filtroCargoUsuario.form) {
+            filtroCargoUsuario.addEventListener('change', function () {
+                filtroCargoUsuario.form.submit();
+            });
+        }
+
+        filtrarUsuarios();
     }
 
     // Modal de confirmação de exclusão

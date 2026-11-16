@@ -15,12 +15,6 @@ header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Expires: 0');
 
-$baseParams = [];
-if ($termoBusca !== '') {
-    $baseParams['busca'] = $termoBusca;
-}
-$urlBaseSensores = 'tela_sensores.php' . (!empty($baseParams) ? '?' . http_build_query($baseParams) : '');
-
 $sqlSensores = 'SELECT sensor_id, nome_sensor, localizacao, tipo_dado, status FROM sensores';
 if ($termoBusca !== '') {
     $termoBuscaSql = mysqli_real_escape_string($conexao, $termoBusca);
@@ -157,11 +151,21 @@ function normalizarTipoDado(string $tipoDado): string {
             <?php endif; ?>
             <div class="card_usuarios">
                 <div class="barra_busca">
-                    <form class="input-group dashboard-busca" method="get" action="tela_sensores.php" id="form_busca_sensor">
+                    <form class="trens-filtros" method="get" action="tela_sensores.php" id="form_busca_sensor">
+                        <div class="input-group dashboard-busca">
                         <input type="text" id="input_busca_sensor" name="busca" value="<?= htmlspecialchars($termoBusca, ENT_QUOTES, 'UTF-8'); ?>" class="form-control dashboard-input" placeholder="Buscar por ID, nome, localização ou tipo de dado" aria-label="Buscar por ID, nome, localização ou tipo de dado">
                         <button class="btn dashboard-btn-busca" id="btn_busca_sensor" type="button" aria-label="Buscar">
                             <i class="bi bi-search"></i>
                         </button>
+                        </div>
+                        <select id="filtro_status_sensor" name="status" class="form-select trens-filtro-responsavel" aria-label="Filtrar sensores por status">
+                            <option value="">Todos os status</option>
+                            <?php foreach ($statusPermitidos as $status): ?>
+                                <option value="<?= htmlspecialchars($status, ENT_QUOTES, 'UTF-8'); ?>" <?= $statusFiltro === $status ? 'selected' : ''; ?>>
+                                    <?= htmlspecialchars($status, ENT_QUOTES, 'UTF-8'); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </form>
 
                     <?php if ($usuarioEhAdministrador): ?>
@@ -193,7 +197,6 @@ function normalizarTipoDado(string $tipoDado): string {
                                 $statusSensor = (string)($sensor['status'] ?? 'Ativo');
                                 $vinculoSensor = normalizarVinculoLocalizacao($localizacaoSensor);
                                 $statusClass = strtolower($statusSensor) === 'ativo' ? 'ativo' : 'inativo';
-                                $statusHref = $statusFiltro === $statusSensor ? $urlBaseSensores : '?status=' . rawurlencode((string) $statusSensor) . (!empty($baseParams) ? '&' . http_build_query($baseParams) : '');
                                 ?>
                                 <tr data-sensor-id="<?= htmlspecialchars((string)$sensorId, ENT_QUOTES, 'UTF-8') ?>"
                                     data-nome="<?= htmlspecialchars($nomeSensor, ENT_QUOTES, 'UTF-8') ?>"
@@ -208,10 +211,9 @@ function normalizarTipoDado(string $tipoDado): string {
                                     <td><?= htmlspecialchars($localizacaoSensor, ENT_QUOTES, 'UTF-8'); ?></td>
                                     <td><?= htmlspecialchars($tipoDadoSensor, ENT_QUOTES, 'UTF-8'); ?></td>
                                     <td>
-                                        <a class="trens-card-status <?= htmlspecialchars($statusClass, ENT_QUOTES, 'UTF-8'); ?><?= $statusFiltro === $statusSensor ? ' filtro-selecionado' : ''; ?>"
-                                           href="<?= htmlspecialchars($statusHref, ENT_QUOTES, 'UTF-8'); ?>"
-                                           <?= $statusFiltro === $statusSensor ? 'aria-current="true"' : ''; ?>
-                                           aria-label="<?= $statusFiltro === $statusSensor ? 'Remover filtro de status ' : 'Filtrar sensores com status '; ?><?= htmlspecialchars((string) $statusSensor, ENT_QUOTES, 'UTF-8'); ?>"><?= htmlspecialchars($statusSensor, ENT_QUOTES, 'UTF-8'); ?></a>
+                                        <span class="trens-card-status <?= htmlspecialchars($statusClass, ENT_QUOTES, 'UTF-8'); ?>">
+                                            <?= htmlspecialchars($statusSensor, ENT_QUOTES, 'UTF-8'); ?>
+                                        </span>
                                     </td>
                                     <?php if ($usuarioEhAdministrador): ?>
                                         <td>

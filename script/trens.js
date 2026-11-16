@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var inputBuscaTrem = document.getElementById('input_busca_trem');
     var btnBuscaTrem = document.getElementById('btn_busca_trem');
     var filtroResponsavelTrem = document.getElementById('filtro_responsavel_trem');
+    var filtroStatusTrem = document.getElementById('filtro_status_trem');
     var trensGrid = document.querySelector('.trens-grid');
 
     // Função idêntica à do modal de usuários
@@ -30,6 +31,14 @@ document.addEventListener('DOMContentLoaded', function () {
             btnBuscaTrem.form.submit();
         });
     }
+
+    [filtroResponsavelTrem, filtroStatusTrem].forEach(function (filtro) {
+        if (filtro && filtro.form) {
+            filtro.addEventListener('change', function () {
+                filtro.form.submit();
+            });
+        }
+    });
 
     function configurarCartoesTrens() {
         document.querySelectorAll('.btn_edit').forEach(function (btn) {

@@ -247,6 +247,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const filtroPartidaRota = document.getElementById('filtro_partida_rota');
     const filtroDestinoRota = document.getElementById('filtro_destino_rota');
+    const filtroStatusRota = document.getElementById('filtro_status_rota');
+    if (filtroStatusRota && filtroStatusRota.form) {
+        filtroStatusRota.addEventListener('change', function () {
+            filtroStatusRota.form.submit();
+        });
+    }
     const linhasRotas = Array.from(document.querySelectorAll('.table tbody tr[data-rota-id]'));
     const tbodyRotas = document.querySelector('.table tbody');
     const linhaRotasVaziaInicial = tbodyRotas ? tbodyRotas.querySelector('[data-empty-routes]') : null;

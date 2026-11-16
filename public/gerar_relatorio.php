@@ -102,13 +102,159 @@ if (!isset($_SESSION['usuario_id'])) {
 
 require_once __DIR__ . '/validar_acesso.php';
 
+$transacaoIniciada = false;
 try {
-    $relatorioId = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
-    $trem = trim((string) ($_GET['trem'] ?? 'todos'));
-    $sensor = trim((string) ($_GET['sensor'] ?? 'todos'));
-    $dataInicio = trim((string) ($_GET['data_inicio'] ?? ''));
-    $dataFim = trim((string) ($_GET['data_fim'] ?? ''));
-    $formato = (string) ($_GET['formato'] ?? '');
+    $metodo = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+    if (!in_array($metodo, ['GET', 'POST'], true)) {
+        header('Allow: GET, POST');
+        responderJson(405, ['success' => false, 'message' => 'Método não permitido.']);
+    }
+
+    $entrada = $metodo === 'POST' ? $_POST : $_GET;
+    $relatorioId = $metodo === 'GET' ? filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT) : null;
+    $trem = isset($entrada['trem']) && is_string($entrada['trem']) ? trim($entrada['trem']) : 'todos';
+    $sensor = isset($entrada['sensor']) && is_string($entrada['sensor']) ? trim($entrada['sensor']) : 'todos';
+    $dataInicio = isset($entrada['data_inicio']) && is_string($entrada['data_inicio']) ? trim($entrada['data_inicio']) : '';
+    $dataFim = isset($entrada['data_fim']) && is_string($entrada['data_fim']) ? trim($entrada['data_fim']) : '';
+    $formato = isset($entrada['formato']) && is_string($entrada['formato']) ? $entrada['formato'] : '';
+
+    if ($metodo === 'POST') {
+        if ($trem !== 'todos' && (!ctype_digit($trem) || (int) $trem < 1)) {
+            responderJson(400, ['success' => false, 'message' => 'O trem selecionado é inválido.']);
+        }
+        if ($sensor === '' || ($sensor !== 'todos' && strlen($sensor) > 155)) {
+            responderJson(400, ['success' => false, 'message' => 'O sensor selecionado é inválido.']);
+        }
+        if ($dataInicio === '' || $dataFim === '') {
+            responderJson(400, ['success' => false, 'message' => 'Informe as duas datas do período.']);
+        }
+
+        $inicio = DateTime::createFromFormat('!Y-m-d', $dataInicio);
+        $fim = DateTime::createFromFormat('!Y-m-d', $dataFim);
+        if (!$inicio || $inicio->format('Y-m-d') !== $dataInicio || !$fim || $fim->format('Y-m-d') !== $dataFim) {
+            responderJson(400, ['success' => false, 'message' => 'Informe datas válidas.']);
+        }
+        if ($dataInicio > $dataFim) {
+            responderJson(400, ['success' => false, 'message' => 'A data inicial não pode ser maior que a final.']);
+        }
+
+        $filtrosFalhas = [];
+        $tiposFalhas = '';
+        $valoresFalhas = [];
+        if ($trem !== 'todos') {
+            $filtrosFalhas[] = 'f.trem_id = ?';
+            $tiposFalhas .= 'i';
+            $valoresFalhas[] = (int) $trem;
+        }
+        if ($sensor !== 'todos') {
+            $filtrosFalhas[] = 's.tipo_dado = ?';
+            $tiposFalhas .= 's';
+            $valoresFalhas[] = $sensor;
+        }
+
+        $sqlFalhas = 'SELECT f.falha_id, f.trem_id, t.nome_trem, f.sensor_id, s.nome_sensor, s.tipo_dado
+                      FROM falha f
+                      INNER JOIN sensores s ON s.sensor_id = f.sensor_id
+                      INNER JOIN trens t ON t.trem_id = f.trem_id';
+        if ($filtrosFalhas) {
+            $sqlFalhas .= ' WHERE ' . implode(' AND ', $filtrosFalhas);
+        }
+        $stmtFalhas = mysqli_prepare($conexao, $sqlFalhas);
+        if (!$stmtFalhas) {
+            throw new RuntimeException('Não foi possível preparar a consulta das falhas: ' . mysqli_error($conexao));
+        }
+        if ($valoresFalhas) {
+            $parametrosFalhas = [$stmtFalhas, $tiposFalhas];
+            foreach (array_keys($valoresFalhas) as $indice) {
+                $parametrosFalhas[] = &$valoresFalhas[$indice];
+            }
+            if (!call_user_func_array('mysqli_stmt_bind_param', $parametrosFalhas)) {
+                throw new RuntimeException('Não foi possível aplicar os filtros das falhas: ' . mysqli_stmt_error($stmtFalhas));
+            }
+        }
+        if (!mysqli_stmt_execute($stmtFalhas)) {
+            throw new RuntimeException('Não foi possível consultar as falhas: ' . mysqli_stmt_error($stmtFalhas));
+        }
+        $resultadoFalhas = mysqli_stmt_get_result($stmtFalhas);
+        if (!$resultadoFalhas) {
+            throw new RuntimeException('Não foi possível carregar as falhas: ' . mysqli_stmt_error($stmtFalhas));
+        }
+        $falhas = mysqli_fetch_all($resultadoFalhas, MYSQLI_ASSOC);
+        mysqli_free_result($resultadoFalhas);
+        mysqli_stmt_close($stmtFalhas);
+
+        if (!$falhas) {
+            responderJson(422, ['success' => false, 'message' => 'Não há falhas para os filtros selecionados. Nenhum relatório foi criado.']);
+        }
+
+        $colunasRelatorio = mysqli_query($conexao, 'SHOW COLUMNS FROM relatorio');
+        if (!$colunasRelatorio) {
+            throw new RuntimeException('Não foi possível verificar a estrutura da tabela de relatórios: ' . mysqli_error($conexao));
+        }
+        $nomesColunasRelatorio = [];
+        while ($coluna = mysqli_fetch_assoc($colunasRelatorio)) {
+            $nomesColunasRelatorio[] = $coluna['Field'];
+        }
+        mysqli_free_result($colunasRelatorio);
+        $salvarPeriodo = in_array('data_inicio', $nomesColunasRelatorio, true)
+            && in_array('data_fim', $nomesColunasRelatorio, true);
+        if ($salvarPeriodo) {
+            $sqlInserirRelatorio = 'INSERT INTO relatorio (data_relatorio, data_inicio, data_fim, falha_id) VALUES (CURDATE(), ?, ?, ?)';
+        } else {
+            $sqlInserirRelatorio = 'INSERT INTO relatorio (data_relatorio, falha_id) VALUES (CURDATE(), ?)';
+        }
+
+        if (!mysqli_begin_transaction($conexao)) {
+            throw new RuntimeException('Não foi possível iniciar a criação dos relatórios: ' . mysqli_error($conexao));
+        }
+        $transacaoIniciada = true;
+        $stmtCriar = mysqli_prepare($conexao, $sqlInserirRelatorio);
+        if (!$stmtCriar) {
+            throw new RuntimeException('Não foi possível preparar a criação dos relatórios: ' . mysqli_error($conexao));
+        }
+
+        $relatoriosCriados = [];
+        foreach ($falhas as $falha) {
+            $falhaId = (int) $falha['falha_id'];
+            if ($salvarPeriodo) {
+                $parametrosVinculados = mysqli_stmt_bind_param($stmtCriar, 'ssi', $dataInicio, $dataFim, $falhaId);
+            } else {
+                $parametrosVinculados = mysqli_stmt_bind_param($stmtCriar, 'i', $falhaId);
+            }
+            if (!$parametrosVinculados) {
+                throw new RuntimeException('Não foi possível vincular os dados do relatório: ' . mysqli_stmt_error($stmtCriar));
+            }
+            if (!mysqli_stmt_execute($stmtCriar)) {
+                throw new RuntimeException('Não foi possível criar o relatório: ' . mysqli_stmt_error($stmtCriar));
+            }
+
+            $relatoriosCriados[] = [
+                'relatorio_id' => mysqli_stmt_insert_id($stmtCriar),
+                'data_relatorio' => date('Y-m-d'),
+                'data_inicio' => $salvarPeriodo ? $dataInicio : null,
+                'data_fim' => $salvarPeriodo ? $dataFim : null,
+                'falha_id' => $falhaId,
+                'trem_id' => (int) $falha['trem_id'],
+                'nome_trem' => $falha['nome_trem'],
+                'sensor_id' => (int) $falha['sensor_id'],
+                'nome_sensor' => $falha['nome_sensor'],
+                'tipo_dado' => $falha['tipo_dado'],
+            ];
+        }
+        mysqli_stmt_close($stmtCriar);
+        if (!mysqli_commit($conexao)) {
+            throw new RuntimeException('Não foi possível concluir a criação dos relatórios: ' . mysqli_error($conexao));
+        }
+        $transacaoIniciada = false;
+
+        responderJson(201, [
+            'success' => true,
+            'message' => $salvarPeriodo
+                ? 'Relatório criado com sucesso.'
+                : 'Relatório criado. O banco atual não permite salvar o período selecionado.',
+            'data' => $relatoriosCriados,
+        ]);
+    }
 
     if ($relatorioId !== false && $relatorioId !== null && $formato === '') {
         $formato = 'pdf';
@@ -319,6 +465,12 @@ try {
 
     responderJson(200, ['success' => true, 'data' => $relatorios]);
 } catch (Throwable $erro) {
+    if ($transacaoIniciada) {
+        mysqli_rollback($conexao);
+    }
     error_log('Erro ao gerar relatório: ' . $erro->getMessage());
-    responderJson(500, ['success' => false, 'message' => 'Não foi possível consultar os relatórios. Tente novamente.']);
+    $mensagem = ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST'
+        ? 'Não foi possível criar o relatório. Tente novamente.'
+        : 'Não foi possível consultar os relatórios. Tente novamente.';
+    responderJson(500, ['success' => false, 'message' => $mensagem]);
 }

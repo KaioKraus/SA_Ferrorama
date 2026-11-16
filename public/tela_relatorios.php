@@ -25,6 +25,20 @@ if (!$resultadoTiposSensor) {
 $tiposSensorRelatorio = mysqli_fetch_all($resultadoTiposSensor, MYSQLI_ASSOC);
 mysqli_free_result($resultadoTiposSensor);
 
+$colunasRelatorio = mysqli_query($conexao, 'SHOW COLUMNS FROM relatorio');
+if (!$colunasRelatorio) {
+    error_log('Erro ao consultar as colunas dos relatórios: ' . mysqli_error($conexao));
+    http_response_code(500);
+    die('Não foi possível carregar os relatórios.');
+}
+$nomesColunasRelatorio = [];
+while ($coluna = mysqli_fetch_assoc($colunasRelatorio)) {
+    $nomesColunasRelatorio[] = $coluna['Field'];
+}
+mysqli_free_result($colunasRelatorio);
+$expressaoDataInicio = in_array('data_inicio', $nomesColunasRelatorio, true) ? 'r.data_inicio' : 'NULL';
+$expressaoDataFim = in_array('data_fim', $nomesColunasRelatorio, true) ? 'r.data_fim' : 'NULL';
+
 function formatarDataRelatorio(string $valor): string
 {
     if ($valor === '' || $valor === null) {
@@ -77,7 +91,8 @@ if ($tipoFiltro !== '' && $tipoFiltro !== 'todos') {
 }
 
 $sqlRelatorios = "
-    SELECT r.relatorio_id, r.data_relatorio, r.data_inicio, r.data_fim,
+    SELECT r.relatorio_id, r.data_relatorio,
+           {$expressaoDataInicio} AS data_inicio, {$expressaoDataFim} AS data_fim,
            s.tipo_dado, t.nome_trem, f.falha_id
     FROM relatorio r
     INNER JOIN falha f ON f.falha_id = r.falha_id
@@ -296,7 +311,7 @@ if (!$resultadoRelatorios) {
                     </div>
 
                     <div class="form-relatorio-actions gap-2">
-                        <button type="submit" class="btn btn_adicionar">Enviar</button>
+                        <button type="submit" class="btn btn_adicionar">Criar relatório</button>
                         <button type="button" id="btn_exportar_relatorio" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modal_formato_relatorio">
                             <i class="bi bi-download" aria-hidden="true"></i> Baixar relatório
                         </button>

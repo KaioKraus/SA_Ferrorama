@@ -7,7 +7,7 @@ const isAdmin = document.body && document.body.dataset.isAdmin === '1';
 function mostrarMensagemRelatorio(elemento, mensagem, tipo) {
     if (!elemento) return;
     elemento.textContent = mensagem;
-    elemento.className = `mt-3 text-center fw-bold text-${tipo}`;
+    elemento.className = `relatorio-feedback alert alert-${tipo} mt-3 mb-0 text-center fw-bold`;
 }
 
 function filtrarLinhasRelatorio() {

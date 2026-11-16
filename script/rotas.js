@@ -245,14 +245,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    const inputBuscaRota = document.getElementById('input_busca_rota');
+    const btnBuscaRota = document.getElementById('btn_busca_rota');
+    const formularioBuscaRota = document.getElementById('form_busca_rota');
     const filtroPartidaRota = document.getElementById('filtro_partida_rota');
     const filtroDestinoRota = document.getElementById('filtro_destino_rota');
     const filtroStatusRota = document.getElementById('filtro_status_rota');
-    if (filtroStatusRota && filtroStatusRota.form) {
-        filtroStatusRota.addEventListener('change', function () {
-            filtroStatusRota.form.submit();
-        });
-    }
     const linhasRotas = Array.from(document.querySelectorAll('.table tbody tr[data-rota-id]'));
     const tbodyRotas = document.querySelector('.table tbody');
     const linhaRotasVaziaInicial = tbodyRotas ? tbodyRotas.querySelector('[data-empty-routes]') : null;
@@ -267,20 +265,30 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function aplicarFiltroRotas() {
+        const termoBusca = normalizarPontoRota(inputBuscaRota ? inputBuscaRota.value : '');
         const partidaSelecionada = normalizarPontoRota(filtroPartidaRota ? filtroPartidaRota.value : '');
         const destinoSelecionado = normalizarPontoRota(filtroDestinoRota ? filtroDestinoRota.value : '');
+        const statusSelecionado = normalizarPontoRota(filtroStatusRota ? filtroStatusRota.value : '');
 
         let algumVisivel = false;
 
         linhasRotas.forEach(function (linha) {
             const pontoPartida = normalizarPontoRota(linha.dataset.pontoPartida);
             const destinoRota = normalizarPontoRota(linha.dataset.pontoChegada);
+            const statusRota = normalizarPontoRota(linha.dataset.status);
+            const textoRota = normalizarPontoRota(
+                Array.from(linha.cells).slice(0, 6).map(function (celula) {
+                    return celula.textContent;
+                }).join(' ')
+            );
 
             const correspondePartida = partidaSelecionada === '' || pontoPartida === partidaSelecionada;
             const correspondeDestino = destinoSelecionado === '' || destinoRota === destinoSelecionado;
-            const corresponde = correspondePartida && correspondeDestino;
+            const correspondeStatus = statusSelecionado === '' || statusRota === statusSelecionado;
+            const correspondeBusca = termoBusca === '' || textoRota.includes(termoBusca);
+            const corresponde = correspondePartida && correspondeDestino && correspondeStatus && correspondeBusca;
 
-            linha.style.display = corresponde ? '' : 'none';
+            linha.hidden = !corresponde;
             if (corresponde) algumVisivel = true;
         });
 
@@ -301,13 +309,25 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    const btnBuscaRota = document.getElementById('btn_busca_rota');
-    if (btnBuscaRota && btnBuscaRota.form) {
+    [inputBuscaRota, filtroPartidaRota, filtroDestinoRota, filtroStatusRota].forEach(function (filtro) {
+        if (filtro) {
+            filtro.addEventListener(filtro === inputBuscaRota ? 'input' : 'change', aplicarFiltroRotas);
+        }
+    });
+
+    if (btnBuscaRota) {
         btnBuscaRota.addEventListener('click', function (event) {
             event.preventDefault();
-            btnBuscaRota.form.submit();
+            aplicarFiltroRotas();
         });
     }
+    if (formularioBuscaRota) {
+        formularioBuscaRota.addEventListener('submit', function (event) {
+            event.preventDefault();
+            aplicarFiltroRotas();
+        });
+    }
+    aplicarFiltroRotas();
 
     const modalEl = document.getElementById('modal_confirm_delete');
     if (modalEl && typeof bootstrap !== 'undefined') {

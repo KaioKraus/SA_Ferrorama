@@ -2469,6 +2469,24 @@ a.trens-card-status:focus-visible {
     min-width: 180px;
 }
 
+.relatorio-feedback {
+    display: block;
+    position: static;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.relatorio-feedback:empty {
+    display: none;
+}
+
+.modal-ferroviario .relatorio-feedback {
+    white-space: normal;
+}
+
 .btn-relatorios-adicionar {
     background-color: #0A3D3D;
     color: white;
@@ -4568,4 +4586,3 @@ a.trens-card-status:focus-visible {
                 font-size: 2.5rem;
             }
         }
-

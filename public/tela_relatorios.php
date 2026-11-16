@@ -312,7 +312,7 @@ if (!$resultadoRelatorios) {
                             <i class="bi bi-download" aria-hidden="true"></i> Baixar relatório
                         </button>
                     </div>
-                    <div id="mensagem_relatorio" class="mt-3 text-center"></div>
+                    <div id="mensagem_relatorio" class="relatorio-feedback" role="status" aria-live="polite"></div>
                 </form>
             </div>
 
@@ -409,7 +409,7 @@ if (!$resultadoRelatorios) {
 
                         <div class="text-center mt-4">
                             <button type="submit" class="btn btn_adicionar px-5">Gerar relatório</button>
-                            <div id="mensagem_relatorio_modal" class="mt-3"></div>
+                            <div id="mensagem_relatorio_modal" class="relatorio-feedback" role="status" aria-live="polite"></div>
                         </div>
                     </form>
                 </div>

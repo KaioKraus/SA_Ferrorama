@@ -36,15 +36,10 @@ if (!in_array($statusFiltro, $statusPermitidos, true)) {
 $partidaFiltro = isset($_GET['ponto_partida']) && is_string($_GET['ponto_partida']) ? trim($_GET['ponto_partida']) : '';
 $destinoFiltro = isset($_GET['ponto_chegada']) && is_string($_GET['ponto_chegada']) ? trim($_GET['ponto_chegada']) : '';
 $termoBusca = isset($_GET['q']) && is_string($_GET['q']) ? trim($_GET['q']) : '';
-$filtroBusca = '%' . $termoBusca . '%';
 
 $sql_rotas = "SELECT r.rota_id, r.nome, r.ponto_partida, r.ponto_chegada, r.descricao, r.status, r.trem_id, t.nome_trem
     FROM rotas r
     LEFT JOIN trens t ON t.trem_id = r.trem_id
-    WHERE (? = '' OR r.status = ?)
-    AND (? = '' OR r.nome LIKE ? OR r.ponto_partida LIKE ? OR r.ponto_chegada LIKE ?)
-    AND (? = '' OR r.ponto_partida = ?)
-    AND (? = '' OR r.ponto_chegada = ?)
     ORDER BY r.rota_id ASC";
 $stmt_rotas = mysqli_prepare($conexao, $sql_rotas);
 if (!$stmt_rotas) {
@@ -52,20 +47,6 @@ if (!$stmt_rotas) {
     http_response_code(500);
     die('Não foi possível carregar as rotas.');
 }
-mysqli_stmt_bind_param(
-    $stmt_rotas,
-    'ssssssssss',
-    $statusFiltro,
-    $statusFiltro,
-    $termoBusca,
-    $filtroBusca,
-    $filtroBusca,
-    $filtroBusca,
-    $partidaFiltro,
-    $partidaFiltro,
-    $destinoFiltro,
-    $destinoFiltro
-);
 if (!mysqli_stmt_execute($stmt_rotas)) {
     error_log('Erro ao consultar rotas: ' . mysqli_stmt_error($stmt_rotas));
     http_response_code(500);
@@ -279,7 +260,8 @@ mysqli_stmt_close($stmt_rotas);
                                 <tr
                                     data-rota-id="<?= (int) ($rota['rota_id'] ?? 0); ?>"
                                     data-ponto-partida="<?= htmlspecialchars((string) ($rota['ponto_partida'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
-                                    data-ponto-chegada="<?= htmlspecialchars((string) ($rota['ponto_chegada'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>">
+                                    data-ponto-chegada="<?= htmlspecialchars((string) ($rota['ponto_chegada'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>"
+                                    data-status="<?= htmlspecialchars((string) ($rota['status'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>">
                                     <td><?= htmlspecialchars((string) ($rota['rota_id'] ?? '')) ?></td>
                                     <td><?= htmlspecialchars((string) ($rota['nome'] ?? '')) ?></td>
                                     <td><?= htmlspecialchars((string) ($rota['ponto_partida'] ?? '')) ?></td>

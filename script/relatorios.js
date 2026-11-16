@@ -3,11 +3,51 @@ const buscaRelatorios = document.getElementById('input_busca_relatorio');
 const botaoBuscaRelatorios = document.getElementById('btn_busca_relatorio');
 const filtroTipoRelatorio = document.getElementById('filtro_tipo_relatorio');
 const isAdmin = document.body && document.body.dataset.isAdmin === '1';
+let temporizadorNotificacaoRelatorio;
 
-function mostrarMensagemRelatorio(elemento, mensagem, tipo) {
+function mostrarMensagemRelatorio(elemento, mensagem, tipo, autoFechar = true) {
     if (!elemento) return;
-    elemento.textContent = mensagem;
-    elemento.className = `relatorio-feedback alert alert-${tipo} mt-3 mb-0 text-center fw-bold`;
+    window.clearTimeout(temporizadorNotificacaoRelatorio);
+
+    const alertaAnterior = document.querySelector('.relatorio-feedback .alert');
+    if (alertaAnterior) alertaAnterior.remove();
+    elemento.replaceChildren();
+
+    const titulos = {
+        success: 'Sucesso',
+        warning: 'Atenção',
+        danger: 'Erro',
+        secondary: 'Relatórios'
+    };
+    const alerta = document.createElement('div');
+    alerta.className = `alert alert-${tipo} alert-dismissible fade show mb-0 relatorio-feedback-alert`;
+    alerta.setAttribute('role', tipo === 'danger' || tipo === 'warning' ? 'alert' : 'status');
+    elemento.dataset.mensagem = mensagem;
+    elemento.dataset.tipoMensagem = tipo;
+
+    const titulo = document.createElement('strong');
+    titulo.textContent = `${titulos[tipo] || 'Aviso'}: `;
+    alerta.appendChild(titulo);
+    alerta.appendChild(document.createTextNode(mensagem));
+
+    const botaoFechar = document.createElement('button');
+    botaoFechar.type = 'button';
+    botaoFechar.className = 'btn-close';
+    botaoFechar.setAttribute('aria-label', 'Fechar aviso');
+    botaoFechar.addEventListener('click', function () {
+        window.clearTimeout(temporizadorNotificacaoRelatorio);
+        elemento.replaceChildren();
+    });
+    alerta.appendChild(botaoFechar);
+    elemento.appendChild(alerta);
+
+    if (autoFechar) {
+        temporizadorNotificacaoRelatorio = window.setTimeout(function () {
+            if (alerta.parentElement === elemento) {
+                elemento.replaceChildren();
+            }
+        }, 5000);
+    }
 }
 
 function filtrarLinhasRelatorio() {
@@ -114,7 +154,7 @@ async function consultarRelatorios(filtros, mensagemElemento) {
     const botao = mensagemElemento?.closest('form')?.querySelector('[type="submit"]');
     if (botao) botao.disabled = true;
     tabelaRelatorios.innerHTML = '<tr><td colspan="5" class="text-center text-muted">Consultando relatórios...</td></tr>';
-    mostrarMensagemRelatorio(mensagemElemento, 'Consultando dados no banco...', 'secondary');
+    mostrarMensagemRelatorio(mensagemElemento, 'Consultando dados no banco...', 'secondary', false);
 
     try {
         const resposta = await fetch(`gerar_relatorio.php?${parametros.toString()}`, {
@@ -149,7 +189,7 @@ async function criarRelatorios(filtros, mensagemElemento) {
     const formulario = mensagemElemento?.closest('form');
     const botao = formulario?.querySelector('[type="submit"]');
     if (botao) botao.disabled = true;
-    mostrarMensagemRelatorio(mensagemElemento, 'Criando relatório...', 'secondary');
+    mostrarMensagemRelatorio(mensagemElemento, 'Criando relatório...', 'secondary', false);
 
     try {
         const resposta = await fetch('gerar_relatorio.php', {
@@ -205,7 +245,7 @@ function configurarFormularioRelatorio(formulario, prefixo, mensagemId) {
 
         const criado = await criarRelatorios({
             trem: document.getElementById(`${prefixo}trem`).value,
-            sensor: document.getElementById(`${prefixo}sensor`).value,
+            tipo_dado: document.getElementById(`${prefixo}tipo_dado`).value,
             data_inicio: dataInicio,
             data_fim: dataFim
         }, mensagem);
@@ -215,6 +255,13 @@ function configurarFormularioRelatorio(formulario, prefixo, mensagemId) {
             if (typeof bootstrap !== 'undefined' && modalElemento) {
                 bootstrap.Modal.getOrCreateInstance(modalElemento).hide();
             }
+            const mensagemPrincipal = document.getElementById('mensagem_relatorio');
+            mostrarMensagemRelatorio(
+                mensagemPrincipal,
+                mensagem.dataset.mensagem || 'Relatório criado com sucesso.',
+                mensagem.dataset.tipoMensagem || 'success'
+            );
+            mensagem.replaceChildren();
         }
     });
 }
@@ -253,7 +300,7 @@ if (botaoExportarRelatorio && modalFormatoRelatorio) {
 
             const parametros = new URLSearchParams({
                 trem: document.getElementById('relatorio_trem').value,
-                sensor: document.getElementById('relatorio_sensor').value,
+                tipo_dado: document.getElementById('relatorio_tipo_dado').value,
                 data_inicio: dataInicio,
                 data_fim: dataFim,
                 formato
@@ -261,7 +308,7 @@ if (botaoExportarRelatorio && modalFormatoRelatorio) {
 
             bootstrap.Modal.getOrCreateInstance(modalFormatoRelatorio).hide();
             botaoFormato.disabled = true;
-            mostrarMensagemRelatorio(mensagem, `Preparando o arquivo ${formato.toUpperCase()}...`, 'secondary');
+            mostrarMensagemRelatorio(mensagem, `Preparando o arquivo ${formato.toUpperCase()}...`, 'secondary', false);
 
             try {
                 const resposta = await fetch(`gerar_relatorio.php?${parametros.toString()}`, {

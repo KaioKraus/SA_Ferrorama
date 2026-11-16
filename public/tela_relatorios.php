@@ -122,12 +122,11 @@ if (!$resultadoRelatorios) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="../assets/style/style.css">
+    <link rel="stylesheet" href="../assets/style/style.css?v=<?php echo filemtime(__DIR__ . '/../assets/style/style.css'); ?>">
     <title>Celestial Steel</title>
 </head>
 
 <body data-is-admin="<?= $usuarioEhAdministrador ? '1' : '0'; ?>">
-
     <!--Main-->
     <main>
 
@@ -206,7 +205,7 @@ if (!$resultadoRelatorios) {
                             </button>
                         </div>
                         <div class="filtro_busca">
-                            <select id="filtro_tipo_relatorio" name="tipo_relatorio" class="form-select filtro_busca_select" aria-label="Filtrar por tipo de sensor">
+                            <select id="filtro_tipo_relatorio" name="tipo_relatorio" class="form-select filtro_busca_select" aria-label="Filtrar por tipo de dado">
                                 <option value="todos" <?= ($tipoFiltro === 'todos' || $tipoFiltro === '') ? 'selected' : ''; ?>>Todos os tipos</option>
                                 <?php foreach ($tiposSensorRelatorio as $tipoSensor): ?>
                                     <option value="<?= htmlspecialchars($tipoSensor['tipo_dado'], ENT_QUOTES, 'UTF-8'); ?>" <?= $tipoFiltro === $tipoSensor['tipo_dado'] ? 'selected' : ''; ?>>
@@ -265,7 +264,7 @@ if (!$resultadoRelatorios) {
 
             <div class="card_gerar_relatorios">
                 <h5 class="card-title">Gerar Relatório</h5>
-                <p class="card-text">Selecione o trem, o sensor e o período desejado.</p>
+                <p class="card-text">Selecione o trem, o tipo de dado e o período desejado.</p>
 
                 <form id="form_relatorio">
                     <div class="form-relatorio-row">
@@ -282,9 +281,9 @@ if (!$resultadoRelatorios) {
                         </div>
 
                         <div class="form-relatorio-group">
-                            <label for="relatorio_sensor">Sensor</label>
-                            <select id="relatorio_sensor" class="form-select input-relatorio" required>
-                                <option value="todos" selected>Todos os sensores</option>
+                            <label for="relatorio_tipo_dado">Tipo de dado</label>
+                            <select id="relatorio_tipo_dado" class="form-select input-relatorio" required>
+                                <option value="todos" selected>Todos os tipos de dado</option>
                                 <?php foreach ($tiposSensorRelatorio as $tipoSensor): ?>
                                     <option value="<?= htmlspecialchars($tipoSensor['tipo_dado'], ENT_QUOTES, 'UTF-8'); ?>">
                                         <?= htmlspecialchars($tipoSensor['tipo_dado'], ENT_QUOTES, 'UTF-8'); ?>
@@ -385,9 +384,9 @@ if (!$resultadoRelatorios) {
                         </div>
 
                         <div class="mb-3">
-                            <label for="relatorio_modal_sensor" class="form-label fw-bold text-dark">Sensor</label>
-                            <select id="relatorio_modal_sensor" class="form-select" required>
-                                <option value="todos" selected>Todos os sensores</option>
+                            <label for="relatorio_modal_tipo_dado" class="form-label fw-bold text-dark">Tipo de dado</label>
+                            <select id="relatorio_modal_tipo_dado" class="form-select" required>
+                                <option value="todos" selected>Todos os tipos de dado</option>
                                 <?php foreach ($tiposSensorRelatorio as $tipoSensor): ?>
                                     <option value="<?= htmlspecialchars($tipoSensor['tipo_dado'], ENT_QUOTES, 'UTF-8'); ?>">
                                         <?= htmlspecialchars($tipoSensor['tipo_dado'], ENT_QUOTES, 'UTF-8'); ?>
@@ -465,7 +464,7 @@ if (!$resultadoRelatorios) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../script/sensores.js"></script>
     <script src="../script/nav.js"></script>
-    <script src="../script/relatorios.js"></script>
+    <script src="../script/relatorios.js?v=<?php echo filemtime(__DIR__ . '/../script/relatorios.js'); ?>"></script>
 </body>
 
 </html>

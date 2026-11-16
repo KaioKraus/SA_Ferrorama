@@ -113,7 +113,9 @@ try {
     $entrada = $metodo === 'POST' ? $_POST : $_GET;
     $relatorioId = $metodo === 'GET' ? filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT) : null;
     $trem = isset($entrada['trem']) && is_string($entrada['trem']) ? trim($entrada['trem']) : 'todos';
-    $sensor = isset($entrada['sensor']) && is_string($entrada['sensor']) ? trim($entrada['sensor']) : 'todos';
+    $tipoDado = isset($entrada['tipo_dado']) && is_string($entrada['tipo_dado'])
+        ? trim($entrada['tipo_dado'])
+        : (isset($entrada['sensor']) && is_string($entrada['sensor']) ? trim($entrada['sensor']) : 'todos');
     $dataInicio = isset($entrada['data_inicio']) && is_string($entrada['data_inicio']) ? trim($entrada['data_inicio']) : '';
     $dataFim = isset($entrada['data_fim']) && is_string($entrada['data_fim']) ? trim($entrada['data_fim']) : '';
     $formato = isset($entrada['formato']) && is_string($entrada['formato']) ? $entrada['formato'] : '';
@@ -122,8 +124,8 @@ try {
         if ($trem !== 'todos' && (!ctype_digit($trem) || (int) $trem < 1)) {
             responderJson(400, ['success' => false, 'message' => 'O trem selecionado é inválido.']);
         }
-        if ($sensor === '' || ($sensor !== 'todos' && strlen($sensor) > 155)) {
-            responderJson(400, ['success' => false, 'message' => 'O sensor selecionado é inválido.']);
+        if ($tipoDado === '' || ($tipoDado !== 'todos' && strlen($tipoDado) > 155)) {
+            responderJson(400, ['success' => false, 'message' => 'O tipo de dado selecionado é inválido.']);
         }
         if ($dataInicio === '' || $dataFim === '') {
             responderJson(400, ['success' => false, 'message' => 'Informe as duas datas do período.']);
@@ -146,10 +148,10 @@ try {
             $tiposFalhas .= 'i';
             $valoresFalhas[] = (int) $trem;
         }
-        if ($sensor !== 'todos') {
+        if ($tipoDado !== 'todos') {
             $filtrosFalhas[] = 's.tipo_dado = ?';
             $tiposFalhas .= 's';
-            $valoresFalhas[] = $sensor;
+            $valoresFalhas[] = $tipoDado;
         }
 
         $sqlFalhas = 'SELECT f.falha_id, f.trem_id, t.nome_trem, f.sensor_id, s.nome_sensor, s.tipo_dado
@@ -340,8 +342,8 @@ try {
     if ($trem !== 'todos' && (!ctype_digit($trem) || (int) $trem < 1)) {
         responderJson(400, ['success' => false, 'message' => 'O trem selecionado é inválido.']);
     }
-    if ($sensor === '' || ($sensor !== 'todos' && strlen($sensor) > 155)) {
-        responderJson(400, ['success' => false, 'message' => 'O sensor selecionado é inválido.']);
+    if ($tipoDado === '' || ($tipoDado !== 'todos' && strlen($tipoDado) > 155)) {
+        responderJson(400, ['success' => false, 'message' => 'O tipo de dado selecionado é inválido.']);
     }
 
     $temDataInicio = $dataInicio !== '';
@@ -369,10 +371,10 @@ try {
         $tipos .= 'i';
         $valores[] = (int) $trem;
     }
-    if ($sensor !== 'todos') {
+    if ($tipoDado !== 'todos') {
         $filtros[] = 's.tipo_dado = ?';
         $tipos .= 's';
-        $valores[] = $sensor;
+        $valores[] = $tipoDado;
     }
     if ($temDataInicio) {
         $filtros[] = 'r.data_relatorio BETWEEN ? AND ?';

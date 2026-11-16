@@ -2483,6 +2483,15 @@ a.trens-card-status:focus-visible {
     display: none;
 }
 
+.relatorio-feedback-alert {
+    position: static;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 0;
+    box-shadow: var(--shadow-card);
+    text-align: center;
+}
+
 .modal-ferroviario .relatorio-feedback {
     white-space: normal;
 }

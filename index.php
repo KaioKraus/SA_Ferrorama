@@ -1,5 +1,5 @@
 ﻿<?php
-$conexao = @mysqli_connect('127.0.0.1', 'root', '', 'celestial_steel_db', 3309);
+$conexao = @mysqli_connect('127.0.0.1', 'root', '', 'celestial_steel_db', 3306);
 if ($conexao) {
     $conexao->set_charset('utf8mb4');
 }

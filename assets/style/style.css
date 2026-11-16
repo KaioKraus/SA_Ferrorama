@@ -317,8 +317,8 @@ h3 {
 .nav1 .dropdown-item:focus,
 .nav1 .dropdown-item:active,
 .nav1 .dropdown-item.active {
-    background-color: #ffffff;
-    color: #000000;
+    background-color: #1f1f1f;
+    color: #ffffff;
 }
 
 /*Cadastro de usuários*/

@@ -149,15 +149,19 @@ $sensoresAtivos = array_slice($sensoresAtivos, 0, 4);
                 <aside class="landing-panel" aria-label="Dados operacionais em tempo real">
                     <div class="landing-metrics">
                         <div class="landing-stat">
+                            <span>Trens</span>
                             <strong><?php echo htmlspecialchars((string) $dadosLanding['trens']); ?></strong>
                         </div>
                         <div class="landing-stat">
+                            <span>Rotas</span>
                             <strong><?php echo htmlspecialchars((string) $dadosLanding['rotas']); ?></strong>
                         </div>
                         <div class="landing-stat">
+                            <span>Sensores</span>
                             <strong><?php echo htmlspecialchars((string) $dadosLanding['sensores']); ?></strong>
                         </div>
                         <div class="landing-stat">
+                            <span>Estações</span>
                             <strong><?php echo htmlspecialchars((string) $dadosLanding['estacoes']); ?></strong>
                         </div>
                     </div>

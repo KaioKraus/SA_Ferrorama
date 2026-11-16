@@ -236,28 +236,11 @@ a {
     box-sizing: border-box;
 }
 
-.img_usuario {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #ffffff;
-    overflow: hidden;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.img_usuario img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
 .h3 {
     margin: 0;
     display: flex;
     flex-direction: column;
+    align-items: center;
     justify-content: center;
     line-height: 1.2;
     min-width: 0;
@@ -265,21 +248,12 @@ a {
     overflow: hidden;
 }
 
-.h3_1 {
-    font-size: 14px;
-    font-weight: 600;
-    color: #ffffff;
-    margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .h3_2 {
     font-size: 18px;
     color: #ffffff;
     margin: 0;
     font-weight: 600;
+    text-align: center;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -984,22 +958,6 @@ a.badge_funcionario:focus-visible {
     min-height: 145px;
 }
 
-#modal_editar_perfil .perfil_avatar {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background: #bfbfbf;
-    color: #2d2d2d;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    border: 1px solid rgba(24, 30, 29, 0.12);
-    flex-shrink: 0;
-}
-
 #modal_editar_perfil .perfil_data {
     display: flex;
     flex-direction: column;
@@ -1007,6 +965,7 @@ a.badge_funcionario:focus-visible {
     font-size: 1.06rem;
     color: #1d1d1d;
     min-width: 0;
+    flex: 1;
 }
 
 #modal_editar_perfil .perfil_data .perfil_row {

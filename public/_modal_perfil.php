@@ -73,8 +73,6 @@ if (strlen($usuarioTelefone) === 11) {
                             <h5 class="perfil_card_title" id="modal_editar_perfil_label">Perfil</h5>
 
                             <div class="perfil_main">
-                                <div class="perfil_avatar">FOTO</div>
-
                                 <div class="perfil_data">
                                     <div class="perfil_row"><span class="perfil_label">Nome:</span> <?= htmlspecialchars($usuarioNome, ENT_QUOTES) ?></div>
                                     <div class="perfil_row"><span class="perfil_label">Email:</span> <?= htmlspecialchars($usuarioEmail, ENT_QUOTES) ?></div>

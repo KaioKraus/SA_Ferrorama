@@ -1,5 +1,5 @@
 ﻿<?php
-$conexao = @mysqli_connect('127.0.0.1', 'root', '', 'celestial_steel_db', 3306);
+$conexao = @mysqli_connect('127.0.0.1', 'root', '', 'celestial_steel_db');
 if ($conexao) {
     $conexao->set_charset('utf8mb4');
 }
@@ -297,4 +297,5 @@ $sensoresAtivos = array_slice($sensoresAtivos, 0, 4);
 </body>
 
 </html>
+
 

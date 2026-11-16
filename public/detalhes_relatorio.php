@@ -119,11 +119,7 @@ function formatarPeriodoRelatorio(?string $inicio, ?string $fim): string
 
             <div class="dropdown">
                 <div class="box_usuario dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" role="button">
-                    <div class="img_usuario">
-                        <img src="../assets/img/usuario.png" alt="usuario" class="img-fluid">
-                    </div>
                     <div class="h3">
-                        <h3 class="h3_1">Seja Bem Vindo!</h3>
                         <h3 class="h3_2"><?php echo htmlspecialchars($usuarioNome); ?></h3>
                     </div>
                 </div>

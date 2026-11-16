@@ -437,7 +437,7 @@ if ($perfilFiltro !== '') {
     <?php include __DIR__ . '/_modal_perfil.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../script/nav.js?v=20261006"></script>
-    <script src="../script/usuarios.js?v=20261006"></script>
+    <script src="../script/usuarios.js?v=<?php echo filemtime(__DIR__ . '/../script/usuarios.js'); ?>"></script>
     <script>
         // Auto-fechar alertas após alguns segundos
         document.addEventListener('DOMContentLoaded', function() {

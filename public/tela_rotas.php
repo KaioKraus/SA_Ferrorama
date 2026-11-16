@@ -513,7 +513,7 @@ mysqli_stmt_close($stmt_rotas);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../script/validacao.js"></script>
     <script src="../script/nav.js"></script>
-    <script src="../script/rotas.js"></script>
+    <script src="../script/rotas.js?v=<?php echo filemtime(__DIR__ . '/../script/rotas.js'); ?>"></script>
     <script>
         // Auto-fechar alertas após alguns segundos
         document.addEventListener('DOMContentLoaded', function() {

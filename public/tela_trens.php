@@ -491,7 +491,7 @@ if ($statusFiltro !== '') {
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../script/nav.js"></script>
-    <script src="../script/trens.js"></script>
+    <script src="../script/trens.js?v=<?php echo filemtime(__DIR__ . '/../script/trens.js'); ?>"></script>
     <script>
         // Auto-fechar alertas após alguns segundos
         document.addEventListener('DOMContentLoaded', function() {

@@ -1,7 +1,11 @@
+// Rotas: mapa interativo, filtros, modais de cadastro/edição e comunicação com o PHP.
+// O seletor de estações atualiza os campos do formulário antes do envio.
+
 document.addEventListener('DOMContentLoaded', function () {
     const rotasDb = Array.isArray(window.rotasDb) ? window.rotasDb : [];
     const avisoExclusaoRota = document.getElementById('aviso_exclusao_rota');
 
+// Atualiza a indicação visual de campos preenchidos no formulário de rotas.
     function atualizarLabelFlutuante(campo) {
         if (!campo) return;
 
@@ -73,6 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let selectedDeparture = null;
     let selectedArrival = null;
 
+// Converte nomes antigos de estações para os nomes utilizados pela aplicação.
     function normalizarNomeEstacao(valor) {
         const mapaAliases = {
             'Agulha Norte': 'Estação Norte',
@@ -86,6 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return mapaAliases[nome] || nome;
     }
 
+// Posiciona os marcadores das estações sobre a imagem do mapa.
     function initializeStationMarkers() {
         const mapContainer = document.querySelector('.route-selector-map');
         if (!mapContainer) return;
@@ -138,6 +144,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+// Processa a seleção de partida e chegada feita pelo usuário no mapa.
     function handleStationClick(stationId, stationName, markerElement) {
         const selectPartida = document.getElementById('select_ponto_partida');
         const selectChegada = document.getElementById('select_ponto_chegada');
@@ -173,6 +180,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+// Remove a seleção atual de partida e chegada no mapa.
     function resetStationSelection() {
         selectedDeparture = null;
         selectedArrival = null;
@@ -239,6 +247,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const tbodyRotas = document.querySelector('.table tbody');
     const linhaRotasVaziaInicial = tbodyRotas ? tbodyRotas.querySelector('[data-empty-routes]') : null;
 
+// Remove caracteres especiais e padroniza textos usados nos filtros.
     function normalizarPontoRota(ponto) {
         return String(ponto || '')
             .normalize('NFD')
@@ -248,6 +257,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .toLocaleLowerCase('pt-BR');
     }
 
+// Aplica simultaneamente os filtros de texto, partida, destino e status.
     function aplicarFiltroRotas() {
         const termoBusca = normalizarPontoRota(inputBuscaRota ? inputBuscaRota.value : '');
         const partidaSelecionada = normalizarPontoRota(filtroPartidaRota ? filtroPartidaRota.value : '');
@@ -344,6 +354,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const botaoSalvarRota = document.getElementById('btn_salvar_rota');
     const campoRotaId = formCadastroRota ? formCadastroRota.querySelector('[name="rota_id"]') : null;
 
+    // Limpa o formulário e configura o modal para adicionar uma nova rota.
     function definirModoCadastroRota() {
         if (formCadastroRota) formCadastroRota.reset();
         if (campoRotaId) campoRotaId.value = '';
@@ -423,6 +434,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 botaoAdicionar.disabled = true;
             }
 
+            // API interna: envia os dados da rota ao PHP e processa a resposta JSON.
             fetch(formCadastroRota.action, {
                 method: 'POST',
                 body: new FormData(formCadastroRota)

@@ -58,6 +58,11 @@ if (($id <= 0 || !empty($senha)) && strlen($senha) < 8) {
     erroUsuario('A senha deve ter no mínimo 8 caracteres');
 }
 
+// Impede que um administrador remova o próprio acesso administrativo.
+if ($id === (int) $_SESSION['usuario_id'] && $cargoId !== 1) {
+    erroUsuario('Você não pode alterar seu próprio perfil de Administrador para Funcionário.', 403);
+}
+
 // Verifica a unicidade de e-mail e CPF sem contar a própria conta em uma edição.
 try {
     $consulta = $conexao->execute_query('SELECT usuario_id FROM usuarios WHERE email = ? AND usuario_id <> ? LIMIT 1', [$email, $id]);

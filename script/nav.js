@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const links = modal.querySelectorAll('.modal-body a');
     const path = window.location.pathname.split('/').pop();
 
+    // Navegação: identifica a página atual e destaca o link correspondente no modal.
     links.forEach(a => {
         const href = a.getAttribute('href');
         if (!href) return;

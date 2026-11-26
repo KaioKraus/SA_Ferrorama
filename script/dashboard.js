@@ -1,3 +1,6 @@
+// Dashboard: constantes, elementos da interface e configuração dos gráficos.
+// As consultas são feitas ao PHP do próprio projeto por meio da API fetch.
+
 const LIMITES = {
     TEMPERATURA_MAX: 85,
 };
@@ -29,6 +32,7 @@ let cores = [
     '#DC2626', '#0891B2', '#4D7C0F', '#C026D3', '#475569'
 ];
 
+// Consulta a API interna de clima e atualiza temperatura, condição e precipitação.
 function atualizarClima() {
     fetch('dados_clima.php', {
         cache: 'no-store',
@@ -83,6 +87,7 @@ function atualizarClima() {
     });
 }
 
+// Cria um gráfico pequeno com Chart.js para acompanhar o consumo histórico.
 function criarMiniGrafico(canvasId, cor) {
     const ctx = document.getElementById(canvasId);
     if (!ctx) return null;
@@ -117,6 +122,7 @@ function criarMiniGrafico(canvasId, cor) {
     });
 }
 
+// Adiciona um novo ponto ao gráfico pequeno e removes pontos antigos.
 function atualizarMiniGrafico(grafico, novoValor, rotuloHorario) {
     if (!grafico) return;
 
@@ -129,10 +135,12 @@ function atualizarMiniGrafico(grafico, novoValor, rotuloHorario) {
     grafico.update('none');
 }
 
+// Determina se a temperatura média exige estado operacional ou alerta.
 function determinarStatus(temperatura) {
     return temperatura > LIMITES.TEMPERATURA_MAX ? 'ALERTA' : 'OPERACIONAL';
 }
 
+// Atualiza o consumo, o status operacional e os indicadores visuais.
 function atualizarIndicadores(temperatura, consumo, rotuloHorario, historicoConsumo) {
     if (metricaConsumo) {
         metricaConsumo.textContent = consumo.toFixed(0);
@@ -174,6 +182,7 @@ function atualizarIndicadores(temperatura, consumo, rotuloHorario, historicoCons
     }
 }
 
+// Consulta os dados de velocidade e atualiza as séries e médias do dashboard.
 let atualizando = false;
 function atualizarVelocidades() {
     if (atualizando) return;

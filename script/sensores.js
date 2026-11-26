@@ -1,3 +1,6 @@
+// Sensores: cadastro, edição, filtros da tabela e vínculo com trem ou rota.
+// Os formulários são enviados ao backend PHP sem recarregar a página.
+
 document.addEventListener('DOMContentLoaded', function () {
     const inputBuscaSensor = document.getElementById('input_busca_sensor');
     const btnBuscaSensor = document.getElementById('btn_busca_sensor');
@@ -6,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const modalCadastroSensor = document.getElementById('modal_cadastro_sensor');
     const formCadastroSensor = document.getElementById('form_cadastro_sensor');
 
+// Atualiza a indicação visual de um campo preenchido ou vazio.
     function atualizarLabelFlutuante(campo) {
         if (!campo) return;
         const valor = campo.value ?? '';
@@ -30,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+// Restaura o modal para o estado padrão de cadastro de sensor.
     function prepararCadastroSensor() {
         if (!formCadastroSensor) return;
 
@@ -63,6 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+// Preenche os campos do modal usando os dados da linha selecionada.
     function preencherModalSensorDaLinha(linha) {
         if (!linha || !formCadastroSensor) return;
 
@@ -146,6 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const selectLocalizacao = document.getElementById('input_localizacao_sensor');
     const labelLocalizacao = selectLocalizacao ? selectLocalizacao.parentElement.querySelector('label[for="input_localizacao_sensor"]') : null;
 
+// Alterna a legenda entre Trem e Rota conforme o vínculo escolhido.
     function atualizarLabelLocalizacao() {
         if (!labelLocalizacao) return;
         if (radioRota && radioRota.checked) {
@@ -167,6 +174,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (inputBuscaSensor && tbodySensores) {
         const linhasSensores = Array.from(tbodySensores.querySelectorAll('tr'));
 
+        // Filtra sensores pelo texto informado e pelos dados da linha.
         function filtrarSensores() {
             const termo = inputBuscaSensor.value.trim().toLowerCase();
             let algumVisivel = false;

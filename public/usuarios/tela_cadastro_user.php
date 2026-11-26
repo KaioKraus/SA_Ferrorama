@@ -262,7 +262,7 @@ if ($perfilFiltro !== '') {
                             style="position: absolute; right: 20px; top: 20px;"></button>
                     </div>
                     <div class="modal-body px-5 pt-4 pb-4">
-                        <form class="w-100" id="form_cadastro_user" method="post" action="cadastrar_usuario.php">
+                        <form class="w-100" id="form_cadastro_user" method="post" action="cadastrar_usuario.php" data-usuario-atual="<?= (int) $_SESSION['usuario_id'] ?>">
                             <input type="hidden" id="input_user_id" name="id" value="">
                             <div class="row mb-4">
                                 <div class="col pe-2">

@@ -1,16 +1,9 @@
+// Usuários: filtros, consulta externa de CEP, cadastro, edição e exclusão.
+// Este arquivo separa a API externa de CEP da comunicação interna com o PHP.
+
+// Aguarda o carregamento completo da página antes de acessar os elementos HTML.
 document.addEventListener('DOMContentLoaded', function () {
-    function atualizarLabelFlutuante(campo) {
-        if (!campo) return;
-        const valor = campo.value ?? '';
-        campo.classList.toggle('has-value', String(valor).trim() !== '');
-    }
-
-    document.querySelectorAll('.input-field input, .input-field select, .input-field textarea').forEach(campo => {
-        atualizarLabelFlutuante(campo);
-        campo.addEventListener('input', () => atualizarLabelFlutuante(campo));
-        campo.addEventListener('change', () => atualizarLabelFlutuante(campo));
-    });
-
+    // Referências aos elementos usados pelo formulário e pela tabela de usuários.
     const inputBuscaUsuario = document.getElementById('input_busca_usuario');
     const btnBuscaUsuario = document.getElementById('btn_busca_usuario');
     const filtroCargoUsuario = document.getElementById('filtro_cargo_usuario');
@@ -22,14 +15,24 @@ document.addEventListener('DOMContentLoaded', function () {
     const inputEstado = document.getElementById('input_estado');
     const mensagemCep = document.getElementById('mensagem_cep');
 
+    // Atualiza a indicação visual de campos preenchidos no formulário.
+    function atualizarLabelFlutuante(campo) {
+        if (!campo) return;
+        const valor = campo.value ?? '';
+        campo.classList.toggle('has-value', String(valor).trim() !== '');
+    }
+
+    // Remove caracteres não numéricos e aplica a máscara visual do CEP.
     function formatarCep(valor) {
         const apenasDigitos = String(valor || '').replace(/\D/g, '').slice(0, 8);
         if (apenasDigitos.length <= 5) {
             return apenasDigitos;
         }
+        // Adiciona o traço visual no formato 00000-000.
         return `${apenasDigitos.slice(0, 5)}-${apenasDigitos.slice(5)}`;
     }
 
+    // Define a cor e o conteúdo da mensagem exibida para o CEP.
     function atualizarStatusCep(texto, tipo) {
         if (!mensagemCep) return;
         mensagemCep.textContent = texto;
@@ -46,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // Limpa os campos de endereço e atualiza suas labels flutuantes.
     function limparCamposEndereco() {
         if (inputLogradouro) inputLogradouro.value = '';
         if (inputBairro) inputBairro.value = '';
@@ -57,9 +61,11 @@ document.addEventListener('DOMContentLoaded', function () {
         atualizarLabelFlutuante(inputEstado);
     }
 
+    // Consulta o CEP na BrasilAPI e preenche os dados de endereço retornados.
     function consultarCep() {
         if (!inputCep) return;
 
+        // Retira a máscara do CEP, deixando apenas os oito números enviados à API.
         const cep = String(inputCep.value || '').replace(/\D/g, '');
         if (!cep) {
             limparCamposEndereco();
@@ -67,19 +73,24 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        // Uma consulta só é feita após o usuário informar os oito dígitos completos.
         if (cep.length !== 8) {
             limparCamposEndereco();
             return;
         }
 
-        
-
+        // API externa: faz uma requisição GET para buscar os dados relacionados ao CEP.
+        // Não há alteração no banco nesta etapa; a consulta apenas preenche o formulário.
         fetch(`https://brasilapi.com.br/api/cep/v1/${cep}`)
             .then(async response => {
+                // Lê o corpo da resposta como texto para permitir uma validação personalizada do JSON.
                 const texto = await response.text();
+
+                // Trata erros HTTP, como CEP inexistente ou serviço indisponível.
                 if (!response.ok) {
                     let mensagem = 'CEP não encontrado ou indisponível no momento.';
                     try {
+                        // Converte o JSON de erro recebido da BrasilAPI em objeto JavaScript.
                         const dados = JSON.parse(texto);
                         if (dados && dados.message) {
                             mensagem = dados.message;
@@ -92,11 +103,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 let dados;
                 try {
+                    // Converte o JSON de sucesso recebido da API em um objeto JavaScript.
                     dados = JSON.parse(texto);
                 } catch (erro) {
                     throw new Error('Não foi possível processar a resposta da BrasilAPI.');
                 }
 
+                // Copia cada propriedade do objeto recebido para o campo correspondente do formulário.
                 if (inputLogradouro) {
                     inputLogradouro.value = dados.street || '';
                     atualizarLabelFlutuante(inputLogradouro);
@@ -117,11 +130,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 
             })
             .catch(error => {
+                // Executado quando ocorre erro na API, na conversão JSON ou na comunicação.
                 limparCamposEndereco();
                 atualizarStatusCep(error && error.message ? error.message : 'Não foi possível consultar o CEP.', 'erro');
             });
     }
 
+    // Monitora o campo de CEP: formata durante a digitação e consulta ao perder o foco.
     if (inputCep) {
         inputCep.addEventListener('input', function () {
             this.value = formatarCep(this.value);
@@ -132,6 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
         inputCep.addEventListener('blur', consultarCep);
     }
 
+    // Filtra a tabela de usuários pelo termo informado no campo de busca.
     if (inputBuscaUsuario && tbodyUsuarios) {
         const linhasUsuarios = Array.from(tbodyUsuarios.querySelectorAll('tr[data-user-row]'));
 
@@ -175,6 +191,7 @@ document.addEventListener('DOMContentLoaded', function () {
         filtrarUsuarios();
     }
 
+    // Configura a confirmação visual antes da exclusão de um usuário.
     const modalEl = document.getElementById('modal_confirm_delete');
     if (modalEl && typeof bootstrap !== 'undefined') {
         const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
@@ -287,6 +304,19 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         const id = (btn.dataset && btn.dataset.id) || (row.dataset && row.dataset.id) || '';
+
+        // Impede que o administrador desmarque seu próprio cargo administrativo.
+        const formUsuario = document.getElementById('form_cadastro_user');
+        const usuarioAtual = formUsuario ? Number(formUsuario.dataset.usuarioAtual) : 0;
+        const editandoProprioPerfil = usuarioAtual > 0 && Number(id) === usuarioAtual;
+
+        if (radioFunc) {
+            radioFunc.disabled = editandoProprioPerfil;
+        }
+        if (editandoProprioPerfil && radioAdmin) {
+            radioAdmin.checked = true;
+        }
+
         if (inputId) inputId.value = id;
 
         const modalEl = document.getElementById('modal_cadastro');
@@ -312,6 +342,8 @@ document.addEventListener('DOMContentLoaded', function () {
             if (submitBtn) submitBtn.textContent = 'Adicionar';
             if (form) form.reset();
             limparCamposEndereco();
+            const radioFunc = document.getElementById('funcionario');
+            if (radioFunc) radioFunc.disabled = false;
             if (mensagemCep) {
                 mensagemCep.textContent = '';
                 mensagemCep.className = 'small mt-n2 mb-3 text-muted';
@@ -333,15 +365,18 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // Intercepta o envio do formulário para realizar o cadastro sem recarregar a página.
     const formCadastro = document.getElementById('form_cadastro_user');
     if (formCadastro) {
         formCadastro.addEventListener('submit', function (e) {
+            // Impede o comportamento padrão do formulário, que recarregaria a página.
             e.preventDefault();
 
             const mensagemDiv = document.getElementById('mensagem_cadastro');
             const camposObrigatorios = formCadastro.querySelectorAll('input[required], textarea[required], select[required]');
             const campoVazio = Array.from(camposObrigatorios).find(campo => String(campo.value).trim() === '');
 
+            // Valida campos vazios antes de enviar os dados ao PHP.
             if (campoVazio) {
                 mensagemDiv.innerHTML = '';
                 campoVazio.focus();
@@ -349,18 +384,25 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
+            // Mostra o indicador de carregamento enquanto o backend processa o cadastro.
             mensagemDiv.innerHTML = '<div class="spinner-border spinner-border-sm text-primary" role="status"><span class="visually-hidden">Carregando...</span></div>';
 
+            // API interna: envia os dados do formulário ao arquivo PHP indicado no atributo action.
+            // FormData mantém os nomes dos campos iguais aos usados pelo PHP com $_POST.
             fetch(formCadastro.action, {
                 method: 'POST',
                 body: new FormData(formCadastro)
             })
             .then(async response => {
+                // Obtém a resposta bruta produzida pelo PHP.
                 const text = await response.text();
                 try {
+                    // Converte o JSON interno do PHP em um objeto JavaScript.
+                    // Exemplo: { success: true, reload: true }.
                     const data = JSON.parse(text);
                     if (data.success) {
                         if (data.reload) {
+                            // Fecha o modal e recarrega a tabela após o cadastro ou edição.
                             const modalCadastro = bootstrap.Modal.getInstance(document.getElementById('modal_cadastro'));
                             if (modalCadastro) {
                                 modalCadastro.hide();
@@ -378,14 +420,17 @@ document.addEventListener('DOMContentLoaded', function () {
                             }, 2000);
                         }
                     } else {
+                        // Exibe a mensagem de erro enviada pelo PHP no campo success false.
                         mensagemDiv.innerHTML = '<div class="alert alert-danger">' + data.message + '</div>';
                     }
                 } catch (err) {
+                    // Executado quando o PHP não devolve um JSON válido.
                     console.error('Resposta inválida do servidor:', text);
                     mensagemDiv.innerHTML = '<div class="alert alert-danger">Erro do servidor. Verifique os dados e tente novamente.</div>';
                 }
             })
             .catch(error => {
+                // Executado quando a requisição fetch não consegue alcançar o servidor.
                 console.error('Erro:', error);
                 mensagemDiv.innerHTML = '<div class="alert alert-danger">Erro ao processar requisição</div>';
             });

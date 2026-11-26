@@ -1,3 +1,6 @@
+// Relatórios: filtros, consulta ao backend, criação, exibição e exportação.
+// As chamadas à API interna recebem ou devolvem dados em formato JSON.
+
 const tabelaRelatorios = document.getElementById('tbody_relatorios');
 const buscaRelatorios = document.getElementById('input_busca_relatorio');
 const botaoBuscaRelatorios = document.getElementById('btn_busca_relatorio');
@@ -5,6 +8,7 @@ const filtroTipoRelatorio = document.getElementById('filtro_tipo_relatorio');
 const isAdmin = document.body && document.body.dataset.isAdmin === '1';
 let temporizadorNotificacaoRelatorio;
 
+// Exibe um feedback visual com mensagem, tipo e fechamento automático opcional.
 function mostrarMensagemRelatorio(elemento, mensagem, tipo, autoFechar = true) {
     if (!elemento) return;
     window.clearTimeout(temporizadorNotificacaoRelatorio);
@@ -50,6 +54,7 @@ function mostrarMensagemRelatorio(elemento, mensagem, tipo, autoFechar = true) {
     }
 }
 
+// Filtra as linhas da tabela pelos campos de busca e tipo.
 function filtrarLinhasRelatorio() {
     if (!tabelaRelatorios || !buscaRelatorios) return;
 
@@ -63,6 +68,7 @@ function filtrarLinhasRelatorio() {
     });
 }
 
+// Converte uma data no formato YYYY-MM-DD para o formato brasileiro.
 function formatarData(data) {
     if (!data) return '';
     const [ano, mes, dia] = String(data).split('-');
@@ -70,6 +76,7 @@ function formatarData(data) {
     return `${dia}/${mes}/${ano}`;
 }
 
+// Une as datas inicial e final em uma representação legível.
 function formatarPeriodo(dataInicio, dataFim) {
     const inicio = formatarData(dataInicio);
     const fim = formatarData(dataFim);
@@ -79,6 +86,7 @@ function formatarPeriodo(dataInicio, dataFim) {
     return `${inicio} - ${fim}`;
 }
 
+// Reconstrói a tabela usando os objetos de relatório recebidos da API.
 function renderizarRelatorios(relatorios) {
     if (!tabelaRelatorios) return;
 
@@ -147,6 +155,8 @@ function renderizarRelatorios(relatorios) {
     filtrarLinhasRelatorio();
 }
 
+// API interna de consulta: envia os filtros pela URL e transforma o JSON em linhas da tabela.
+// Consulta relatórios no PHP conforme os filtros enviados pela URL.
 async function consultarRelatorios(filtros, mensagemElemento) {
     if (!tabelaRelatorios) return false;
 
@@ -185,6 +195,8 @@ async function consultarRelatorios(filtros, mensagemElemento) {
     }
 }
 
+// API interna de criação: envia os filtros por POST e interpreta a resposta JSON do PHP.
+// Cria relatórios no PHP e atualiza a tabela com o resultado JSON.
 async function criarRelatorios(filtros, mensagemElemento) {
     const formulario = mensagemElemento?.closest('form');
     const botao = formulario?.querySelector('[type="submit"]');
@@ -229,6 +241,7 @@ async function criarRelatorios(filtros, mensagemElemento) {
     }
 }
 
+// Liga um formulário de relatório às ações de criação e validação.
 function configurarFormularioRelatorio(formulario, prefixo, mensagemId) {
     if (!formulario) return;
 
@@ -277,6 +290,7 @@ configurarFormularioRelatorio(
     'mensagem_relatorio_modal'
 );
 
+// Exportação: usa a mesma API interna, mas recebe o arquivo como blob em vez de JSON.
 const botaoExportarRelatorio = document.getElementById('btn_exportar_relatorio');
 const modalFormatoRelatorio = document.getElementById('modal_formato_relatorio');
 if (botaoExportarRelatorio && modalFormatoRelatorio) {

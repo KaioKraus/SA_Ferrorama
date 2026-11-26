@@ -1,3 +1,6 @@
+// Trens: filtros, modais de detalhes/edição, exclusão e cadastro.
+// A edição e o cadastro usam fetch para processar JSON retornado pelo PHP.
+
 document.addEventListener('DOMContentLoaded', function () {
     var deleteModalEl = document.getElementById('modal_confirm_delete');
     var bsModal = deleteModalEl && typeof bootstrap !== 'undefined' ? new bootstrap.Modal(deleteModalEl) : null;
@@ -8,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var filtroResponsavelTrem = document.getElementById('filtro_responsavel_trem');
     var filtroStatusTrem = document.getElementById('filtro_status_trem');
 
+    // Atualiza a classe visual dos campos com labels flutuantes.
     function atualizarLabelFlutuante(campo) {
         if (!campo) return;
         const valor = campo.value ?? '';
@@ -36,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    // Bloqueia ou libera os campos e ações conforme a permissão do usuário.
     function configurarPermissaoModal() {
         var nomeEl = document.getElementById('modal_trem_nome');
         var responsavelEl = document.getElementById('modal_trem_responsavel');
@@ -62,6 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // Copia os dados do card do trem para o formulário de edição.
     function preencherModalTrem(card) {
         if (!card) return;
 
@@ -210,6 +216,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             var formData = new FormData(formEditarTrem);
 
+            // API interna: envia as alterações do trem e processa o JSON retornado pelo PHP.
             fetch(formEditarTrem.action, {
                 method: 'POST',
                 body: formData
@@ -303,6 +310,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             var formData = new FormData(formCadastroTrem);
 
+            // API interna: envia os dados do novo trem e aguarda a resposta JSON do PHP.
             fetch(formCadastroTrem.action, {
                 method: 'POST',
                 body: formData

@@ -48,7 +48,7 @@ if (strlen($usuarioCpf) === 11) {
 
 // Aplica a máscara de telefone na exibição.
 if (strlen($usuarioTelefone) === 11) {
-    $usuarioTelefone = '(' . substr($usuarioTelefone, 0, 2) . ') ' .
+    $usuarioTelefone = '(' . substr($usuarioTelefone,  0,2) . ') ' .
                        substr($usuarioTelefone, 2, 5) . '-' .
                        substr($usuarioTelefone, 7, 4);
 } else {

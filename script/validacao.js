@@ -1,3 +1,6 @@
+// Validações: alternância de senha, máscaras de CPF/telefone e vinculação de sensores.
+// Antes do cadastro, verifica campos obrigatórios e a comunicação com o backend PHP.
+
 const login = document.querySelector(".form1");
 const mensagem = document.getElementById("mensagem");
 
@@ -80,6 +83,7 @@ const opcoes_localizacao = select_localizacao_sensor
     }))
     : [];
 
+// Atualiza as opções do campo localização conforme Trem ou Rota.
 function preencher_select_localizacao(vinculo) {
     if (!select_localizacao_sensor) return;
     select_localizacao_sensor.innerHTML = "";
@@ -138,6 +142,7 @@ if (form_cadastro_sensor) {
             botaoSalvar.textContent = 'Salvando...';
         }
 
+        // API interna: envia o formulário de sensor ao PHP e interpreta o JSON de sucesso ou erro.
         const dados = new FormData(form_cadastro_sensor);
         const localizacaoSelecionada = select_localizacao_sensor.options[select_localizacao_sensor.selectedIndex];
         const localizacao = dados.get('sensor_id') && form_cadastro_sensor.dataset.localizacaoChave === localizacao_sensor

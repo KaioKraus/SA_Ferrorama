@@ -42,6 +42,7 @@ if (!isset($_SESSION['usuario_id']) || !$usuarioEhAdministrador) {
     responderCadastroRota(403, false, 'Acesso negado. Somente administradores podem cadastrar rotas.');
 }
 
+// Pega as escolhas feitas no formulário.
 $pontoPartida = normalizarEstacao($_POST['ponto_partida'] ?? '');
 $pontoChegada = normalizarEstacao($_POST['ponto_chegada'] ?? '');
 $nome = trim((string) ($_POST['nome'] ?? ''));
@@ -69,10 +70,39 @@ if ($pontoPartida === $pontoChegada) {
     responderCadastroRota(400, false, 'Ponto de partida e chegada não podem ser iguais.');
 }
 
-if (mb_strlen($nome) < 3) {
-    responderCadastroRota(400, false, 'Nome da rota deve ter no mínimo 3 caracteres.');
+if (
+    mb_strlen($nome) < 3 ||
+    mb_strlen($nome) > 155 ||
+    mb_strlen($pontoPartida) > 155 ||
+    mb_strlen($pontoChegada) > 155
+) {
+    responderCadastroRota(400, false, 'Confira o tamanho do nome e dos pontos da rota.');
 }
 
+// Confere se os dois lugares escolhidos estão cadastrados.
+$stmtEstacao = mysqli_prepare($conexao, 'SELECT estacao_id FROM estacoes WHERE nome_estacao = ? LIMIT 1');
+if ($stmtEstacao === false) {
+    error_log('Erro ao preparar validação de estação: ' . mysqli_error($conexao));
+    responderCadastroRota(500, false, 'Não foi possível validar as estações selecionadas.');
+}
+foreach ([$pontoPartida, $pontoChegada] as $ponto) {
+    mysqli_stmt_bind_param($stmtEstacao, 's', $ponto);
+    if (!mysqli_stmt_execute($stmtEstacao)) {
+        error_log('Erro ao validar estação da rota: ' . mysqli_stmt_error($stmtEstacao));
+        mysqli_stmt_close($stmtEstacao);
+        responderCadastroRota(500, false, 'Não foi possível validar as estações selecionadas.');
+    }
+    mysqli_stmt_store_result($stmtEstacao);
+    $estacaoExiste = mysqli_stmt_num_rows($stmtEstacao) > 0;
+    mysqli_stmt_free_result($stmtEstacao);
+    if (!$estacaoExiste) {
+        mysqli_stmt_close($stmtEstacao);
+        responderCadastroRota(400, false, 'Selecione estações cadastradas no sistema.');
+    }
+}
+mysqli_stmt_close($stmtEstacao);
+
+// Confere se o trem escolhido existe.
 $sqlCheckTrem = 'SELECT trem_id FROM trens WHERE trem_id = ? LIMIT 1';
 $stmtCheck = mysqli_prepare($conexao, $sqlCheckTrem);
 if ($stmtCheck === false) {
@@ -96,7 +126,28 @@ mysqli_stmt_close($stmtCheck);
 
 $statusValidos = ['Ativo', 'Manutenção', 'Inativo'];
 if (!in_array($status, $statusValidos, true)) {
-    $status = 'Ativo';
+    responderCadastroRota(400, false, 'O status selecionado é inválido.');
+}
+
+// Com um ID, altera a rota. Sem ID, cria uma rota nova.
+if ($rotaId !== null) {
+    $stmtRota = mysqli_prepare($conexao, 'SELECT rota_id FROM rotas WHERE rota_id = ? LIMIT 1');
+    if ($stmtRota === false) {
+        error_log('Erro ao preparar validação da rota: ' . mysqli_error($conexao));
+        responderCadastroRota(500, false, 'Não foi possível validar a rota selecionada.');
+    }
+    mysqli_stmt_bind_param($stmtRota, 'i', $rotaId);
+    if (!mysqli_stmt_execute($stmtRota)) {
+        error_log('Erro ao validar rota: ' . mysqli_stmt_error($stmtRota));
+        mysqli_stmt_close($stmtRota);
+        responderCadastroRota(500, false, 'Não foi possível validar a rota selecionada.');
+    }
+    mysqli_stmt_store_result($stmtRota);
+    $rotaExiste = mysqli_stmt_num_rows($stmtRota) > 0;
+    mysqli_stmt_close($stmtRota);
+    if (!$rotaExiste) {
+        responderCadastroRota(404, false, 'A rota selecionada não foi encontrada.');
+    }
 }
 
 if ($rotaId !== null) {

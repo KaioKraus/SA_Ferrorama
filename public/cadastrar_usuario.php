@@ -21,7 +21,7 @@ if (!$usuarioEhAdministrador) {
     exit;
 }
 
-// Recebe os dados do formulário
+// Pega os dados que vieram do formulário.
 $nome = trim($_POST['nome'] ?? '');
 $cpf = preg_replace('/\D/', '', trim($_POST['cpf'] ?? ''));
 $email = filter_var(trim($_POST['email'] ?? ''), FILTER_VALIDATE_EMAIL);
@@ -35,7 +35,7 @@ $senha = trim($_POST['senha'] ?? '');
 $id = intval($_POST['id'] ?? 0);
 $permissao = trim($_POST['permissao'] ?? '');
 
-// Validações básicas
+// Confere se os dados principais foram preenchidos direito.
 if (empty($nome) || strlen($nome) < 3) {
     echo json_encode(['success' => false, 'message' => 'Nome inválido']);
     exit;
@@ -66,7 +66,7 @@ if (!empty($estado) && !preg_match('/^[A-Z]{2}$/', $estado)) {
     exit;
 }
 
-// Validação de senha
+// Ao cadastrar, a senha é obrigatória. Ao editar, ela só muda se for preenchida.
 if ($id > 0) {
     if (!empty($senha) && strlen($senha) < 8) {
         echo json_encode(['success' => false, 'message' => 'A senha deve ter no mínimo 8 caracteres']);
@@ -79,7 +79,7 @@ if ($id > 0) {
     }
 }
 
-// Verifica se o email já existe
+// Não deixa usar um e-mail que já pertence a outra pessoa.
 if ($id > 0) {
     $sql_check = "SELECT usuario_id FROM usuarios WHERE email = ? AND usuario_id != ? LIMIT 1";
     $stmt_check = mysqli_prepare($conexao, $sql_check);
@@ -100,7 +100,7 @@ if (mysqli_stmt_num_rows($stmt_check) > 0) {
 }
 mysqli_stmt_close($stmt_check);
 
-// Verifica se o CPF já existe
+// Também não deixa repetir o CPF.
 if ($id > 0) {
     $sql_check_cpf = "SELECT usuario_id FROM usuarios WHERE cpf = ? AND usuario_id != ? LIMIT 1";
     $stmt_check_cpf = mysqli_prepare($conexao, $sql_check_cpf);
@@ -121,7 +121,7 @@ if (mysqli_stmt_num_rows($stmt_check_cpf) > 0) {
 }
 mysqli_stmt_close($stmt_check_cpf);
 
-// Define o cargo_id
+// Escolhe se a nova conta será de administrador ou funcionário.
 $cargo_id = ($permissao === 'admin') ? 1 : 2;
 
 // Verifica se o cargo existe
@@ -144,7 +144,7 @@ if (!$cargo_exists) {
 $sucesso = false;
 
 if ($id > 0) {
-    // Atualização
+    // Se veio um ID, atualiza a pessoa que já existe.
     if (!empty($senha)) {
         $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
         if ($cargo_id === null) {
@@ -178,7 +178,7 @@ if ($id > 0) {
     }
     if ($stmt) mysqli_stmt_close($stmt);
 } else {
-    // Inserção
+    // Sem ID, cria uma pessoa nova.
     $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
     
     if ($cargo_id === null) {

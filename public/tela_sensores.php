@@ -11,10 +11,38 @@ $statusPermitidos = ['Ativo', 'Inativo'];
 if (!in_array($statusFiltro, $statusPermitidos, true)) {
     $statusFiltro = '';
 }
+
+$locaisSensores = [];
+// Monta a lista de trens e rotas para o formulário de sensor.
+$resultadoTrensSensor = mysqli_query($conexao, 'SELECT trem_id, nome_trem FROM trens ORDER BY nome_trem');
+$resultadoRotasSensor = mysqli_query($conexao, 'SELECT rota_id, nome, ponto_partida, ponto_chegada FROM rotas ORDER BY nome');
+if (!$resultadoTrensSensor || !$resultadoRotasSensor) {
+    error_log('Erro ao carregar locais para sensores: ' . mysqli_error($conexao));
+    http_response_code(500);
+    die('Não foi possível carregar as opções de localização dos sensores.');
+}
+while ($tremSensor = mysqli_fetch_assoc($resultadoTrensSensor)) {
+    $locaisSensores[] = [
+        'chave' => 'trem_' . (int) $tremSensor['trem_id'],
+        'vinculo' => 'trem',
+        'nome' => 'Trem - ID ' . (int) $tremSensor['trem_id'] . ' (' . $tremSensor['nome_trem'] . ')',
+    ];
+}
+while ($rotaSensor = mysqli_fetch_assoc($resultadoRotasSensor)) {
+    $locaisSensores[] = [
+        'chave' => 'trecho_rota' . (int) $rotaSensor['rota_id'],
+        'vinculo' => 'rota',
+        'nome' => 'Rota ' . (int) $rotaSensor['rota_id'] . ': ' . $rotaSensor['ponto_partida'] . ' → ' . $rotaSensor['ponto_chegada'],
+    ];
+}
+mysqli_free_result($resultadoTrensSensor);
+mysqli_free_result($resultadoRotasSensor);
+
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Expires: 0');
 
+// Busca os sensores para mostrar na tabela.
 $sqlSensores = 'SELECT sensor_id, nome_sensor, localizacao, tipo_dado, status FROM sensores';
 if ($termoBusca !== '') {
     $termoBuscaSql = mysqli_real_escape_string($conexao, $termoBusca);
@@ -32,6 +60,7 @@ if ($resultadoSensores) {
 }
 
 if ($statusFiltro !== '') {
+    // Se foi escolhido um status, mantém só os sensores com esse status.
     $sensores = array_values(array_filter($sensores, static function ($sensor) use ($statusFiltro) {
         $statusSensor = (string) ($sensor['status'] ?? 'Inativo');
         return $statusSensor === $statusFiltro;
@@ -272,6 +301,11 @@ function normalizarTipoDado(string $tipoDado): string {
                                     <div class="input-field">
                                         <select required id="input_localizacao_sensor" name="localizacao" class="form-select">
                                             <option value="" disabled selected></option>
+                                            <?php foreach ($locaisSensores as $localSensor): ?>
+                                                <option value="<?= htmlspecialchars($localSensor['chave'], ENT_QUOTES, 'UTF-8'); ?>" data-vinculo="<?= htmlspecialchars($localSensor['vinculo'], ENT_QUOTES, 'UTF-8'); ?>">
+                                                    <?= htmlspecialchars($localSensor['nome'], ENT_QUOTES, 'UTF-8'); ?>
+                                                </option>
+                                            <?php endforeach; ?>
                                         </select>
                                         <label for="input_localizacao_sensor">Trem</label>
                                     </div>

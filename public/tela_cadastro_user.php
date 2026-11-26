@@ -16,6 +16,7 @@ if (!in_array($perfilFiltro, $perfilPermitidos, true)) {
     $perfilFiltro = '';
 }
 
+// Busca os usuários para mostrar na tabela.
 $sql = "SELECT 
             u.usuario_id,
             u.nome,
@@ -43,6 +44,7 @@ while ($usuario = mysqli_fetch_assoc($resultado)) {
     $usuariosLista[] = $usuario;
 }
 
+// Se foi escolhido um cargo, mostra só as pessoas desse cargo.
 if ($perfilFiltro !== '') {
     $usuariosLista = array_values(array_filter($usuariosLista, static function ($usuario) use ($perfilFiltro) {
         $cargo = (string) ($usuario['cargo'] ?? '');

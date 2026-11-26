@@ -26,6 +26,7 @@ if (!$usuarioEhAdministrador) {
 }
 
 $sensorId = null;
+// Se veio um número de sensor, é uma edição. Sem número, é um cadastro novo.
 if (isset($_POST['sensor_id']) && $_POST['sensor_id'] !== '') {
     $sensorId = filter_var($_POST['sensor_id'], FILTER_VALIDATE_INT, [
         'options' => ['min_range' => 1],
@@ -35,6 +36,7 @@ if (isset($_POST['sensor_id']) && $_POST['sensor_id'] !== '') {
     }
 }
 
+// Pega e confere o que foi preenchido no formulário.
 $nomeSensor = trim((string) ($_POST['nome_sensor'] ?? ''));
 $localizacao = trim((string) ($_POST['localizacao'] ?? ''));
 $tipoDado = trim((string) ($_POST['tipo_dado'] ?? ''));
@@ -55,6 +57,58 @@ if (
     responderSalvamentoSensor(400, false, 'Preencha os campos corretamente e selecione um status válido.');
 }
 
+if ($sensorId !== null) {
+    // Ao editar, permite manter a localização antiga do sensor.
+    $stmtLocalizacaoAtual = mysqli_prepare($conexao, 'SELECT localizacao FROM sensores WHERE sensor_id = ? LIMIT 1');
+    if ($stmtLocalizacaoAtual === false) {
+        error_log('Erro ao preparar validação da localização do sensor: ' . mysqli_error($conexao));
+        responderSalvamentoSensor(500, false, 'Não foi possível validar a localização do sensor.');
+    }
+    mysqli_stmt_bind_param($stmtLocalizacaoAtual, 'i', $sensorId);
+    if (!mysqli_stmt_execute($stmtLocalizacaoAtual)) {
+        error_log('Erro ao consultar localização atual do sensor: ' . mysqli_stmt_error($stmtLocalizacaoAtual));
+        mysqli_stmt_close($stmtLocalizacaoAtual);
+        responderSalvamentoSensor(500, false, 'Não foi possível validar a localização do sensor.');
+    }
+    $resultadoLocalizacaoAtual = mysqli_stmt_get_result($stmtLocalizacaoAtual);
+    $localizacaoAtual = $resultadoLocalizacaoAtual ? mysqli_fetch_assoc($resultadoLocalizacaoAtual) : null;
+    if ($resultadoLocalizacaoAtual) {
+        mysqli_free_result($resultadoLocalizacaoAtual);
+    }
+    mysqli_stmt_close($stmtLocalizacaoAtual);
+    if (!$localizacaoAtual) {
+        responderSalvamentoSensor(404, false, 'O sensor selecionado não foi encontrado.');
+    }
+    $localizacaoLegadaMantida = $localizacaoAtual['localizacao'] === $localizacao;
+} else {
+    $localizacaoLegadaMantida = false;
+}
+
+$localizacaoPermitida = $localizacaoLegadaMantida;
+if (!$localizacaoPermitida) {
+    // Para um cadastro novo, aceita apenas trens e rotas que existem.
+    $resultadoTrens = mysqli_query($conexao, 'SELECT trem_id, nome_trem FROM trens');
+    $resultadoRotas = mysqli_query($conexao, 'SELECT rota_id, ponto_partida, ponto_chegada FROM rotas');
+    if (!$resultadoTrens || !$resultadoRotas) {
+        error_log('Erro ao validar localização do sensor: ' . mysqli_error($conexao));
+        responderSalvamentoSensor(500, false, 'Não foi possível validar a localização selecionada.');
+    }
+    while ($trem = mysqli_fetch_assoc($resultadoTrens)) {
+        $localizacaoPermitida = $localizacaoPermitida
+            || $localizacao === 'Trem - ID ' . (int) $trem['trem_id'] . ' (' . $trem['nome_trem'] . ')';
+    }
+    while ($rota = mysqli_fetch_assoc($resultadoRotas)) {
+        $localizacaoPermitida = $localizacaoPermitida
+            || $localizacao === 'Rota ' . (int) $rota['rota_id'] . ': ' . $rota['ponto_partida'] . ' → ' . $rota['ponto_chegada'];
+    }
+    mysqli_free_result($resultadoTrens);
+    mysqli_free_result($resultadoRotas);
+}
+if (!$localizacaoPermitida) {
+    responderSalvamentoSensor(400, false, 'Selecione um trem ou uma rota existente.');
+}
+
+// Salva o sensor novo ou as mudanças do sensor escolhido.
 if ($sensorId !== null) {
     $sql = 'UPDATE sensores SET nome_sensor = ?, localizacao = ?, tipo_dado = ?, status = ? WHERE sensor_id = ? LIMIT 1';
 } else {

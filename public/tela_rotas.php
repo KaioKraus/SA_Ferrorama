@@ -3,7 +3,18 @@ session_start();
 include __DIR__ . '/validar_acesso.php';
 require_once "../infra/conexao.php";
 $usuarioNome = $_SESSION['usuario_nome'] ?? 'Usuário';
-$estacoesMapa = ['Estação Norte', 'Estação Oeste', 'Estação Central', 'Estação Leste', 'Estação Sul'];
+// Busca as estações para preencher as escolhas de partida e chegada.
+$resultadoEstacoes = mysqli_query($conexao, 'SELECT nome_estacao FROM estacoes ORDER BY nome_estacao');
+if (!$resultadoEstacoes) {
+    error_log('Erro ao carregar estações: ' . mysqli_error($conexao));
+    http_response_code(500);
+    die('Não foi possível carregar as estações.');
+}
+$estacoesMapa = [];
+while ($estacao = mysqli_fetch_assoc($resultadoEstacoes)) {
+    $estacoesMapa[] = $estacao['nome_estacao'];
+}
+mysqli_free_result($resultadoEstacoes);
 
 $sql_trens = "SELECT trem_id, nome_trem FROM trens ORDER BY nome_trem ASC";
 $resultado_trens = mysqli_query($conexao, $sql_trens);
@@ -37,7 +48,9 @@ $partidaFiltro = isset($_GET['ponto_partida']) && is_string($_GET['ponto_partida
 $destinoFiltro = isset($_GET['ponto_chegada']) && is_string($_GET['ponto_chegada']) ? trim($_GET['ponto_chegada']) : '';
 $termoBusca = isset($_GET['q']) && is_string($_GET['q']) ? trim($_GET['q']) : '';
 
-$sql_rotas = "SELECT r.rota_id, r.nome, r.ponto_partida, r.ponto_chegada, r.descricao, r.status, r.trem_id, t.nome_trem
+// Busca as rotas salvas e o nome do trem de cada rota.
+$sql_rotas = "SELECT r.rota_id, r.nome, r.ponto_partida, r.ponto_chegada, r.descricao, r.status, r.trem_id, t.nome_trem,
+        DATE_FORMAT(r.data_criacao, '%d/%m/%Y %H:%i') AS data_criacao
     FROM rotas r
     LEFT JOIN trens t ON t.trem_id = r.trem_id
     ORDER BY r.rota_id ASC";
@@ -66,6 +79,7 @@ if ($resultado_rotas) {
             'status' => $row['status'] ?? '',
             'trem_id' => $row['trem_id'] ?? '',
             'nome_trem' => $row['nome_trem'] ?? '',
+            'data_criacao' => $row['data_criacao'] ?? '',
         ];
     }
 }
@@ -422,8 +436,7 @@ mysqli_stmt_close($stmt_rotas);
                                 <div class="route-info-row"><span>Status:</span> <strong id="modal_rota_status"></strong></div>
                                 <div class="route-info-row"><span>Partida:</span> <strong id="modal_rota_partida"></strong></div>
                                 <div class="route-info-row"><span>Destino:</span> <strong id="modal_rota_destino"></strong></div>
-                                <div class="route-info-row"><span>Distância:</span> <strong id="modal_rota_distancia"></strong></div>
-                                <div class="route-info-row"><span>Duração:</span> <strong id="modal_rota_duracao"></strong></div>
+                                <div class="route-info-row"><span>Descrição:</span> <strong id="modal_rota_descricao"></strong></div>
                                 <div class="route-info-row"><span>Data de criação:</span> <strong id="modal_rota_data"></strong></div>
                             </div>
                         </div>

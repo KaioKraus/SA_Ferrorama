@@ -7,6 +7,7 @@ header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Expires: 0');
 
+// Busca os trens e tipos de sensor que aparecem nas escolhas do relatório.
 $resultadoTrens = mysqli_query($conexao, 'SELECT trem_id, nome_trem FROM trens ORDER BY nome_trem ASC');
 if (!$resultadoTrens) {
     error_log('Erro ao consultar trens para filtros de relatório: ' . mysqli_error($conexao));
@@ -73,6 +74,7 @@ function formatarPeriodoRelatorio(?string $inicio, ?string $fim): string
     return $inicioFormatado . ' - ' . $fimFormatado;
 }
 
+// Pega o que a pessoa digitou para procurar no histórico.
 $termoBusca = trim((string) ($_GET['buscar_relatorio'] ?? ''));
 $tipoFiltro = trim((string) ($_GET['tipo_relatorio'] ?? 'todos'));
 
@@ -90,6 +92,7 @@ if ($tipoFiltro !== '' && $tipoFiltro !== 'todos') {
     $where[] = "s.tipo_dado = '$tipoFiltroSql'";
 }
 
+// Busca os relatórios já salvos para mostrar na tabela.
 $sqlRelatorios = "
     SELECT r.relatorio_id, r.data_relatorio,
            {$expressaoDataInicio} AS data_inicio, {$expressaoDataFim} AS data_fim,

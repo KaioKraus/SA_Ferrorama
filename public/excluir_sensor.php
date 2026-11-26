@@ -31,52 +31,59 @@ if ($sensorId === false) {
 }
 
 try {
-    // Desabilita temporariamente a checagem de foreign keys
-    mysqli_query($conexao, 'SET FOREIGN_KEY_CHECKS = 0');
-    
-    // Primeiro, deletar registros de valor_sensor relacionados
-    $stmtValor = mysqli_prepare($conexao, 'DELETE FROM valor_sensor WHERE sensor_id = ?');
-    if ($stmtValor) {
-        mysqli_stmt_bind_param($stmtValor, 'i', $sensorId);
-        mysqli_stmt_execute($stmtValor);
-        mysqli_stmt_close($stmtValor);
+    if (!mysqli_begin_transaction($conexao)) {
+        throw new RuntimeException('Não foi possível iniciar a exclusão.');
     }
-    
-    // Depois, deletar registros de falha relacionados
-    $stmtFalha = mysqli_prepare($conexao, 'DELETE FROM falha WHERE sensor_id = ?');
-    if ($stmtFalha) {
-        mysqli_stmt_bind_param($stmtFalha, 'i', $sensorId);
-        mysqli_stmt_execute($stmtFalha);
-        mysqli_stmt_close($stmtFalha);
+
+    $stmtHistorico = mysqli_prepare(
+        $conexao,
+        'SELECT sensor_id FROM valor_sensor WHERE sensor_id = ?
+         UNION ALL
+         SELECT sensor_id FROM falha WHERE sensor_id = ?
+         LIMIT 1'
+    );
+    if (!$stmtHistorico) {
+        throw new RuntimeException('Não foi possível verificar o histórico do sensor.');
     }
-    
-    // Por fim, excluir o sensor
+    mysqli_stmt_bind_param($stmtHistorico, 'ii', $sensorId, $sensorId);
+    if (!mysqli_stmt_execute($stmtHistorico)) {
+        throw new RuntimeException('Não foi possível verificar o histórico do sensor.');
+    }
+    mysqli_stmt_store_result($stmtHistorico);
+    $possuiHistorico = mysqli_stmt_num_rows($stmtHistorico) > 0;
+    mysqli_stmt_close($stmtHistorico);
+
+    if ($possuiHistorico) {
+        mysqli_rollback($conexao);
+        $_SESSION['mensagem_erro'] = 'Não é possível excluir um sensor que já possui medições ou falhas registradas.';
+        voltarParaSensores();
+    }
+
     $stmtExcluir = mysqli_prepare($conexao, 'DELETE FROM sensores WHERE sensor_id = ? LIMIT 1');
     if (!$stmtExcluir) {
-        mysqli_query($conexao, 'SET FOREIGN_KEY_CHECKS = 1');
-        throw new RuntimeException('Erro ao preparar: ' . mysqli_error($conexao));
+        throw new RuntimeException('Não foi possível preparar a exclusão do sensor.');
     }
     mysqli_stmt_bind_param($stmtExcluir, 'i', $sensorId);
     if (!mysqli_stmt_execute($stmtExcluir)) {
-        mysqli_query($conexao, 'SET FOREIGN_KEY_CHECKS = 1');
-        throw new RuntimeException('Erro ao executar: ' . mysqli_stmt_error($stmtExcluir));
+        throw new RuntimeException('Não foi possível excluir o sensor.');
     }
     $linhasAfetadas = mysqli_stmt_affected_rows($stmtExcluir);
     mysqli_stmt_close($stmtExcluir);
-    
-    // Reabilita a checagem de foreign keys
-    mysqli_query($conexao, 'SET FOREIGN_KEY_CHECKS = 1');
 
     if ($linhasAfetadas < 1) {
+        mysqli_rollback($conexao);
         $_SESSION['mensagem_erro'] = 'O sensor selecionado não foi encontrado.';
         voltarParaSensores();
     }
 
+    if (!mysqli_commit($conexao)) {
+        throw new RuntimeException('Não foi possível concluir a exclusão do sensor.');
+    }
     $_SESSION['mensagem_sucesso'] = 'Sensor excluído com sucesso.';
 } catch (Throwable $erro) {
-    mysqli_query($conexao, 'SET FOREIGN_KEY_CHECKS = 1');
+    mysqli_rollback($conexao);
     error_log('Erro ao excluir sensor: ' . $erro->getMessage());
-    $_SESSION['mensagem_erro'] = 'Erro: ' . $erro->getMessage();
+    $_SESSION['mensagem_erro'] = 'Não foi possível excluir o sensor. Tente novamente.';
 }
 
 voltarParaSensores();

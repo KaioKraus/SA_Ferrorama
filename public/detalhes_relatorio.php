@@ -7,6 +7,7 @@ $usuarioNome = $_SESSION['usuario_nome'] ?? 'Usuário';
 $relatorioId = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT);
 $relatorio = null;
 
+// Busca os dados do relatório escolhido para mostrar seus detalhes.
 if ($relatorioId !== false && $relatorioId !== null) {
     $colunasRelatorio = mysqli_query($conexao, 'SHOW COLUMNS FROM relatorio');
     if (!$colunasRelatorio) {

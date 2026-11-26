@@ -211,8 +211,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const rotaStatusEl = document.getElementById('modal_rota_status');
         const rotaPartidaEl = document.getElementById('modal_rota_partida');
         const rotaDestinoEl = document.getElementById('modal_rota_destino');
-        const rotaDistanciaEl = document.getElementById('modal_rota_distancia');
-        const rotaDuracaoEl = document.getElementById('modal_rota_duracao');
+        const rotaDescricaoEl = document.getElementById('modal_rota_descricao');
         const rotaDataEl = document.getElementById('modal_rota_data');
 
         const rotaAtual = rota || {};
@@ -222,8 +221,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (rotaStatusEl) rotaStatusEl.textContent = rotaAtual.status ?? '';
         if (rotaPartidaEl) rotaPartidaEl.textContent = rotaAtual.ponto_partida ?? '';
         if (rotaDestinoEl) rotaDestinoEl.textContent = rotaAtual.ponto_chegada ?? '';
-        if (rotaDistanciaEl) rotaDistanciaEl.textContent = rotaAtual.distancia ?? '';
-        if (rotaDuracaoEl) rotaDuracaoEl.textContent = rotaAtual.duracao ?? '';
+        if (rotaDescricaoEl) rotaDescricaoEl.textContent = rotaAtual.descricao || 'Sem descrição.';
         if (rotaDataEl) rotaDataEl.textContent = rotaAtual.data_criacao ?? '';
     }
 

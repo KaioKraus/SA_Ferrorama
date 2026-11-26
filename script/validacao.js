@@ -76,37 +76,36 @@ const vinculo_rota_radio = document.getElementById("vinculo_rota");
 
 // RN03: Todo sensor deve estar vinculado a um trem ou a um trecho da ferrovia.
 // O toggle Trem/Rota controla quais opções aparecem no select de Localização.
-const opcoes_localizacao_trem = [
-    { value: "", label: " ", disabled: true },
-    { value: "", label: "Trem" },
-    { value: "trem_5823", label: "Trem - ID 5823" }
-];
+const opcoes_localizacao = select_localizacao_sensor
+    ? Array.from(select_localizacao_sensor.querySelectorAll("option[data-vinculo]")).map(opcao => ({
+        value: opcao.value,
+        label: opcao.textContent.trim(),
+        vinculo: opcao.dataset.vinculo
+    }))
+    : [];
 
-const opcoes_localizacao_rota = [
-    { value: "", label: "Rota", disabled: true },
-    { value: "trecho_rota1", label: "Rota 1 (Estação Norte → Estação Sul)" },
-    { value: "trecho_rota2", label: "Rota 2 (Estação Norte → Estação Sul)" }
-];
-
-function preencher_select_localizacao(opcoes) {
+function preencher_select_localizacao(vinculo) {
+    if (!select_localizacao_sensor) return;
     select_localizacao_sensor.innerHTML = "";
-    opcoes.forEach(opcao => {
+    const opcaoVazia = document.createElement("option");
+    opcaoVazia.value = "";
+    opcaoVazia.disabled = true;
+    opcaoVazia.selected = true;
+    select_localizacao_sensor.appendChild(opcaoVazia);
+
+    opcoes_localizacao.filter(opcao => opcao.vinculo === vinculo).forEach(opcao => {
         const option = document.createElement("option");
         option.value = opcao.value;
         option.textContent = opcao.label;
-        if (opcao.disabled) {
-            option.disabled = true;
-            option.selected = true;
-        }
         select_localizacao_sensor.appendChild(option);
     });
 }
 
 if (select_localizacao_sensor && vinculo_trem_radio && vinculo_rota_radio) {
-    preencher_select_localizacao(opcoes_localizacao_trem);
+    preencher_select_localizacao("trem");
 
-    vinculo_trem_radio.addEventListener('change', () => preencher_select_localizacao(opcoes_localizacao_trem));
-    vinculo_rota_radio.addEventListener('change', () => preencher_select_localizacao(opcoes_localizacao_rota));
+    vinculo_trem_radio.addEventListener('change', () => preencher_select_localizacao("trem"));
+    vinculo_rota_radio.addEventListener('change', () => preencher_select_localizacao("rota"));
 }
 
 if (form_cadastro_sensor) {
@@ -132,7 +131,7 @@ if (form_cadastro_sensor) {
         }
 
         // RN03: Todo sensor deve estar vinculado a um trem ou a um trecho da ferrovia
-        if (!localizacao_sensor.startsWith("trem_") && !localizacao_sensor.startsWith("trecho_")) {
+        if (!localizacao_sensor.startsWith("trem_") && !localizacao_sensor.startsWith("trecho_rota")) {
             mensagem_cadastro_sensor.innerHTML = "<div class='text-danger fw-bold'>O sensor deve estar vinculado a um trem ou a uma rota!</div>";
             return;
         }

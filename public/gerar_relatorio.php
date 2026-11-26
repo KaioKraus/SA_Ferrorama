@@ -7,6 +7,7 @@ header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 
 function responderJson(int $status, array $dados): void
 {
+    // Envia o resultado para a tela e encerra este arquivo.
     http_response_code($status);
     echo json_encode($dados, JSON_UNESCAPED_UNICODE);
     exit;
@@ -102,6 +103,7 @@ if (!isset($_SESSION['usuario_id'])) {
 
 require_once __DIR__ . '/validar_acesso.php';
 
+// A tela envia POST para criar um relatório e GET para consultar ou baixar.
 $transacaoIniciada = false;
 try {
     $metodo = $_SERVER['REQUEST_METHOD'] ?? 'GET';
@@ -121,6 +123,7 @@ try {
     $formato = isset($entrada['formato']) && is_string($entrada['formato']) ? $entrada['formato'] : '';
 
     if ($metodo === 'POST') {
+        // Confere as escolhas e as datas antes de criar qualquer relatório.
         if ($trem !== 'todos' && (!ctype_digit($trem) || (int) $trem < 1)) {
             responderJson(400, ['success' => false, 'message' => 'O trem selecionado é inválido.']);
         }
@@ -154,6 +157,7 @@ try {
             $valoresFalhas[] = $tipoDado;
         }
 
+        // Busca as falhas que combinam com o trem e o tipo escolhidos.
         $sqlFalhas = 'SELECT f.falha_id, f.trem_id, t.nome_trem, f.sensor_id, s.nome_sensor, s.tipo_dado
                       FROM falha f
                       INNER JOIN sensores s ON s.sensor_id = f.sensor_id
@@ -206,6 +210,7 @@ try {
             $sqlInserirRelatorio = 'INSERT INTO relatorio (data_relatorio, falha_id) VALUES (CURDATE(), ?)';
         }
 
+        // Salva os relatórios juntos para não deixar parte deles pela metade.
         if (!mysqli_begin_transaction($conexao)) {
             throw new RuntimeException('Não foi possível iniciar a criação dos relatórios: ' . mysqli_error($conexao));
         }
@@ -258,6 +263,7 @@ try {
         ]);
     }
 
+    // Se pediram um relatório pelo número, prepara o arquivo para baixar.
     if ($relatorioId !== false && $relatorioId !== null && $formato === '') {
         $formato = 'pdf';
     }
@@ -362,6 +368,7 @@ try {
         }
     }
 
+    // Monta a busca do histórico com as escolhas enviadas pela tela.
     $filtros = [];
     $tipos = '';
     $valores = [];
@@ -419,6 +426,7 @@ try {
     mysqli_free_result($resultado);
     mysqli_stmt_close($stmt);
 
+    // Se foi escolhido PDF ou CSV, envia o arquivo para baixar.
     if ($formato === 'pdf') {
         $arquivoPdf = gerarPdfRelatorio($relatorios);
         header('Content-Type: application/pdf');

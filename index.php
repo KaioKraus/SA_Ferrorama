@@ -1,6 +1,6 @@
 <?php
 // Carrega os números e exemplos de operação que alimentam a página inicial do Ferrorama.
-$conexao = @mysqli_connect('127.0.0.1', 'root', '', 'celestial_steel_db');
+include 'infra/conexao.php';
 if ($conexao) {
     $conexao->set_charset('utf8mb4');
 }

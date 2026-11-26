@@ -1,12 +1,12 @@
 <?php
 // Abre a conexão MySQL compartilhada pelas telas e pelos endpoints que acessam o banco.
 
-$host = "127.0.0.1";
+$host = "localhost";
 $user = "root";
 $password = "";
 $database = "celestial_steel_db";
 
-$conexao = new mysqli($host, $user, $password, $database);
+$conexao = new mysqli($host, $user, $password, $database, 3306);
 
 // Interrompe a execução se a conexão com o banco falhar.
 if ($conexao->connect_error) {

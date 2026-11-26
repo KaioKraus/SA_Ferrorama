@@ -1,9 +1,11 @@
-﻿<?php
+<?php
+// Carrega os números e exemplos de operação que alimentam a página inicial do Ferrorama.
 $conexao = @mysqli_connect('127.0.0.1', 'root', '', 'celestial_steel_db');
 if ($conexao) {
     $conexao->set_charset('utf8mb4');
 }
 
+// Inicializa os contadores antes de consultar o banco.
 $dadosLanding = [
     'usuarios' => 0,
     'trens' => 0,
@@ -13,6 +15,7 @@ $dadosLanding = [
     'falhas' => 0,
 ];
 
+// Define exemplos de trens, rotas e sensores para a preparação dos dados da página.
 $trensEmOperacao = [
     ['nome' => 'Trem Expresso Norte', 'velocidade' => '112 km/h'],
     ['nome' => 'Trem Noturno Central', 'velocidade' => '94 km/h'],
@@ -32,6 +35,7 @@ $sensoresAtivos = [
     'Sensor de Temperatura 04',
 ];
 
+// Define os totais de demonstração usados quando a conexão está indisponível.
 const DADOS_FALLBACK = [
     'usuarios' => 40,
     'trens' => 7,
@@ -41,6 +45,7 @@ const DADOS_FALLBACK = [
     'falhas' => 10,
 ];
 
+// Com a conexão disponível, conta os registros de cada área e busca os primeiros exemplos por ID.
 if ($conexao && !mysqli_connect_errno()) {
     $consultas = [
         'usuarios' => 'SELECT COUNT(*) AS total FROM usuarios',
@@ -59,6 +64,7 @@ if ($conexao && !mysqli_connect_errno()) {
         }
     }
 
+    // Lê uma amostra ordenada de trens, rotas e sensores cadastrados.
     $resultadoTrens = mysqli_query($conexao, 'SELECT nome_trem, velocidade, temperatura, consumo FROM trens ORDER BY trem_id LIMIT 3');
     if ($resultadoTrens) {
         $trensEmOperacao = [];
@@ -92,6 +98,7 @@ if ($conexao && !mysqli_connect_errno()) {
     $dadosLanding = DADOS_FALLBACK;
 }
 
+// Mantém as amostras dentro dos limites definidos para a página inicial.
 $rotasAtivas = array_slice($rotasAtivas, 0, 3);
 $trensEmOperacao = array_slice($trensEmOperacao, 0, 3);
 $sensoresAtivos = array_slice($sensoresAtivos, 0, 4);
@@ -124,7 +131,7 @@ $sensoresAtivos = array_slice($sensoresAtivos, 0, 4);
                 <a href="#beneficios">Benefícios</a>
             </nav>
 
-            <a href="public/tela_login.php" class="landing-btn">Entrar</a>
+            <a href="public/acesso/tela_login.php" class="landing-btn">Entrar</a>
         </div>
     </header>
 
@@ -284,7 +291,7 @@ $sensoresAtivos = array_slice($sensoresAtivos, 0, 4);
 
                 <div class="landing-actions">
                     <a href="#funcionalidades" class="landing-btn-secondary">Conhecer funcionalidades</a>
-                    <a href="public/tela_login.php" class="landing-btn">Acessar o sistema</a>
+                    <a href="public/acesso/tela_login.php" class="landing-btn">Acessar o sistema</a>
                 </div>
             </div>
         </section>

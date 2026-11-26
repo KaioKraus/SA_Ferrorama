@@ -1,93 +1,28 @@
 <?php
+// Recebe o ID do relatório e monta a página de visualização com acesso ao download.
 session_start();
-include __DIR__ . '/validar_acesso.php';
+require_once __DIR__ . '/../acesso/validar_acesso.php';
 
 $usuarioNome = $_SESSION['usuario_nome'] ?? 'Usuário';
-
 $relatorioId = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT);
 $relatorio = null;
 
-// Busca os dados do relatório escolhido para mostrar seus detalhes.
-if ($relatorioId !== false && $relatorioId !== null) {
-    $colunasRelatorio = mysqli_query($conexao, 'SHOW COLUMNS FROM relatorio');
-    if (!$colunasRelatorio) {
-        error_log('Erro ao consultar as colunas dos relatórios: ' . mysqli_error($conexao));
-        http_response_code(500);
-        die('Não foi possível carregar os detalhes do relatório.');
+// Carrega os dados da falha, do trem e do sensor associados ao ID recebido.
+if ($relatorioId !== false) {
+    $sql = 'SELECT r.relatorio_id, r.data_relatorio, f.falha_id, f.trem_id, f.sensor_id,
+                   t.nome_trem, s.nome_sensor, s.tipo_dado, s.localizacao, s.status AS status_sensor
+            FROM relatorio r
+            LEFT JOIN falha f ON f.falha_id = r.falha_id
+            LEFT JOIN trens t ON t.trem_id = f.trem_id
+            LEFT JOIN sensores s ON s.sensor_id = f.sensor_id
+            WHERE r.relatorio_id = ?';
+    try {
+        $relatorio = $conexao->execute_query($sql, [$relatorioId])->fetch_assoc();
+    } catch (mysqli_sql_exception $erro) {
+        error_log('Erro ao consultar relatório detalhado: ' . $erro->getMessage());
     }
-    $nomesColunasRelatorio = [];
-    while ($coluna = mysqli_fetch_assoc($colunasRelatorio)) {
-        $nomesColunasRelatorio[] = $coluna['Field'];
-    }
-    mysqli_free_result($colunasRelatorio);
-    $expressaoDataInicio = in_array('data_inicio', $nomesColunasRelatorio, true) ? 'r.data_inicio' : 'NULL';
-    $expressaoDataFim = in_array('data_fim', $nomesColunasRelatorio, true) ? 'r.data_fim' : 'NULL';
-
-    $sqlRelatorio = "
-        SELECT r.relatorio_id, r.data_relatorio,
-               {$expressaoDataInicio} AS data_inicio, {$expressaoDataFim} AS data_fim,
-               f.falha_id, f.trem_id, f.sensor_id,
-               t.nome_trem, s.nome_sensor, s.tipo_dado, s.localizacao,
-               s.status AS status_sensor
-        FROM relatorio r
-        LEFT JOIN falha f ON f.falha_id = r.falha_id
-        LEFT JOIN trens t ON t.trem_id = f.trem_id
-        LEFT JOIN sensores s ON s.sensor_id = f.sensor_id
-        WHERE r.relatorio_id = ?
-        LIMIT 1
-    ";
-
-    $stmtRelatorio = mysqli_prepare($conexao, $sqlRelatorio);
-    if ($stmtRelatorio) {
-        mysqli_stmt_bind_param($stmtRelatorio, 'i', $relatorioId);
-        if (mysqli_stmt_execute($stmtRelatorio)) {
-            $resultadoRelatorio = mysqli_stmt_get_result($stmtRelatorio);
-            $relatorio = $resultadoRelatorio ? mysqli_fetch_assoc($resultadoRelatorio) : null;
-            if ($resultadoRelatorio) {
-                mysqli_free_result($resultadoRelatorio);
-            }
-        } else {
-            error_log('Erro ao consultar relatório detalhado: ' . mysqli_stmt_error($stmtRelatorio));
-        }
-        mysqli_stmt_close($stmtRelatorio);
-    }
-}
-
-function formatarDataRelatorio(string $valor): string
-{
-    if ($valor === '' || $valor === null) {
-        return '—';
-    }
-
-    $data = DateTime::createFromFormat('Y-m-d', $valor);
-    if (!$data) {
-        return htmlspecialchars($valor, ENT_QUOTES, 'UTF-8');
-    }
-
-    return $data->format('d/m/Y');
-}
-
-function formatarPeriodoRelatorio(?string $inicio, ?string $fim): string
-{
-    $inicioFormatado = $inicio ? formatarDataRelatorio($inicio) : '—';
-    $fimFormatado = $fim ? formatarDataRelatorio($fim) : '—';
-
-    if ($inicioFormatado === '—' && $fimFormatado === '—') {
-        return '—';
-    }
-
-    if ($inicioFormatado === '—') {
-        return $fimFormatado;
-    }
-
-    if ($fimFormatado === '—') {
-        return $inicioFormatado;
-    }
-
-    return $inicioFormatado . ' - ' . $fimFormatado;
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -95,27 +30,27 @@ function formatarPeriodoRelatorio(?string $inicio, ?string $fim): string
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="../assets/style/style.css">
+    <link rel="stylesheet" href="../../assets/style/style.css">
     <title>Detalhes do Relatório</title>
 </head>
 <body>
     <main>
         <nav class="nav1">
-            <img src="../assets/img/logo.svg" alt="logo" class="logo">
+            <img src="../../assets/img/logo.svg" alt="logo" class="logo">
             <ul class="ul1">
-                <li class="lista1" id="li1"><a href="dashboard.php" class="lista1">Dashboard</a></li>
+                <li class="lista1" id="li1"><a href="../dashboard/dashboard.php" class="lista1">Dashboard</a></li>
                 <hr class="hr1 opacity-100">
                 <li class="lista" id="li1"><a href="tela_relatorios.php" class="lista">Relatórios</a></li>
                 <hr class="hr1 opacity-100">
                 <?php if ($usuarioEhAdministrador): ?>
-                    <li class="lista1" id="li1"><a href="tela_cadastro_user.php" class="lista1">Usuários</a></li>
+                    <li class="lista1" id="li1"><a href="../usuarios/tela_cadastro_user.php" class="lista1">Usuários</a></li>
                     <hr class="hr1 opacity-100">
                 <?php endif; ?>
-                <li class="lista1" id="li1"><a href="tela_rotas.php" class="lista1">Rotas</a></li>
+                <li class="lista1" id="li1"><a href="../rotas/tela_rotas.php" class="lista1">Rotas</a></li>
                 <hr class="hr1 opacity-100">
-                <li class="lista1" id="li1"><a href="tela_sensores.php" class="lista1">Sensores</a></li>
+                <li class="lista1" id="li1"><a href="../sensores/tela_sensores.php" class="lista1">Sensores</a></li>
                 <hr class="hr1 opacity-100">
-                <li class="lista1" id="li1"><a href="tela_trens.php" class="lista1">Trens</a></li>
+                <li class="lista1" id="li1"><a href="../trens/tela_trens.php" class="lista1">Trens</a></li>
             </ul>
 
             <div class="dropdown">
@@ -125,7 +60,7 @@ function formatarPeriodoRelatorio(?string $inicio, ?string $fim): string
                     </div>
                 </div>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="logout.php">Sair</a></li>
+                    <li><a class="dropdown-item" href="../acesso/logout.php">Sair</a></li>
                     <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal_editar_perfil">Editar</button></li>
                 </ul>
             </div>
@@ -297,8 +232,8 @@ function formatarPeriodoRelatorio(?string $inicio, ?string $fim): string
         </section>
     </main>
 
-    <?php include __DIR__ . '/_modal_perfil.php'; ?>
+    <?php include __DIR__ . '/../compartilhado/_modal_perfil.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../script/nav.js"></script>
+    <script src="../../script/nav.js"></script>
 </body>
 </html>

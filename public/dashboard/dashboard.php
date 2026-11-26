@@ -1,6 +1,7 @@
 <?php
+// Monta o painel inicial para a conta autenticada.
 session_start();
-include __DIR__ . '/validar_acesso.php';
+include __DIR__ . '/../acesso/validar_acesso.php';
 $usuarioNome = $_SESSION['usuario_nome'] ?? 'Usuário';
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
@@ -15,13 +16,12 @@ header('Expires: 0');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="../assets/style/style.css?v=<?php echo filemtime(__DIR__ . '/../assets/style/style.css'); ?>">
+    <link rel="stylesheet" href="../../assets/style/style.css?v=<?php echo filemtime(__DIR__ . '/../../assets/style/style.css'); ?>">
     <title>Celestial Steel</title>
 </head>
 
 <body>
 
-    <!--Main-->
     <main>
 
         <nav class="nav1_mobile">
@@ -29,34 +29,34 @@ header('Expires: 0');
                 <i class="bi bi-list"></i>
             </button>
 
-            <img src="../assets/img/logo.svg" alt="logo" class="logo-mobile">
+            <img src="../../assets/img/logo.svg" alt="logo" class="logo-mobile">
         </nav>
 
 
         <nav class="nav1">
 
-            <img src="../assets/img/logo.svg" alt="logo" class="logo">
+            <img src="../../assets/img/logo.svg" alt="logo" class="logo">
 
             <ul class="ul1">
 
                 <li class="lista" id="li1"><a href="dashboard.php" class="lista">Dashboard</a></li>
                 <hr class="hr1 opacity-100">
 
-                <li class="lista1" id="li1"><a href="tela_relatorios.php" class="lista1">Relatórios</a></li>
+                <li class="lista1" id="li1"><a href="../relatorios/tela_relatorios.php" class="lista1">Relatórios</a></li>
                 <hr class="hr1 opacity-100">
 
                 <?php if ($usuarioEhAdministrador): ?>
-                    <li class="lista1" id="li1"><a href="tela_cadastro_user.php" class="lista1">Usuários</a></li>
+                    <li class="lista1" id="li1"><a href="../usuarios/tela_cadastro_user.php" class="lista1">Usuários</a></li>
                     <hr class="hr1 opacity-100">
                 <?php endif; ?>
 
-                <li class="lista1" id="li1"><a href="tela_rotas.php" class="lista1">Rotas</a></li>
+                <li class="lista1" id="li1"><a href="../rotas/tela_rotas.php" class="lista1">Rotas</a></li>
                 <hr class="hr1 opacity-100">
 
-                <li class="lista1" id="li1"><a href="tela_sensores.php" class="lista1">Sensores</a></li>
+                <li class="lista1" id="li1"><a href="../sensores/tela_sensores.php" class="lista1">Sensores</a></li>
                 <hr class="hr1 opacity-100">
 
-                <li class="lista1" id="li1"><a href="tela_trens.php" class="lista1">Trens</a></li>
+                <li class="lista1" id="li1"><a href="../trens/tela_trens.php" class="lista1">Trens</a></li>
             </ul>
 
             <div class="dropdown">
@@ -66,7 +66,7 @@ header('Expires: 0');
                     </div>
                 </div>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="logout.php">Sair</a></li>
+                    <li><a class="dropdown-item" href="../acesso/logout.php">Sair</a></li>
                     <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal_editar_perfil">Editar</button></li>
                 </ul>
             </div>
@@ -140,7 +140,7 @@ header('Expires: 0');
 
                 <div class="dashboard-scroll-wrapper">
                     <div class="trilho">
-                        <img src="../assets/img/trilho2.svg" alt="Visualização do trilho ferroviário" class="trilho-img img-fluid">
+                        <img src="../../assets/img/trilho2.svg" alt="Visualização do trilho ferroviário" class="trilho-img img-fluid">
                     </div>
                 </div>
 
@@ -149,7 +149,6 @@ header('Expires: 0');
 
 
     </main>
-    <!-- Modal: Navegação (para telas pequenas) -->
     <div class="modal fade" id="navModal" tabindex="-1" aria-labelledby="navModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-top">
             <div class="modal-content">
@@ -160,25 +159,25 @@ header('Expires: 0');
                 <div class="modal-body">
                     <ul class="list-unstyled">
                         <li class="mb-2"><a href="dashboard.php" class="text-decoration-none">Dashboard</a></li>
-                        <li class="mb-2"><a href="tela_relatorios.php" class="text-decoration-none">Relatórios</a></li>
+                        <li class="mb-2"><a href="../relatorios/tela_relatorios.php" class="text-decoration-none">Relatórios</a></li>
                         <?php if ($usuarioEhAdministrador): ?>
-                            <li class="mb-2"><a href="tela_cadastro_user.php" class="text-decoration-none">Usuários</a></li>
+                            <li class="mb-2"><a href="../usuarios/tela_cadastro_user.php" class="text-decoration-none">Usuários</a></li>
                         <?php endif; ?>
-                        <li class="mb-2"><a href="tela_rotas.php" class="text-decoration-none">Rotas</a></li>
-                        <li class="mb-2"><a href="tela_sensores.php" class="text-decoration-none">Sensores</a></li>
-                        <li class="mb-2"><a href="tela_login.php" class="text-decoration-none">Sair</a></li>
+                        <li class="mb-2"><a href="../rotas/tela_rotas.php" class="text-decoration-none">Rotas</a></li>
+                        <li class="mb-2"><a href="../sensores/tela_sensores.php" class="text-decoration-none">Sensores</a></li>
+                        <li class="mb-2"><a href="../acesso/tela_login.php" class="text-decoration-none">Sair</a></li>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
 
-    <?php include __DIR__ . '/_modal_perfil.php'; ?>
+    <?php include __DIR__ . '/../compartilhado/_modal_perfil.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
-    <script src="../script/nav.js"></script>
-    <script src="../script/dashboard.js?v=<?php echo filemtime(__DIR__ . '/../script/dashboard.js'); ?>"></script>
+    <script src="../../script/nav.js"></script>
+    <script src="../../script/dashboard.js?v=<?php echo filemtime(__DIR__ . '/../../script/dashboard.js'); ?>"></script>
 </body>
 
 </html>

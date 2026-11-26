@@ -1,101 +1,47 @@
 <?php
+// Prepara a lista, os filtros e o formulário de gerenciamento de rotas.
 session_start();
-include __DIR__ . '/validar_acesso.php';
-require_once "../infra/conexao.php";
+require_once __DIR__ . '/../acesso/validar_acesso.php';
+
 $usuarioNome = $_SESSION['usuario_nome'] ?? 'Usuário';
-// Busca as estações para preencher as escolhas de partida e chegada.
-$resultadoEstacoes = mysqli_query($conexao, 'SELECT nome_estacao FROM estacoes ORDER BY nome_estacao');
-if (!$resultadoEstacoes) {
-    error_log('Erro ao carregar estações: ' . mysqli_error($conexao));
-    http_response_code(500);
-    die('Não foi possível carregar as estações.');
-}
-$estacoesMapa = [];
-while ($estacao = mysqli_fetch_assoc($resultadoEstacoes)) {
-    $estacoesMapa[] = $estacao['nome_estacao'];
-}
-mysqli_free_result($resultadoEstacoes);
-
-$sql_trens = "SELECT trem_id, nome_trem FROM trens ORDER BY nome_trem ASC";
-$resultado_trens = mysqli_query($conexao, $sql_trens);
-
-// Busca pontos únicos existentes nas rotas para os selects
-$pontos = [];
-try {
-    $resultado_pontos = mysqli_query(
-        $conexao,
-        "SELECT ponto AS nome FROM (
-            SELECT ponto_partida AS ponto FROM rotas
-            UNION
-            SELECT ponto_chegada AS ponto FROM rotas
-        ) AS pontos ORDER BY ponto"
-    );
-    while ($row = mysqli_fetch_assoc($resultado_pontos)) {
-        $pontos[] = $row['nome'];
-    }
-} catch (mysqli_sql_exception $exception) {
-    error_log('Erro ao carregar pontos das rotas: ' . $exception->getMessage());
-}
-
-$statusParametro = $_GET['status'] ?? '';
-$statusFiltro = is_string($statusParametro) ? trim($statusParametro) : '';
+// Usa os parâmetros da URL para restaurar os filtros após recarregar a tela.
+$statusFiltro = is_string($_GET['status'] ?? null) ? trim($_GET['status']) : '';
 $statusPermitidos = ['Ativo', 'Manutenção', 'Inativo'];
 if (!in_array($statusFiltro, $statusPermitidos, true)) {
     $statusFiltro = '';
 }
+$partidaFiltro = is_string($_GET['ponto_partida'] ?? null) ? trim($_GET['ponto_partida']) : '';
+$destinoFiltro = is_string($_GET['ponto_chegada'] ?? null) ? trim($_GET['ponto_chegada']) : '';
+$termoBusca = is_string($_GET['q'] ?? null) ? trim($_GET['q']) : '';
 
-$partidaFiltro = isset($_GET['ponto_partida']) && is_string($_GET['ponto_partida']) ? trim($_GET['ponto_partida']) : '';
-$destinoFiltro = isset($_GET['ponto_chegada']) && is_string($_GET['ponto_chegada']) ? trim($_GET['ponto_chegada']) : '';
-$termoBusca = isset($_GET['q']) && is_string($_GET['q']) ? trim($_GET['q']) : '';
+// Consulta as rotas com os nomes dos trens e formata a data de criação.
+$sql = "SELECT r.rota_id, r.nome, r.ponto_partida, r.ponto_chegada, COALESCE(r.descricao, '') AS descricao,
+               r.status, r.trem_id, COALESCE(t.nome_trem, '') AS nome_trem,
+               DATE_FORMAT(r.data_criacao, '%d/%m/%Y %H:%i') AS data_criacao
+        FROM rotas r
+        LEFT JOIN trens t ON t.trem_id = r.trem_id
+        ORDER BY r.rota_id";
 
-// Busca as rotas salvas e o nome do trem de cada rota.
-$sql_rotas = "SELECT r.rota_id, r.nome, r.ponto_partida, r.ponto_chegada, r.descricao, r.status, r.trem_id, t.nome_trem,
-        DATE_FORMAT(r.data_criacao, '%d/%m/%Y %H:%i') AS data_criacao
-    FROM rotas r
-    LEFT JOIN trens t ON t.trem_id = r.trem_id
-    ORDER BY r.rota_id ASC";
-$stmt_rotas = mysqli_prepare($conexao, $sql_rotas);
-if (!$stmt_rotas) {
-    error_log('Erro ao preparar consulta de rotas: ' . mysqli_error($conexao));
+// Carrega as estações, os trens disponíveis e as rotas já cadastradas.
+try {
+    $estacoes = $conexao->query('SELECT nome_estacao FROM estacoes ORDER BY nome_estacao')->fetch_all(MYSQLI_ASSOC);
+    $trens = $conexao->query('SELECT trem_id, nome_trem FROM trens ORDER BY nome_trem')->fetch_all(MYSQLI_ASSOC);
+    $rotasBanco = $conexao->query($sql)->fetch_all(MYSQLI_ASSOC);
+} catch (mysqli_sql_exception $erro) {
+    error_log('Erro ao carregar rotas: ' . $erro->getMessage());
     http_response_code(500);
-    die('Não foi possível carregar as rotas.');
+    exit('Não foi possível carregar as rotas.');
 }
-if (!mysqli_stmt_execute($stmt_rotas)) {
-    error_log('Erro ao consultar rotas: ' . mysqli_stmt_error($stmt_rotas));
-    http_response_code(500);
-    die('Não foi possível carregar as rotas.');
-}
-$resultado_rotas = mysqli_stmt_get_result($stmt_rotas);
 
-$rotasBanco = [];
-if ($resultado_rotas) {
-    while ($row = mysqli_fetch_assoc($resultado_rotas)) {
-        $rotasBanco[] = [
-            'rota_id' => $row['rota_id'] ?? '',
-            'nome' => $row['nome'] ?? '',
-            'ponto_partida' => $row['ponto_partida'] ?? '',
-            'ponto_chegada' => $row['ponto_chegada'] ?? '',
-            'descricao' => $row['descricao'] ?? '',
-            'status' => $row['status'] ?? '',
-            'trem_id' => $row['trem_id'] ?? '',
-            'nome_trem' => $row['nome_trem'] ?? '',
-            'data_criacao' => $row['data_criacao'] ?? '',
-        ];
-    }
-}
-$pontosFiltro = array_merge(
-    $pontos,
-    array_column($rotasBanco, 'ponto_partida'),
-    array_column($rotasBanco, 'ponto_chegada')
-);
-$pontosFiltro = array_values(array_unique(array_filter(
-    array_map(static fn($ponto) => trim((string) $ponto), $pontosFiltro),
-    static fn($ponto) => $ponto !== ''
-)));
+// Combina as estações cadastradas com os pontos de rotas antigas para montar as opções.
+$estacoesMapa = array_column($estacoes, 'nome_estacao');
+$pontos = array_unique(array_merge(array_column($rotasBanco, 'ponto_partida'), array_column($rotasBanco, 'ponto_chegada')));
+sort($pontos, SORT_NATURAL | SORT_FLAG_CASE);
+$opcoesEstacoes = array_unique(array_merge($estacoesMapa, $pontos));
+$pontosFiltro = array_unique(array_map(static fn($ponto) => trim((string) $ponto), $pontos));
+$pontosFiltro = array_filter($pontosFiltro, static fn($ponto) => $ponto !== '');
 sort($pontosFiltro, SORT_NATURAL | SORT_FLAG_CASE);
-mysqli_stmt_close($stmt_rotas);
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -103,13 +49,13 @@ mysqli_stmt_close($stmt_rotas);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="../assets/style/style.css">
+    <link rel="stylesheet" href="../../assets/style/style.css">
     <title>Celestial Steel - Rotas</title>
 </head>
 <body>
 
     <?php
-    // Verifica mensagens de erro ou sucesso na sessão
+    // Mostra mensagens de operações anteriores e as consome da sessão.
     if (isset($_SESSION['mensagem_erro'])): ?>
         <div class="alert alert-warning alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" 
              style="z-index: 9999; max-width: 600px;" role="alert">
@@ -135,34 +81,34 @@ mysqli_stmt_close($stmt_rotas);
                 <i class="bi bi-list"></i>
             </button>
 
-            <img src="../assets/img/logo.svg" alt="logo" class="logo-mobile">
+            <img src="../../assets/img/logo.svg" alt="logo" class="logo-mobile">
         </nav>
 
 
         <nav class="nav1">
 
-            <img src="../assets/img/logo.svg" alt="logo" class="logo">
+            <img src="../../assets/img/logo.svg" alt="logo" class="logo">
 
             <ul class="ul1">
 
-                <li class="lista1" id="li1"><a href="dashboard.php" class="lista1">Dashboard</a></li>
+                <li class="lista1" id="li1"><a href="../dashboard/dashboard.php" class="lista1">Dashboard</a></li>
                 <hr class="hr1 opacity-100">
 
-                <li class="lista1" id="li1"><a href="tela_relatorios.php" class="lista1">Relatórios</a></li>
+                <li class="lista1" id="li1"><a href="../relatorios/tela_relatorios.php" class="lista1">Relatórios</a></li>
                 <hr class="hr1 opacity-100">
 
                 <?php if ($usuarioEhAdministrador): ?>
-                    <li class="lista1" id="li1"><a href="tela_cadastro_user.php" class="lista1">Usuários</a></li>
+                    <li class="lista1" id="li1"><a href="../usuarios/tela_cadastro_user.php" class="lista1">Usuários</a></li>
                     <hr class="hr1 opacity-100">
                 <?php endif; ?>
 
                 <li class="lista" id="li1"><a href="tela_rotas.php" class="lista">Rotas</a></li>
                 <hr class="hr1 opacity-100">
 
-                <li class="lista1" id="li1"><a href="tela_sensores.php" class="lista1">Sensores</a></li>
+                <li class="lista1" id="li1"><a href="../sensores/tela_sensores.php" class="lista1">Sensores</a></li>
                 <hr class="hr1 opacity-100">
 
-                <li class="lista1" id="li1"><a href="tela_trens.php" class="lista1">Trens</a></li>
+                <li class="lista1" id="li1"><a href="../trens/tela_trens.php" class="lista1">Trens</a></li>
             </ul>
 
             <div class="dropdown">
@@ -172,7 +118,7 @@ mysqli_stmt_close($stmt_rotas);
                     </div>
                 </div>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="logout.php">Sair</a></li>
+                    <li><a class="dropdown-item" href="../acesso/logout.php">Sair</a></li>
                     <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal_editar_perfil">Editar</button></li>
                 </ul>
             </div>
@@ -265,7 +211,7 @@ mysqli_stmt_close($stmt_rotas);
                                     $statusNormalizado = strtolower(trim((string) $rota['status']));
                                     if ($statusNormalizado === 'inativo') {
                                         $statusClasse = 'inativo';
-                                    } elseif ($statusNormalizado === 'manutenção' || $statusNormalizado === 'manutencao' || $statusNormalizado === 'manutenção') {
+                                        } elseif (in_array($statusNormalizado, ['manutenção', 'manutencao'], true)) {
                                         $statusClasse = 'manutencao';
                                     }
                                 }
@@ -320,7 +266,6 @@ mysqli_stmt_close($stmt_rotas);
                                             <div class="input-field">
                                                 <select required name="ponto_partida" id="select_ponto_partida" aria-label="Ponto de partida">
                                                     <option value="" selected disabled></option>
-                                                    <?php $opcoesEstacoes = array_values(array_unique(array_merge($estacoesMapa, $pontos))); ?>
                                                     <?php foreach ($opcoesEstacoes as $ponto): ?>
                                                         <option value="<?= htmlspecialchars((string) $ponto) ?>"><?= htmlspecialchars((string) $ponto) ?></option>
                                                     <?php endforeach; ?>
@@ -332,7 +277,6 @@ mysqli_stmt_close($stmt_rotas);
                                             <div class="input-field">
                                                 <select required name="ponto_chegada" id="select_ponto_chegada" aria-label="Ponto de chegada">
                                                     <option value="" selected disabled></option>
-                                                    <?php $opcoesEstacoes = array_values(array_unique(array_merge($estacoesMapa, $pontos))); ?>
                                                     <?php foreach ($opcoesEstacoes as $ponto): ?>
                                                         <option value="<?= htmlspecialchars((string) $ponto) ?>"><?= htmlspecialchars((string) $ponto) ?></option>
                                                     <?php endforeach; ?>
@@ -356,16 +300,9 @@ mysqli_stmt_close($stmt_rotas);
                                             <div class="input-field">
                                                 <select required name="trem_id" id="input_trem_rota" aria-label="Trem">
                                                     <option value="" selected disabled></option>
-                                                    <?php 
-                                                    mysqli_data_seek($resultado_trens, 0);
-                                                    if ($resultado_trens && mysqli_num_rows($resultado_trens) > 0):
-                                                        while($trem = mysqli_fetch_assoc($resultado_trens)): 
-                                                    ?>
+                                                    <?php foreach ($trens as $trem): ?>
                                                         <option value="<?= $trem['trem_id'] ?>"><?= htmlspecialchars($trem['nome_trem']) ?></option>
-                                                    <?php 
-                                                        endwhile;
-                                                    endif; 
-                                                    ?>
+                                                    <?php endforeach; ?>
                                                 </select>
                                                 <label for="input_trem_rota">Trem</label>
                                             </div>
@@ -409,7 +346,6 @@ mysqli_stmt_close($stmt_rotas);
             <div class="modal-dialog modal-dialog-centered modal-xl" style="max-width: 1050px;">
                 <div class="modal-content border-0 rounded-4 shadow">
 
-                    <!-- HEADER -->
                     <div class="modal-header border-0 pb-0 px-4 pt-4">
                         <h4 class="modal-title w-100 text-center fw-bold">
                             Rotas
@@ -423,11 +359,10 @@ mysqli_stmt_close($stmt_rotas);
 
                     </div>
 
-                    <!-- BODY -->
                     <div class="modal-body route-modal-body">
                         <div class="route-modal-layout">
                             <div class="route-visual" aria-label="Visualização da rota">
-                                <img src="../assets/img/trilho.svg" alt="Imagem de trilho" class="route-track-image">
+                                <img src="../../assets/img/trilho.svg" alt="Imagem de trilho" class="route-track-image">
                             </div>
 
                             <div class="route-info-panel">
@@ -447,7 +382,6 @@ mysqli_stmt_close($stmt_rotas);
 
     </main>
 
-    <!-- Modal: Navegação (para telas pequenas) -->
     <div class="modal fade" id="navModal" tabindex="-1" aria-labelledby="navModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-top">
             <div class="modal-content">
@@ -457,14 +391,14 @@ mysqli_stmt_close($stmt_rotas);
                 </div>
                 <div class="modal-body">
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="dashboard.php" class="text-decoration-none">Dashboard</a></li>
-                        <li class="mb-2"><a href="tela_relatorios.php" class="text-decoration-none">Relatórios</a></li>
+                        <li class="mb-2"><a href="../dashboard/dashboard.php" class="text-decoration-none">Dashboard</a></li>
+                        <li class="mb-2"><a href="../relatorios/tela_relatorios.php" class="text-decoration-none">Relatórios</a></li>
                         <?php if ($usuarioEhAdministrador): ?>
-                            <li class="mb-2"><a href="tela_cadastro_user.php" class="text-decoration-none">Usuários</a></li>
+                            <li class="mb-2"><a href="../usuarios/tela_cadastro_user.php" class="text-decoration-none">Usuários</a></li>
                         <?php endif; ?>
                         <li class="mb-2"><a href="tela_rotas.php" class="text-decoration-none">Rotas</a></li>
-                        <li class="mb-2"><a href="tela_sensores.php" class="text-decoration-none">Sensores</a></li>
-                        <li class="mb-2"><a href="tela_login.php" class="text-decoration-none">Sair</a></li>
+                        <li class="mb-2"><a href="../sensores/tela_sensores.php" class="text-decoration-none">Sensores</a></li>
+                        <li class="mb-2"><a href="../acesso/tela_login.php" class="text-decoration-none">Sair</a></li>
                     </ul>
                 </div>
             </div>
@@ -497,16 +431,15 @@ mysqli_stmt_close($stmt_rotas);
         </div>
     </div>
 
-    <?php include __DIR__ . '/_modal_perfil.php'; ?>
+    <?php include __DIR__ . '/../compartilhado/_modal_perfil.php'; ?>
     <script>
         window.rotasDb = <?php echo json_encode($rotasBanco, JSON_HEX_TAG | JSON_UNESCAPED_UNICODE); ?>;
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../script/validacao.js"></script>
-    <script src="../script/nav.js"></script>
-    <script src="../script/rotas.js?v=<?php echo filemtime(__DIR__ . '/../script/rotas.js'); ?>"></script>
+    <script src="../../script/validacao.js"></script>
+    <script src="../../script/nav.js"></script>
+    <script src="../../script/rotas.js?v=<?php echo filemtime(__DIR__ . '/../../script/rotas.js'); ?>"></script>
     <script>
-        // Auto-fechar alertas após alguns segundos
         document.addEventListener('DOMContentLoaded', function() {
             const alertWarning = document.querySelector('.alert-warning');
             const alertSuccess = document.querySelector('.alert-success');
@@ -515,14 +448,14 @@ mysqli_stmt_close($stmt_rotas);
                 setTimeout(function() {
                     const bsAlert = bootstrap.Alert.getOrCreateInstance(alertWarning);
                     bsAlert.close();
-                }, 7000); // 7 segundos para avisos
+                }, 7000);
             }
             
             if (alertSuccess) {
                 setTimeout(function() {
                     const bsAlert = bootstrap.Alert.getOrCreateInstance(alertSuccess);
                     bsAlert.close();
-                }, 4000); // 4 segundos para sucesso
+                }, 4000);
             }
         });
     </script>

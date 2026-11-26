@@ -349,9 +349,7 @@ if (botaoBuscaRelatorios) {
         }
     });
 }
-// O filtro por tipo só é aplicado quando o usuário clica no botão de busca.
 
-// Modal de confirmação de exclusão de relatório
 const modalConfirmDelete = document.getElementById('modal_confirm_delete');
 if (modalConfirmDelete && typeof bootstrap !== 'undefined') {
     const bsModal = new bootstrap.Modal(modalConfirmDelete);

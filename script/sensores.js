@@ -6,13 +6,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const modalCadastroSensor = document.getElementById('modal_cadastro_sensor');
     const formCadastroSensor = document.getElementById('form_cadastro_sensor');
 
-    // Função idêntica à do modal de usuários
     function atualizarLabelFlutuante(campo) {
         if (!campo) return;
         const valor = campo.value ?? '';
         let temValor = String(valor).trim() !== '';
         
-        // Para selects, também verificar se não é a opção disabled
         if (campo.tagName.toLowerCase() === 'select') {
             const opcaoSelecionada = campo.options[campo.selectedIndex];
             if (opcaoSelecionada && opcaoSelecionada.disabled) {
@@ -23,12 +21,10 @@ document.addEventListener('DOMContentLoaded', function () {
         campo.classList.toggle('has-value', temValor);
     }
 
-    // Aplicar em todos os campos quando a página carregar
     document.querySelectorAll('.input-field input, .input-field select, .input-field textarea').forEach(campo => {
         atualizarLabelFlutuante(campo);
         campo.addEventListener('input', () => atualizarLabelFlutuante(campo));
         campo.addEventListener('change', () => atualizarLabelFlutuante(campo));
-        // Para textarea, também escutar blur para garantir atualização
         if (campo.tagName.toLowerCase() === 'textarea') {
             campo.addEventListener('blur', () => atualizarLabelFlutuante(campo));
         }
@@ -62,7 +58,6 @@ document.addEventListener('DOMContentLoaded', function () {
             statusAtivo.checked = true;
         }
         
-        // Remover classe has-value de todos os campos ao resetar
         document.querySelectorAll('#form_cadastro_sensor .input-field input, #form_cadastro_sensor .input-field select, #form_cadastro_sensor .input-field textarea').forEach(campo => {
             campo.classList.remove('has-value');
         });
@@ -146,7 +141,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Adicionar listeners para o toggle Trem/Rota mudar o label do select
     const radioTrem = document.getElementById('vinculo_trem');
     const radioRota = document.getElementById('vinculo_rota');
     const selectLocalizacao = document.getElementById('input_localizacao_sensor');
@@ -168,7 +162,6 @@ document.addEventListener('DOMContentLoaded', function () {
         radioRota.addEventListener('change', atualizarLabelLocalizacao);
     }
 
-    // Inicializar o label correto
     atualizarLabelLocalizacao();
 
     if (inputBuscaSensor && tbodySensores) {
@@ -223,7 +216,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (deleteModalEl && typeof bootstrap !== 'undefined') {
         var bsModal = new bootstrap.Modal(deleteModalEl);
 
-        // Ao clicar no botão .btn_delete na tabela de sensores, pega o ID da primeira célula da linha
         document.addEventListener('click', function (e) {
             var btn = e.target.closest && e.target.closest('.btn_delete');
             if (!btn) return;

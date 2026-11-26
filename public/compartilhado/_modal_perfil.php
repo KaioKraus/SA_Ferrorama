@@ -1,4 +1,5 @@
 <?php
+// Prepara os dados do perfil que aparece no menu das telas internas.
 $usuarioId = $_SESSION['usuario_id'] ?? 0;
 $usuarioNome = '';
 $usuarioEmail = '';
@@ -7,9 +8,9 @@ $usuarioTelefone = '';
 $usuarioCargoId = 0;
 $usuarioPermissao = 'Não informado';
 
-// Busca dados completos do usuário no banco
+// Carrega os dados atuais da conta e o nome do cargo.
 if ($usuarioId > 0) {
-    require_once __DIR__ . '/../infra/conexao.php';
+    require_once __DIR__ . '/../../infra/conexao.php';
     
     $sql = "SELECT u.nome, u.email, u.cpf, u.telefone, u.cargo_id, c.nome AS cargo_nome 
             FROM usuarios u 
@@ -35,7 +36,7 @@ if ($usuarioId > 0) {
     }
 }
 
-// Formata CPF
+// Aplica a máscara de CPF na exibição.
 if (strlen($usuarioCpf) === 11) {
     $usuarioCpf = substr($usuarioCpf, 0, 3) . '.' .
                   substr($usuarioCpf, 3, 3) . '.' .
@@ -45,7 +46,7 @@ if (strlen($usuarioCpf) === 11) {
     $usuarioCpf = $usuarioCpf ?: 'Não informado';
 }
 
-// Formata Telefone
+// Aplica a máscara de telefone na exibição.
 if (strlen($usuarioTelefone) === 11) {
     $usuarioTelefone = '(' . substr($usuarioTelefone, 0, 2) . ') ' .
                        substr($usuarioTelefone, 2, 5) . '-' .
@@ -56,13 +57,12 @@ if (strlen($usuarioTelefone) === 11) {
 ?>
 
 
-<!-- Modal: Editar Perfil (incluir em todas as páginas) -->
 <div class="modal fade" id="modal_editar_perfil" tabindex="-1" aria-labelledby="modal_editar_perfil_label" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 
-            <form method="POST" action="editar_usuario.php" id="form_editar_perfil">
+            <form method="POST" action="../usuarios/editar_usuario.php" id="form_editar_perfil">
                 <div class="perfil_modal_body">
                     <input type="hidden" name="id" value="<?= htmlspecialchars($usuarioId, ENT_QUOTES) ?>">
                     <input type="hidden" name="nome" value="<?= htmlspecialchars($usuarioNome ?: 'Administrador', ENT_QUOTES) ?>">
@@ -137,7 +137,6 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 <?php if (!empty($_SESSION['mensagem_acesso'])): ?>
-    <!-- Modal pequeno de notificação (topo central) -->
     <div class="modal fade" id="modalFlash" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-sm modal-dialog-centered" style="transform: translateY(-40%);">
             <div class="modal-content text-center">

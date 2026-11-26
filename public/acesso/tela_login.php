@@ -1,9 +1,11 @@
 <?php
+// Valida as credenciais e prepara a sessão que libera o acesso às telas internas.
 session_start();
-include "../infra/conexao.php";
+require_once __DIR__ . '/../../infra/conexao.php';
 
 $error = '';
 $animarLogin = false;
+// Processa o formulário apenas no envio das credenciais.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = filter_var(trim($_POST['email'] ?? ''), FILTER_VALIDATE_EMAIL);
     $senhaRecebida = $_POST['senha'] ?? '';
@@ -12,6 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$email || strlen($senha) < 8) {
         $error = 'Email ou senha inválidos.';
     } else {
+        // Consulta a conta pelo e-mail em uma instrução preparada.
         $sql = "SELECT * FROM usuarios WHERE email = ? LIMIT 1";
         if ($stmt = mysqli_prepare($conexao, $sql)) {
             mysqli_stmt_bind_param($stmt, 's', $email);
@@ -20,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user = mysqli_fetch_assoc($result);
 
             if ($user) {
+                // Verifica o hash atual e aceita a senha em texto puro das contas antigas durante a migração.
                 $senhaArmazenada = (string) ($user['senha'] ?? '');
                 $senhaJaHash = password_get_info($senhaArmazenada)['algo'] !== null;
                 $senhaValida = $senhaJaHash
@@ -27,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     : hash_equals($senhaArmazenada, $senha);
 
                 if ($senhaValida) {
+                    // Converte a senha antiga ou atualiza o hash quando o algoritmo precisa de manutenção.
                     if (!$senhaJaHash || password_needs_rehash($senhaArmazenada, PASSWORD_DEFAULT)) {
                         $novoHash = password_hash($senha, PASSWORD_DEFAULT);
                         $stmtHash = mysqli_prepare(
@@ -45,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         }
                     }
 
+                    // Guarda na sessão os dados usados para identificar a conta nas páginas seguintes.
                     $_SESSION['usuario_id'] = $user['usuario_id'];
                     $_SESSION['usuario_nome'] = $user['nome'];
                     $_SESSION['usuario_email'] = strtolower(trim($user['email'] ?? ''));
@@ -75,14 +81,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.4/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="../assets/style/style.css">
+    <link rel="stylesheet" href="../../assets/style/style.css">
 
     <title>Login</title>
 </head>
 
 <body class="body_login<?= $animarLogin ? ' login-animation-pending' : ''; ?>">
 
-    <img src="../assets/img/logo.svg" alt="<?= $animarLogin ? '' : 'Celestial Steel'; ?>" class="logo-login<?= $animarLogin ? ' logo-login-animando' : ''; ?>"<?= $animarLogin ? ' aria-hidden="true"' : ''; ?>>
+    <img src="../../assets/img/logo.svg" alt="<?= $animarLogin ? '' : 'Celestial Steel'; ?>" class="logo-login<?= $animarLogin ? ' logo-login-animando' : ''; ?>"<?= $animarLogin ? ' aria-hidden="true"' : ''; ?>>
 
     <form class="form1" method="post" action=""<?= $animarLogin ? ' aria-hidden="true" inert' : ''; ?>>
 
@@ -118,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </form>
 
-    <script src="../script/validacao.js"></script>
+    <script src="../../script/validacao.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <?php if ($animarLogin): ?>
         <script>
@@ -127,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             function abrirDashboard() {
                 if (redirecionamentoFeito) return;
                 redirecionamentoFeito = true;
-                window.location.replace('dashboard.php');
+                window.location.replace('../dashboard/dashboard.php');
             }
 
             if (

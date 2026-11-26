@@ -4,20 +4,16 @@ document.addEventListener('DOMContentLoaded', function () {
     var modalMonitoramento = document.getElementById('modal_monitoramento');
     var modalVisualizarTrem = document.getElementById('modal_visualizar_trem');
     var isAdmin = modalMonitoramento && modalMonitoramento.dataset.isAdmin === '1';
-    var inputBuscaTrem = document.getElementById('input_busca_trem');
     var btnBuscaTrem = document.getElementById('btn_busca_trem');
     var filtroResponsavelTrem = document.getElementById('filtro_responsavel_trem');
     var filtroStatusTrem = document.getElementById('filtro_status_trem');
-    var trensGrid = document.querySelector('.trens-grid');
 
-    // Função idêntica à do modal de usuários
     function atualizarLabelFlutuante(campo) {
         if (!campo) return;
         const valor = campo.value ?? '';
         campo.classList.toggle('has-value', String(valor).trim() !== '');
     }
 
-    // Aplicar em todos os campos quando a página carregar
     document.querySelectorAll('.input-field input, .input-field select, .input-field textarea').forEach(campo => {
         atualizarLabelFlutuante(campo);
         campo.addEventListener('input', () => atualizarLabelFlutuante(campo));
@@ -39,65 +35,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     });
-
-    function configurarCartoesTrens() {
-        document.querySelectorAll('.btn_edit').forEach(function (btn) {
-            btn.setAttribute('data-bs-toggle', 'modal');
-            btn.setAttribute('data-bs-target', '#modal_monitoramento');
-            btn.setAttribute('aria-label', 'Editar trem');
-        });
-
-        document.querySelectorAll('.trens-card-trem').forEach(function (card) {
-            var status = (card.dataset && card.dataset.status) || '';
-            var rotaAtiva = (card.dataset && card.dataset.rotaAtiva === '1');
-            var statusBadge = card.querySelector('.trens-card-status');
-            if (statusBadge) {
-                statusBadge.classList.remove('ativo', 'inativo', 'manutencao');
-                var statusNormalized = (status || '').toLowerCase();
-                if (statusNormalized === 'ativo') {
-                    statusBadge.classList.add('ativo');
-                } else if (statusNormalized === 'manutenção' || statusNormalized === 'manutencao') {
-                    statusBadge.classList.add('manutencao');
-                } else {
-                    statusBadge.classList.add('inativo');
-                }
-            }
-
-            if (status && status.toLowerCase() === 'ativo' && rotaAtiva) {
-                var deleteBtn = card.querySelector('.btn_delete');
-                if (deleteBtn) {
-                    deleteBtn.remove();
-                }
-            }
-        });
-    }
-
-    function buscarTrens(termo) {
-        if (!trensGrid) return;
-
-        var url = 'buscar_trens.php?q=' + encodeURIComponent(termo || '');
-
-        fetch(url, {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(function (response) {
-            if (!response.ok) {
-                throw new Error('Erro ao buscar trens');
-            }
-            return response.text();
-        })
-        .then(function (html) {
-            trensGrid.innerHTML = html;
-            configurarCartoesTrens();
-        })
-        .catch(function () {
-            trensGrid.innerHTML = '<div class="col-12"><p class="text-center py-4 mb-0">Não foi possível carregar os trens.</p></div>';
-        });
-    }
-
-    configurarCartoesTrens();
 
     function configurarPermissaoModal() {
         var nomeEl = document.getElementById('modal_trem_nome');
@@ -203,7 +140,6 @@ document.addEventListener('DOMContentLoaded', function () {
             var card = botao ? botao.closest('.trens-card-trem') : null;
             preencherModalTrem(card);
             
-            // Atualizar labels após preencher
             var nomeEl = document.getElementById('modal_trem_nome');
             var statusEl = document.getElementById('modal_trem_status');
             var responsavelEl = document.getElementById('modal_trem_responsavel');
@@ -274,7 +210,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             var formData = new FormData(formEditarTrem);
 
-            fetch('editar_trem.php', {
+            fetch(formEditarTrem.action, {
                 method: 'POST',
                 body: formData
             })
@@ -367,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             var formData = new FormData(formCadastroTrem);
 
-            fetch('cadastrar_trem.php', {
+            fetch(formCadastroTrem.action, {
                 method: 'POST',
                 body: formData
             })
@@ -377,7 +313,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     var data = JSON.parse(text);
                     if (data.success) {
                         if (data.reload) {
-                            // Fecha o modal imediatamente e recarrega
                             var modalCadastro = document.getElementById('modal_cadastro');
                             if (modalCadastro && typeof bootstrap !== 'undefined') {
                                 var modalInstance = bootstrap.Modal.getInstance(modalCadastro);

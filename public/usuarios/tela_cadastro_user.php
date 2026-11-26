@@ -1,64 +1,51 @@
 <?php
+// Prepara a tela administrativa que lista e gerencia contas de usuários.
 session_start();
-include __DIR__ . '/validar_acesso.php';
-require_once "../infra/conexao.php";
+require_once __DIR__ . '/../acesso/validar_acesso.php';
+
+// Limita a tela a administradores.
+if (!$usuarioEhAdministrador) {
+    header('Location: ../dashboard/dashboard.php');
+    exit;
+}
+
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Expires: 0');
 
+// Prepara o nome da sessão e os filtros recebidos pela URL.
 $usuarioNome = $_SESSION['usuario_nome'] ?? 'Usuário';
-
-$perfilParametro = $_GET['perfil'] ?? '';
-$perfilFiltro = is_string($perfilParametro) ? trim($perfilParametro) : '';
-$termoBusca = isset($_GET['q']) && is_string($_GET['q']) ? trim($_GET['q']) : '';
-$perfilPermitidos = ['Administrador', 'Funcionário', 'Funcionario'];
-if (!in_array($perfilFiltro, $perfilPermitidos, true)) {
+$termoBusca = is_string($_GET['q'] ?? null) ? trim($_GET['q']) : '';
+$perfilFiltro = is_string($_GET['perfil'] ?? null) ? trim($_GET['perfil']) : '';
+if (!in_array($perfilFiltro, ['Administrador', 'Funcionário', 'Funcionario'], true)) {
     $perfilFiltro = '';
 }
 
-// Busca os usuários para mostrar na tabela.
-$sql = "SELECT 
-            u.usuario_id,
-            u.nome,
-            u.email,
-            u.cpf,
-            u.telefone,
-            u.cep,
-            u.logradouro,
-            u.bairro,
-            u.cidade,
-            u.estado,
-            c.nome AS cargo
+// Busca os campos da tabela e do formulário, junto com o nome do cargo.
+$sql = 'SELECT u.usuario_id, u.nome, u.email, u.cpf, u.telefone, u.cep, u.logradouro,
+               u.bairro, u.cidade, u.estado, c.nome AS cargo
         FROM usuarios u
-        LEFT JOIN Cargos c ON u.cargo_id = c.id
-        ORDER BY u.usuario_id DESC";
-
-$resultado = mysqli_query($conexao, $sql);
-
-if (!$resultado) {
-    die("Erro ao buscar usuários: " . mysqli_error($conexao));
+        LEFT JOIN Cargos c ON c.id = u.cargo_id
+        ORDER BY u.usuario_id DESC';
+try {
+    $usuariosLista = $conexao->query($sql)->fetch_all(MYSQLI_ASSOC);
+} catch (mysqli_sql_exception $erro) {
+    error_log('Erro ao buscar usuários: ' . $erro->getMessage());
+    http_response_code(500);
+    exit('Não foi possível carregar os usuários.');
 }
 
-$usuariosLista = [];
-while ($usuario = mysqli_fetch_assoc($resultado)) {
-    $usuariosLista[] = $usuario;
-}
-
-// Se foi escolhido um cargo, mostra só as pessoas desse cargo.
+// Filtra os resultados pelo perfil selecionado e aceita a grafia antiga sem acento.
 if ($perfilFiltro !== '') {
-    $usuariosLista = array_values(array_filter($usuariosLista, static function ($usuario) use ($perfilFiltro) {
-        $cargo = (string) ($usuario['cargo'] ?? '');
+    $usuariosLista = array_filter($usuariosLista, static function ($usuario) use ($perfilFiltro) {
+        $cargo = $usuario['cargo'] ?? '';
         if (stripos($cargo, 'admin') !== false) {
             return $perfilFiltro === 'Administrador';
         }
-        if (stripos($cargo, 'func') !== false) {
-            return $perfilFiltro === 'Funcionário' || $perfilFiltro === 'Funcionario';
-        }
-        return false;
-    }));
+        return $perfilFiltro !== 'Administrador' && stripos($cargo, 'func') !== false;
+    });
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -68,14 +55,14 @@ if ($perfilFiltro !== '') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="../assets/style/style.css">
+    <link rel="stylesheet" href="../../assets/style/style.css">
     <title>Celestial Steel</title>
 </head>
 
 <body>
 
     <?php
-    // Verifica mensagens de erro ou sucesso na sessão
+    // Mostra mensagens de operações anteriores e as consome da sessão.
     if (isset($_SESSION['mensagem_erro'])): ?>
         <div class="alert alert-warning alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" 
              style="z-index: 9999; max-width: 600px;" role="alert">
@@ -95,7 +82,6 @@ if ($perfilFiltro !== '') {
         <?php unset($_SESSION['mensagem_sucesso']); ?>
     <?php endif; ?>
 
-    <!--Main-->
     <main>
 
         <nav class="nav1_mobile">
@@ -103,20 +89,20 @@ if ($perfilFiltro !== '') {
                 <i class="bi bi-list"></i>
             </button>
 
-            <img src="../assets/img/logo.svg" alt="logo" class="logo-mobile">
+            <img src="../../assets/img/logo.svg" alt="logo" class="logo-mobile">
         </nav>
 
 
         <nav class="nav1">
 
-            <img src="../assets/img/logo.svg" alt="logo" class="logo">
+            <img src="../../assets/img/logo.svg" alt="logo" class="logo">
 
             <ul class="ul1">
 
-                <li class="lista1" id="li1"><a href="dashboard.php" class="lista1">Dashboard</a></li>
+                <li class="lista1" id="li1"><a href="../dashboard/dashboard.php" class="lista1">Dashboard</a></li>
                 <hr class="hr1 opacity-100">
 
-                <li class="lista1" id="li1"><a href="tela_relatorios.php" class="lista1">Relatórios</a></li>
+                <li class="lista1" id="li1"><a href="../relatorios/tela_relatorios.php" class="lista1">Relatórios</a></li>
                 <hr class="hr1 opacity-100">
 
                 <?php if ($usuarioEhAdministrador): ?>
@@ -124,13 +110,13 @@ if ($perfilFiltro !== '') {
                     <hr class="hr1 opacity-100">
                 <?php endif; ?>
 
-                <li class="lista1" id="li1"><a href="tela_rotas.php" class="lista1">Rotas</a></li>
+                <li class="lista1" id="li1"><a href="../rotas/tela_rotas.php" class="lista1">Rotas</a></li>
                 <hr class="hr1 opacity-100">
 
-                <li class="lista1" id="li1"><a href="tela_sensores.php" class="lista1">Sensores</a></li>
+                <li class="lista1" id="li1"><a href="../sensores/tela_sensores.php" class="lista1">Sensores</a></li>
                 <hr class="hr1 opacity-100">
 
-                <li class="lista1" id="li1"><a href="tela_trens.php" class="lista1">Trens</a></li>
+                <li class="lista1" id="li1"><a href="../trens/tela_trens.php" class="lista1">Trens</a></li>
             </ul>
 
             <div class="dropdown">
@@ -140,7 +126,7 @@ if ($perfilFiltro !== '') {
                     </div>
                 </div>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="logout.php">Sair</a></li>
+                    <li><a class="dropdown-item" href="../acesso/logout.php">Sair</a></li>
                     <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal_editar_perfil">Editar</button></li>
                 </ul>
             </div>
@@ -186,14 +172,9 @@ if ($perfilFiltro !== '') {
         <?php foreach ($usuariosLista as $usuario): ?>
 
             <?php
+            // Prepara o indicador do cargo e as máscaras de CPF e telefone para a linha.
             $cargo = $usuario['cargo'] ?? 'Sem permissão';
-            $perfilCargo = stripos($cargo, 'admin') !== false ? 'Administrador' : 'Funcionário';
-
-            if (stripos($cargo, 'admin') !== false) {
-                $classe_cargo = 'badge_admin';
-            } else {
-                $classe_cargo = 'badge_funcionario';
-            }
+            $classeCargo = stripos($cargo, 'admin') !== false ? 'badge_admin' : 'badge_funcionario';
 
             $cpf = $usuario['cpf'];
             $telefone = $usuario['telefone'] ?? '';
@@ -237,7 +218,7 @@ if ($perfilFiltro !== '') {
                 </td>
 
                 <td>
-                    <span class="<?= $classe_cargo ?>">
+                    <span class="<?= $classeCargo ?>">
                         <?= htmlspecialchars($cargo) ?>
                     </span>
                 </td>
@@ -281,18 +262,18 @@ if ($perfilFiltro !== '') {
                             style="position: absolute; right: 20px; top: 20px;"></button>
                     </div>
                     <div class="modal-body px-5 pt-4 pb-4">
-                        <form class="w-100" id="form_cadastro_user">
+                        <form class="w-100" id="form_cadastro_user" method="post" action="cadastrar_usuario.php">
                             <input type="hidden" id="input_user_id" name="id" value="">
                             <div class="row mb-4">
                                 <div class="col pe-2">
                                     <div class="input-field">
-                                        <input required="" autocomplete="off" type="text" id="input_telefone" class="form-control" />
+                                        <input required="" autocomplete="off" type="text" id="input_telefone" name="telefone" class="form-control" />
                                         <label for="input_telefone">Telefone</label>
                                     </div>
                                 </div>
                                 <div class="col ps-2">
                                     <div class="input-field">
-                                        <input required="" autocomplete="off" type="text" id="input_cpf" class="form-control" />
+                                        <input required="" autocomplete="off" type="text" id="input_cpf" name="cpf" class="form-control" />
                                         <label for="input_cpf">CPF</label>
                                     </div>
                                 </div>
@@ -301,7 +282,7 @@ if ($perfilFiltro !== '') {
                             <div class="row mb-4" id="row_senha_nome">
                                 <div class="col pe-2">
                                     <div class="input-field">
-                                        <input required="" autocomplete="off" type="password" id="input_senha" class="form-control pe-5" minlength="8" />
+                                        <input required="" autocomplete="off" type="password" id="input_senha" name="senha" class="form-control pe-5" minlength="8" />
                                         <label for="input_senha">Senha</label>
                                         <button type="button" id="toggleSenhaCadastro" class="btn position-absolute top-50 end-0 translate-middle-y border-0" style="background: transparent; color: #585858; z-index: 5;">
                                             <i class="bi bi-eye"></i>
@@ -310,7 +291,7 @@ if ($perfilFiltro !== '') {
                                 </div>
                                 <div class="col ps-2">
                                     <div class="input-field">
-                                        <input required="" autocomplete="off" type="text" id="input_nome" class="form-control" />
+                                        <input required="" autocomplete="off" type="text" id="input_nome" name="nome" class="form-control" />
                                         <label for="input_nome">Nome</label>
                                     </div>
                                 </div>
@@ -319,7 +300,7 @@ if ($perfilFiltro !== '') {
                             <div class="row mb-4">
                                 <div class="col">
                                     <div class="input-field">
-                                        <input required="" autocomplete="off" type="email" id="input_email" class="form-control" />
+                                        <input required="" autocomplete="off" type="email" id="input_email" name="email" class="form-control" />
                                         <label for="input_email">Email</label>
                                     </div>
                                 </div>
@@ -365,10 +346,10 @@ if ($perfilFiltro !== '') {
 
                             <div class="d-flex justify-content-center mb-5 mt-4">
                                 <div class="toggle-container">
-                                    <input type="radio" name="role" id="admin" checked>
+                                    <input type="radio" name="permissao" id="admin" value="admin" checked>
                                     <label for="admin">Administrador</label>
 
-                                    <input type="radio" name="role" id="funcionario">
+                                    <input type="radio" name="permissao" id="funcionario" value="funcionario">
                                     <label for="funcionario">Funcionário</label>
 
                                     <div class="slider"></div>
@@ -408,8 +389,7 @@ if ($perfilFiltro !== '') {
         </div>
     </div>
 
-    <script src="../script/validacao.js?v=20261006"></script>
-    <!-- Modal: Navegação (para telas pequenas) -->
+    <script src="../../script/validacao.js?v=20261006"></script>
     <div class="modal fade" id="navModal" tabindex="-1" aria-labelledby="navModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-top">
             <div class="modal-content">
@@ -419,25 +399,24 @@ if ($perfilFiltro !== '') {
                 </div>
                 <div class="modal-body">
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="dashboard.php" class="text-decoration-none">Dashboard</a></li>
-                        <li class="mb-2"><a href="tela_relatorios.php" class="text-decoration-none">Relatórios</a></li>
+                        <li class="mb-2"><a href="../dashboard/dashboard.php" class="text-decoration-none">Dashboard</a></li>
+                        <li class="mb-2"><a href="../relatorios/tela_relatorios.php" class="text-decoration-none">Relatórios</a></li>
                         <?php if ($usuarioEhAdministrador): ?>
                             <li class="mb-2"><a href="tela_cadastro_user.php" class="text-decoration-none">Usuários</a></li>
                         <?php endif; ?>
-                        <li class="mb-2"><a href="tela_rotas.php" class="text-decoration-none">Rotas</a></li>
-                        <li class="mb-2"><a href="tela_sensores.php" class="text-decoration-none">Sensores</a></li>
-                        <li class="mb-2"><a href="tela_login.php" class="text-decoration-none">Sair</a></li>
+                        <li class="mb-2"><a href="../rotas/tela_rotas.php" class="text-decoration-none">Rotas</a></li>
+                        <li class="mb-2"><a href="../sensores/tela_sensores.php" class="text-decoration-none">Sensores</a></li>
+                        <li class="mb-2"><a href="../acesso/tela_login.php" class="text-decoration-none">Sair</a></li>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
-    <?php include __DIR__ . '/_modal_perfil.php'; ?>
+    <?php include __DIR__ . '/../compartilhado/_modal_perfil.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../script/nav.js?v=20261006"></script>
-    <script src="../script/usuarios.js?v=<?php echo filemtime(__DIR__ . '/../script/usuarios.js'); ?>"></script>
+    <script src="../../script/nav.js?v=20261006"></script>
+    <script src="../../script/usuarios.js?v=<?php echo filemtime(__DIR__ . '/../../script/usuarios.js'); ?>"></script>
     <script>
-        // Auto-fechar alertas após alguns segundos
         document.addEventListener('DOMContentLoaded', function() {
             const alertWarning = document.querySelector('.alert-warning');
             const alertSuccess = document.querySelector('.alert-success');
@@ -446,14 +425,14 @@ if ($perfilFiltro !== '') {
                 setTimeout(function() {
                     const bsAlert = bootstrap.Alert.getOrCreateInstance(alertWarning);
                     bsAlert.close();
-                }, 7000); // 7 segundos para avisos
+                }, 7000);
             }
             
             if (alertSuccess) {
                 setTimeout(function() {
                     const bsAlert = bootstrap.Alert.getOrCreateInstance(alertSuccess);
                     bsAlert.close();
-                }, 4000); // 4 segundos para sucesso
+                }, 4000);
             }
         });
     </script>

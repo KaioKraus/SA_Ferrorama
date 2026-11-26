@@ -1,119 +1,37 @@
 <?php
+// Prepara os dados para listar, consultar e gerenciar os trens cadastrados.
 session_start();
-include __DIR__ . '/validar_acesso.php';
-require_once __DIR__ . '/../infra/conexao.php';
+require_once __DIR__ . '/../acesso/validar_acesso.php';
+require_once __DIR__ . '/_consulta.php';
 
 $usuarioNome = $_SESSION['usuario_nome'] ?? 'Usuário';
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Expires: 0');
 
-$usuarios = [];
-$resultadoUsuarios = mysqli_query($conexao, "SELECT usuario_id, nome FROM usuarios ORDER BY nome ASC");
-if (!$resultadoUsuarios) {
-    error_log('Erro ao consultar responsáveis dos trens: ' . mysqli_error($conexao));
-    http_response_code(500);
-    die('Não foi possível carregar os responsáveis dos trens.');
-}
-while ($usuario = mysqli_fetch_assoc($resultadoUsuarios)) {
-    $usuarios[] = $usuario;
-}
-
-$termoBusca = isset($_GET['q']) ? trim((string) $_GET['q']) : '';
-$responsavelSelecionado = filter_var($_GET['responsavel'] ?? 0, FILTER_VALIDATE_INT, [
-    'options' => ['min_range' => 0],
-]);
-if ($responsavelSelecionado === false) {
-    $responsavelSelecionado = 0;
-}
-$statusParametro = $_GET['status'] ?? '';
-$statusFiltro = is_string($statusParametro) ? trim($statusParametro) : '';
+// Lê os filtros por ID ou nome, responsável e status.
+$termoBusca = is_string($_GET['q'] ?? null) ? trim($_GET['q']) : '';
+$responsavelSelecionado = filter_var($_GET['responsavel'] ?? null, FILTER_VALIDATE_INT, [
+    'options' => ['min_range' => 1],
+]) ?: 0;
+$statusFiltro = is_string($_GET['status'] ?? null) ? trim($_GET['status']) : '';
 $statusPermitidos = ['Ativo', 'Manutenção', 'Inativo'];
 if (!in_array($statusFiltro, $statusPermitidos, true)) {
     $statusFiltro = '';
 }
-$trens = [];
 
-$colunasTrens = mysqli_query($conexao, 'SHOW COLUMNS FROM trens');
-if ($colunasTrens === false) {
-    error_log('Erro ao consultar as colunas dos trens: ' . mysqli_error($conexao));
+// Carrega a lista de responsáveis e aplica os filtros à consulta de trens.
+try {
+    $usuarios = $conexao->query('SELECT usuario_id, nome FROM usuarios ORDER BY nome')->fetch_all(MYSQLI_ASSOC);
+    $trens = listarTrens($conexao, $termoBusca, $statusFiltro, $responsavelSelecionado);
+} catch (mysqli_sql_exception $erro) {
+    error_log('Erro ao consultar trens: ' . $erro->getMessage());
     http_response_code(500);
-    die('Não foi possível verificar os dados dos trens.');
-}
-$colunasDisponiveis = [];
-while ($coluna = mysqli_fetch_assoc($colunasTrens)) {
-    $colunasDisponiveis[] = $coluna['Field'];
-}
-mysqli_free_result($colunasTrens);
-$sqlVelocidade = in_array('velocidade', $colunasDisponiveis, true) ? 'COALESCE(t.velocidade, 0)' : '0';
-$sqlTemperatura = in_array('temperatura', $colunasDisponiveis, true) ? 'COALESCE(t.temperatura, 0)' : '0';
-$sqlConsumo = in_array('consumo', $colunasDisponiveis, true) ? 'COALESCE(t.consumo, 0)' : '0';
-
-$sqlTrens = '
-        SELECT
-            t.trem_id,
-            t.nome_trem,
-            t.responsavel_id,
-            ' . $sqlVelocidade . ' AS velocidade,
-            ' . $sqlTemperatura . ' AS temperatura,
-            ' . $sqlConsumo . ' AS consumo,
-            COALESCE((SELECT r.nome FROM rotas r WHERE r.trem_id = t.trem_id ORDER BY r.rota_id LIMIT 1), "Sem rota") AS rota_nome,
-            (SELECT COUNT(*) FROM rotas r WHERE r.trem_id = t.trem_id) AS quantidade_rotas,
-            CASE
-                WHEN EXISTS (SELECT 1 FROM rotas r WHERE r.trem_id = t.trem_id AND r.status = "Ativo") THEN "Ativo"
-                WHEN EXISTS (SELECT 1 FROM rotas r WHERE r.trem_id = t.trem_id AND r.status = "Manutenção") THEN "Manutenção"
-                ELSE "Inativo"
-            END AS status_trem,
-            CASE WHEN EXISTS (SELECT 1 FROM rotas r WHERE r.trem_id = t.trem_id AND r.status = "Ativo") THEN 1 ELSE 0 END AS rota_ativa
-        FROM trens t
-        WHERE (? = "" OR CAST(t.trem_id AS CHAR) LIKE ? OR t.nome_trem LIKE ?)
-            AND (? = 0 OR t.responsavel_id = ?)
-        ORDER BY t.trem_id ASC
-    ';
-$stmtTrens = mysqli_prepare($conexao, $sqlTrens);
-if ($stmtTrens === false) {
-    error_log('Erro ao preparar consulta de trens: ' . mysqli_error($conexao));
-    http_response_code(500);
-    die('Não foi possível carregar os trens cadastrados.');
+    exit('Não foi possível carregar os trens cadastrados.');
 }
 
-$filtroBusca = '%' . $termoBusca . '%';
-mysqli_stmt_bind_param(
-    $stmtTrens,
-    'sssii',
-    $termoBusca,
-    $filtroBusca,
-    $filtroBusca,
-    $responsavelSelecionado,
-    $responsavelSelecionado
-);
-if (!mysqli_stmt_execute($stmtTrens)) {
-    error_log('Erro ao consultar trens: ' . mysqli_stmt_error($stmtTrens));
-    mysqli_stmt_close($stmtTrens);
-    http_response_code(500);
-    die('Não foi possível carregar os trens cadastrados.');
-}
-$resultadoTrens = mysqli_stmt_get_result($stmtTrens);
-
-if (!$resultadoTrens) {
-    error_log('Erro ao consultar trens: ' . mysqli_error($conexao));
-    mysqli_stmt_close($stmtTrens);
-    http_response_code(500);
-    die('Não foi possível carregar os trens cadastrados.');
-}
-while ($trem = mysqli_fetch_assoc($resultadoTrens)) {
-    $trens[] = $trem;
-}
-mysqli_stmt_close($stmtTrens);
-
-if ($statusFiltro !== '') {
-    $trens = array_values(array_filter($trens, static function ($trem) use ($statusFiltro) {
-        $statusTrem = (string) ($trem['status_trem'] ?? 'Inativo');
-        return $statusTrem === $statusFiltro;
-    }));
-}
+$mensagemSemTrens = 'Nenhum trem cadastrado.';
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
 
@@ -122,14 +40,14 @@ if ($statusFiltro !== '') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="../assets/style/style.css">
+    <link rel="stylesheet" href="../../assets/style/style.css">
     <title>Celestial Steel</title>
 </head>
 
 <body>
 
     <?php
-    // Verifica mensagens de erro ou sucesso na sessão
+    // Mostra mensagens de operações anteriores e as consome da sessão.
     if (isset($_SESSION['mensagem_erro'])): ?>
         <div class="alert alert-warning alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3" 
              style="z-index: 9999; max-width: 600px;" role="alert">
@@ -155,7 +73,6 @@ if ($statusFiltro !== '') {
 </style>
 <?php endif; ?>
 
-    <!--Main-->
     <main>
 
         <nav class="nav1_mobile">
@@ -163,31 +80,31 @@ if ($statusFiltro !== '') {
                 <i class="bi bi-list"></i>
             </button>
 
-            <img src="../assets/img/logo.svg" alt="logo" class="logo-mobile">
+            <img src="../../assets/img/logo.svg" alt="logo" class="logo-mobile">
         </nav>
 
 
         <nav class="nav1">
 
-            <img src="../assets/img/logo.svg" alt="logo" class="logo">
+            <img src="../../assets/img/logo.svg" alt="logo" class="logo">
 
             <ul class="ul1">
 
-                <li class="lista1" id="li1"><a href="dashboard.php" class="lista1">Dashboard</a></li>
+                <li class="lista1" id="li1"><a href="../dashboard/dashboard.php" class="lista1">Dashboard</a></li>
                 <hr class="hr1 opacity-100">
 
-                <li class="lista1" id="li1"><a href="tela_relatorios.php" class="lista1">Relatórios</a></li>
+                <li class="lista1" id="li1"><a href="../relatorios/tela_relatorios.php" class="lista1">Relatórios</a></li>
                 <hr class="hr1 opacity-100">
 
                 <?php if ($usuarioEhAdministrador): ?>
-                    <li class="lista1" id="li1"><a href="tela_cadastro_user.php" class="lista1">Usuários</a></li>
+                    <li class="lista1" id="li1"><a href="../usuarios/tela_cadastro_user.php" class="lista1">Usuários</a></li>
                     <hr class="hr1 opacity-100">
                 <?php endif; ?>
 
-                <li class="lista1" id="li1"><a href="tela_rotas.php" class="lista1">Rotas</a></li>
+                <li class="lista1" id="li1"><a href="../rotas/tela_rotas.php" class="lista1">Rotas</a></li>
                 <hr class="hr1 opacity-100">
 
-                <li class="lista1" id="li1"><a href="tela_sensores.php" class="lista1">Sensores</a></li>
+                <li class="lista1" id="li1"><a href="../sensores/tela_sensores.php" class="lista1">Sensores</a></li>
                 <hr class="hr1 opacity-100">
 
                 <li class="lista" id="li1"><a href="tela_trens.php" class="lista">Trens</a></li>
@@ -200,7 +117,7 @@ if ($statusFiltro !== '') {
                     </div>
                 </div>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="logout.php">Sair</a></li>
+                    <li><a class="dropdown-item" href="../acesso/logout.php">Sair</a></li>
                     <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal_editar_perfil">Editar</button></li>
                 </ul>
             </div>
@@ -242,66 +159,7 @@ if ($statusFiltro !== '') {
 
                 <div class="trens-lista">
                     <div class="row trens-grid">
-                        <?php if (empty($trens)): ?>
-                            <div class="col-12">
-                                <p class="text-center py-4 mb-0">Nenhum trem cadastrado.</p>
-                            </div>
-                        <?php else: ?>
-                            <?php foreach ($trens as $trem): ?>
-                                <?php
-                                $tremId = (int) $trem['trem_id'];
-                                $nomeTrem = htmlspecialchars((string) $trem['nome_trem'], ENT_QUOTES, 'UTF-8');
-                                $responsavelId = (int) $trem['responsavel_id'];
-                                $statusTrem = (string) ($trem['status_trem'] ?? 'Inativo');
-                                $statusClasseTrem = strtolower(trim($statusTrem));
-                                if ($statusClasseTrem === 'manutenção' || $statusClasseTrem === 'manutencao') {
-                                    $statusClasseTrem = 'manutencao';
-                                } elseif ($statusClasseTrem === 'ativo') {
-                                    $statusClasseTrem = 'ativo';
-                                } else {
-                                    $statusClasseTrem = 'inativo';
-                                }
-                                $rotaAtiva = !empty($trem['rota_ativa']) && (int) $trem['rota_ativa'] === 1;
-                                $velocidadeTrem = (float) ($trem['velocidade'] ?? 0);
-                                $temperaturaTrem = (float) ($trem['temperatura'] ?? 0);
-                                $consumoTrem = (float) ($trem['consumo'] ?? 0);
-                                $rotaNome = (string) ($trem['rota_nome'] ?? 'Sem rota');
-                                $quantidadeRotas = (int) ($trem['quantidade_rotas'] ?? 0);
-                                $mostrarBotaoExcluir = !($statusTrem === 'Ativo' && $rotaAtiva);
-                                ?>
-                                <div class="col">
-                                    <article class="trens-card-trem" data-id="<?= $tremId; ?>" data-nome="<?= $nomeTrem; ?>" data-responsavel="<?= $responsavelId; ?>" data-status="<?= htmlspecialchars($statusTrem, ENT_QUOTES, 'UTF-8'); ?>" data-rota="<?= htmlspecialchars($rotaNome, ENT_QUOTES, 'UTF-8'); ?>" data-quantidade-rotas="<?= $quantidadeRotas; ?>" data-velocidade="<?= htmlspecialchars((string) $velocidadeTrem, ENT_QUOTES, 'UTF-8'); ?>" data-temperatura="<?= htmlspecialchars((string) $temperaturaTrem, ENT_QUOTES, 'UTF-8'); ?>" data-consumo="<?= htmlspecialchars((string) $consumoTrem, ENT_QUOTES, 'UTF-8'); ?>" data-rota-ativa="<?= $rotaAtiva ? '1' : '0'; ?>">
-                                        <div class="trens-card-cabecalho">
-                                            <div class="trens-card-header-row">
-                                                <span class="trens-card-status <?= htmlspecialchars($statusClasseTrem, ENT_QUOTES, 'UTF-8'); ?>">
-                                                    <?= htmlspecialchars($statusTrem, ENT_QUOTES, 'UTF-8'); ?>
-                                                </span>
-                                                <div class="trens-card-acoes">
-                                                    <?php if ($usuarioEhAdministrador): ?>
-                                                        <button class="btn_edit" type="button" aria-label="Editar trem">
-                                                            <i class="bi bi-pencil-square"></i>
-                                                        </button>
-                                                        <?php if ($mostrarBotaoExcluir): ?>
-                                                            <button class="btn_delete" type="button" data-id="<?= $tremId; ?>" aria-label="Excluir trem">
-                                                                <i class="bi bi-trash"></i>
-                                                            </button>
-                                                        <?php endif; ?>
-                                                    <?php endif; ?>
-                                                    <button class="trens-card-acao" type="button" data-bs-toggle="modal" data-bs-target="#modal_visualizar_trem" aria-label="Detalhes do trem">
-                                                        <i class="bi bi-info-lg"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div class="trens-card-id">
-                                                <strong>ID: <?= $tremId; ?></strong>
-                                            </div>
-                                            <p class="trens-card-nome">Nome: <?= $nomeTrem; ?></p>
-                                        </div>
-                                        <img src="../assets/img/trem_card.png" alt="Trem" class="trens-card-img">
-                                    </article>
-                                </div>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
+                        <?php require __DIR__ . '/_cartoes.php'; ?>
                     </div>
                 </div>
             </div>
@@ -416,7 +274,7 @@ if ($statusFiltro !== '') {
                     <div class="modal-body route-modal-body">
                         <div class="route-modal-layout">
                             <div class="route-visual" aria-label="Visualização do trem">
-                                <img src="../assets/img/trilho.svg" alt="Imagem de trilho" class="route-track-image">
+                                <img src="../../assets/img/trilho.svg" alt="Imagem de trilho" class="route-track-image">
                             </div>
 
                             <div class="route-info-panel">
@@ -457,7 +315,6 @@ if ($statusFiltro !== '') {
         </div>
     </div>
 
-    <!-- Modal: Navegação (para telas pequenas) -->
     <div class="modal fade" id="navModal" tabindex="-1" aria-labelledby="navModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-top">
             <div class="modal-content">
@@ -467,29 +324,28 @@ if ($statusFiltro !== '') {
                 </div>
                 <div class="modal-body">
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="dashboard.php" class="text-decoration-none">Dashboard</a></li>
-                        <li class="mb-2"><a href="tela_relatorios.php" class="text-decoration-none">Relatórios</a></li>
+                        <li class="mb-2"><a href="../dashboard/dashboard.php" class="text-decoration-none">Dashboard</a></li>
+                        <li class="mb-2"><a href="../relatorios/tela_relatorios.php" class="text-decoration-none">Relatórios</a></li>
                         <?php if ($usuarioEhAdministrador): ?>
-                            <li class="mb-2"><a href="tela_cadastro_user.php" class="text-decoration-none">Usuários</a></li>
+                            <li class="mb-2"><a href="../usuarios/tela_cadastro_user.php" class="text-decoration-none">Usuários</a></li>
                         <?php endif; ?>
-                        <li class="mb-2"><a href="tela_rotas.php" class="text-decoration-none">Rotas</a></li>
-                        <li class="mb-2"><a href="tela_sensores.php" class="text-decoration-none">Sensores</a></li>
-                        <li class="mb-2"><a href="tela_login.php" class="text-decoration-none">Sair</a></li>
+                        <li class="mb-2"><a href="../rotas/tela_rotas.php" class="text-decoration-none">Rotas</a></li>
+                        <li class="mb-2"><a href="../sensores/tela_sensores.php" class="text-decoration-none">Sensores</a></li>
+                        <li class="mb-2"><a href="../acesso/tela_login.php" class="text-decoration-none">Sair</a></li>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
 
-    <?php include __DIR__ . '/_modal_perfil.php'; ?>
+    <?php include __DIR__ . '/../compartilhado/_modal_perfil.php'; ?>
     <script>
         window.tremUsuarios = <?= json_encode($usuarios, JSON_UNESCAPED_UNICODE); ?>;
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../script/nav.js"></script>
-    <script src="../script/trens.js?v=<?php echo filemtime(__DIR__ . '/../script/trens.js'); ?>"></script>
+    <script src="../../script/nav.js"></script>
+    <script src="../../script/trens.js?v=<?php echo filemtime(__DIR__ . '/../../script/trens.js'); ?>"></script>
     <script>
-        // Auto-fechar alertas após alguns segundos
         document.addEventListener('DOMContentLoaded', function() {
             const alertWarning = document.querySelector('.alert-warning');
             const alertSuccess = document.querySelector('.alert-success');
@@ -498,14 +354,14 @@ if ($statusFiltro !== '') {
                 setTimeout(function() {
                     const bsAlert = bootstrap.Alert.getOrCreateInstance(alertWarning);
                     bsAlert.close();
-                }, 7000); // 7 segundos para avisos
+                }, 7000);
             }
             
             if (alertSuccess) {
                 setTimeout(function() {
                     const bsAlert = bootstrap.Alert.getOrCreateInstance(alertSuccess);
                     bsAlert.close();
-                }, 4000); // 4 segundos para sucesso
+                }, 4000);
             }
         });
     </script>

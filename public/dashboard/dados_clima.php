@@ -1,6 +1,7 @@
 <?php
+// Consulta a Open-Meteo e devolve ao painel uma leitura meteorológica de Joinville.
 session_start();
-require_once __DIR__ . '/validar_acesso.php';
+require_once __DIR__ . '/../acesso/validar_acesso.php';
 
 date_default_timezone_set('America/Sao_Paulo');
 
@@ -8,6 +9,7 @@ header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 
+// Padroniza a resposta JSON e encerra o processamento do endpoint.
 function responderClima(int $statusHttp, array $dados): void
 {
     http_response_code($statusHttp);
@@ -20,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     responderClima(405, ['success' => false, 'message' => 'Método não permitido.']);
 }
 
+// Pede a observação atual para as coordenadas configuradas, no horário de São Paulo.
 $url = 'https://api.open-meteo.com/v1/forecast?' . http_build_query([
     'latitude' => -26.30444,
     'longitude' => -48.84556,
@@ -27,6 +30,7 @@ $url = 'https://api.open-meteo.com/v1/forecast?' . http_build_query([
     'timezone' => 'America/Sao_Paulo',
 ], '', '&', PHP_QUERY_RFC3986);
 
+// Executa a solicitação com limites de conexão e verificação do certificado HTTPS.
 $curl = curl_init($url);
 if ($curl === false) {
     error_log('Não foi possível iniciar a consulta meteorológica.');
@@ -53,6 +57,7 @@ if ($resposta === false || $statusHttp !== 200) {
     responderClima(502, ['success' => false, 'message' => 'Não foi possível atualizar o clima. Tente novamente mais tarde.']);
 }
 
+// Confere os campos esperados antes de converter as condições para o formato do painel.
 $dadosApi = json_decode($resposta, true);
 $atual = $dadosApi['current'] ?? null;
 if (
@@ -66,6 +71,7 @@ if (
     responderClima(502, ['success' => false, 'message' => 'O serviço meteorológico retornou dados inválidos.']);
 }
 
+// Converte o código meteorológico em descrição e ícones para o dia e para a noite.
 $codigoTempo = (int) $atual['weather_code'];
 $duranteODia = (int) $atual['is_day'] === 1;
 $condicoes = [
@@ -99,6 +105,7 @@ $condicoes = [
     99 => ['Trovoada com granizo intenso', 'bi-cloud-lightning-rain-fill', 'bi-cloud-lightning-rain-fill'],
 ];
 $condicao = $condicoes[$codigoTempo] ?? ['Condição desconhecida', 'bi-cloud', 'bi-cloud'];
+// Valida a data da observação antes de enviá-la ao navegador.
 $horarioObservacao = strtotime((string) $atual['time']);
 if ($horarioObservacao === false) {
     error_log('Horário inválido recebido da API Open-Meteo.');

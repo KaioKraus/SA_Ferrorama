@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const rotasDb = Array.isArray(window.rotasDb) ? window.rotasDb : [];
     const avisoExclusaoRota = document.getElementById('aviso_exclusao_rota');
 
-    // Função para atualizar label flutuante - IGUAL AO usuarios.js
     function atualizarLabelFlutuante(campo) {
         if (!campo) return;
 
@@ -18,7 +17,6 @@ document.addEventListener('DOMContentLoaded', function () {
         campo.classList.toggle('has-value', temValor);
     }
 
-    // Aplicar em TODOS os campos .input-field - igual aos outros modais
     document.querySelectorAll('.input-field input, .input-field select, .input-field textarea').forEach(campo => {
         atualizarLabelFlutuante(campo);
         campo.addEventListener('input', function() {
@@ -41,8 +39,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 5000);
     }
 
-    // Configuração das estações baseada no projeto trem-visual-controle (circuito XP500)
-    // Coordenadas extraídas do arquivo circuito.js com as posições das agulhas e para-choque
     const stations = [
         {
             id: 'agulha-norte',
@@ -97,13 +93,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const mapImage = mapContainer.querySelector('.route-selector-image');
         if (!mapImage) return;
 
-        // Aguarda o carregamento da imagem
         const setupMarkers = function() {
             const imageRect = mapImage.getBoundingClientRect();
             const scaleX = imageRect.width / stations[0].viewBox.width;
             const scaleY = imageRect.height / stations[0].viewBox.height;
 
-            // Remove marcadores antigos se existirem
             mapContainer.querySelectorAll('.station-marker').forEach(m => m.remove());
 
             stations.forEach(function(station) {
@@ -137,7 +131,6 @@ document.addEventListener('DOMContentLoaded', function () {
             mapImage.addEventListener('load', setupMarkers);
         }
 
-        // Reposiciona marcadores ao redimensionar
         let resizeTimeout;
         window.addEventListener('resize', function() {
             clearTimeout(resizeTimeout);
@@ -151,33 +144,27 @@ document.addEventListener('DOMContentLoaded', function () {
         
         if (!selectPartida || !selectChegada) return;
 
-        // Remove seleções visuais anteriores
         document.querySelectorAll('.station-marker').forEach(function(m) {
             m.classList.remove('selected-departure', 'selected-arrival');
         });
 
-        // Lógica de seleção: primeiro clique = partida, segundo = chegada
         const nomePartida = normalizarNomeEstacao(stationName);
 
         if (selectedDeparture === null) {
-            // Primeira seleção: Ponto de Partida
             selectedDeparture = nomePartida;
             selectPartida.value = nomePartida;
             markerElement.classList.add('selected-departure');
         } else if (selectedArrival === null && nomePartida !== selectedDeparture) {
-            // Segunda seleção: Ponto de Chegada (deve ser diferente)
             selectedArrival = nomePartida;
             selectChegada.value = nomePartida;
             markerElement.classList.add('selected-arrival');
             
-            // Marca novamente o ponto de partida
             document.querySelectorAll('.station-marker').forEach(function(m) {
                 if (normalizarNomeEstacao(m.dataset.stationName) === selectedDeparture) {
                     m.classList.add('selected-departure');
                 }
             });
         } else {
-            // Reset: começar de novo
             selectedDeparture = nomePartida;
             selectedArrival = null;
             selectPartida.value = nomePartida;
@@ -198,7 +185,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (selectChegada) selectChegada.value = '';
     }
 
-    // Inicializar marcadores quando o modal for aberto
     if (document.getElementById('modalAddRota')) {
         document.getElementById('modalAddRota').addEventListener('shown.bs.modal', function() {
             setTimeout(initializeStationMarkers, 100);
@@ -352,7 +338,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    // Formulário de cadastro de rota
     const formCadastroRota = document.getElementById('form_cadastro_rota');
     const modalAddRota = document.getElementById('modalAddRota');
     const tituloModalRota = document.getElementById('titulo_modal_rota');
@@ -372,12 +357,10 @@ document.addEventListener('DOMContentLoaded', function () {
         botaoAdicionarRota.addEventListener('click', definirModoCadastroRota);
     }
 
-    // Listener para quando o modal abrir
     if (modalAddRota) {
         modalAddRota.addEventListener('show.bs.modal', function (event) {
             const botaoEditar = event.relatedTarget;
             
-            // Se não for botão de editar, não faz nada (deixa o modal limpo para cadastro)
             if (!botaoEditar || !botaoEditar.classList.contains('btn_edit')) {
                 return;
             }
@@ -403,23 +386,19 @@ document.addEventListener('DOMContentLoaded', function () {
             if (tituloModalRota) tituloModalRota.textContent = 'Editar Rota';
             if (botaoSalvarRota) botaoSalvarRota.textContent = 'Salvar';
             
-            // Atualizar labels após preencher - IGUAL AO trens.js
             const inputNome = document.getElementById('input_nome_rota');
             const selectTrem = document.getElementById('input_trem_rota');
             const textareaDescricao = document.getElementById('input_descricao_rota');
             
-            // Usar setTimeout para garantir que o DOM foi atualizado
             setTimeout(function() {
                 if (inputNome) atualizarLabelFlutuante(inputNome);
                 if (selectTrem) atualizarLabelFlutuante(selectTrem);
                 if (textareaDescricao) atualizarLabelFlutuante(textareaDescricao);
             }, 50);
             
-            // Preencher seleção de estações no mapa
             selectedDeparture = normalizarNomeEstacao(rota.ponto_partida || null);
             selectedArrival = normalizarNomeEstacao(rota.ponto_chegada || null);
             
-            // Atualizar marcadores visuais
             setTimeout(function() {
                 document.querySelectorAll('.station-marker').forEach(function(marker) {
                     const stationName = normalizarNomeEstacao(marker.dataset.stationName);
@@ -494,7 +473,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Limpar mensagem ao abrir o modal novamente
     if (modalAddRota) {
         modalAddRota.addEventListener('show.bs.modal', function () {
             const mensagemDiv = document.getElementById('mensagem_cadastro_rota');

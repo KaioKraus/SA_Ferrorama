@@ -1,7 +1,8 @@
 <?php
+// Exclui um sensor sem histórico e devolve o resultado à listagem.
 session_start();
 
-require_once __DIR__ . '/validar_acesso.php';
+require_once __DIR__ . '/../acesso/validar_acesso.php';
 
 function voltarParaSensores(): void
 {
@@ -9,6 +10,7 @@ function voltarParaSensores(): void
     exit;
 }
 
+// Exige POST, permissão administrativa e um ID válido.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     header('Allow: POST');
@@ -30,11 +32,13 @@ if ($sensorId === false) {
     voltarParaSensores();
 }
 
+// Verifica o histórico e tenta excluir o sensor dentro da mesma transação.
 try {
     if (!mysqli_begin_transaction($conexao)) {
         throw new RuntimeException('Não foi possível iniciar a exclusão.');
     }
 
+    // Procura medições ou falhas que referenciam o sensor. Um registro é suficiente para impedir a exclusão.
     $stmtHistorico = mysqli_prepare(
         $conexao,
         'SELECT sensor_id FROM valor_sensor WHERE sensor_id = ?
@@ -59,6 +63,7 @@ try {
         voltarParaSensores();
     }
 
+    // Remove o sensor se a operação ainda encontrar o ID selecionado.
     $stmtExcluir = mysqli_prepare($conexao, 'DELETE FROM sensores WHERE sensor_id = ? LIMIT 1');
     if (!$stmtExcluir) {
         throw new RuntimeException('Não foi possível preparar a exclusão do sensor.');

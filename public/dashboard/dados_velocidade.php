@@ -1,15 +1,16 @@
 <?php
+// Devolve ao painel as medições de velocidade, temperatura e consumo por trem.
 session_start();
-require_once __DIR__ . '/validar_acesso.php';
-require_once __DIR__ . '/../infra/conexao.php';
+require_once __DIR__ . '/../acesso/validar_acesso.php';
 
-// Definir timezone para horário de Brasília
+// Usa o horário de Brasília ao preparar as amostras devolvidas ao painel.
 date_default_timezone_set('America/Sao_Paulo');
 
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 
+// Restringe o endpoint à leitura de dados por GET.
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     http_response_code(405);
     header('Allow: GET');
@@ -17,6 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     exit;
 }
 
+// Confere se o banco tem as colunas de telemetria, que podem faltar em instalações antigas.
 $colunasTrens = mysqli_query($conexao, 'SHOW COLUMNS FROM trens');
 if ($colunasTrens === false) {
     error_log('Erro ao consultar as colunas dos trens: ' . mysqli_error($conexao));
@@ -39,6 +41,7 @@ while ($coluna = mysqli_fetch_assoc($colunasTrens)) {
     }
 }
 mysqli_free_result($colunasTrens);
+// Usa zero para cada métrica cuja coluna ainda não existe.
 $campoVelocidade = $temVelocidade ? 'velocidade' : '0 AS velocidade';
 $campoTemperatura = $temTemperatura ? 'temperatura' : '0 AS temperatura';
 $campoConsumo = $temConsumo ? 'consumo' : '0 AS consumo';
@@ -51,6 +54,7 @@ if ($resultado === false) {
     exit;
 }
 
+// Organiza as linhas em uma lista com identificadores e medições numéricas.
 $trens = [];
 while ($trem = mysqli_fetch_assoc($resultado)) {
     $trens[] = [
@@ -63,6 +67,7 @@ while ($trem = mysqli_fetch_assoc($resultado)) {
 }
 mysqli_free_result($resultado);
 
+// Habilita a simulação de consumo quando há trens e todas as medições de consumo estão zeradas.
 $consumoSimulado = count($trens) > 0;
 foreach ($trens as $trem) {
     if ($trem['consumo'] != 0.0) {
@@ -71,6 +76,7 @@ foreach ($trens as $trem) {
     }
 }
 
+// Calcula o histórico simulado em intervalos de cinco segundos.
 $historicoConsumo = [];
 if ($consumoSimulado) {
     $intervaloAtual = (int) floor(time() / 5);

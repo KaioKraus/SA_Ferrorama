@@ -175,7 +175,6 @@ document.addEventListener('DOMContentLoaded', function () {
         filtrarUsuarios();
     }
 
-    // Modal de confirmação de exclusão
     const modalEl = document.getElementById('modal_confirm_delete');
     if (modalEl && typeof bootstrap !== 'undefined') {
         const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
@@ -206,7 +205,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Editar usuário: abre modal de cadastro preenchido com dados da linha
     document.addEventListener('click', function (event) {
         const btn = event.target.closest && event.target.closest('.btn_edit');
         if (!btn) return;
@@ -221,7 +219,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const telefone = cells[3] ? cells[3].textContent.trim() : '';
         const permissaoText = cells[4] ? cells[4].textContent.trim().toLowerCase() : '';
 
-        // Preenche os inputs do modal
         const inputId = document.getElementById('input_user_id');
         const inputCpf = document.getElementById('input_cpf');
         const inputEmail = document.getElementById('input_email');
@@ -283,18 +280,15 @@ document.addEventListener('DOMContentLoaded', function () {
             atualizarLabelFlutuante(inputSenha);
         }
 
-        // Tenta identificar permissão pelo texto da célula
         if (permissaoText.includes('admin')) {
             if (radioAdmin) radioAdmin.checked = true;
         } else {
             if (radioFunc) radioFunc.checked = true;
         }
 
-        // Se o botão ou a linha tiver dataset.id, usa como id
         const id = (btn.dataset && btn.dataset.id) || (row.dataset && row.dataset.id) || '';
         if (inputId) inputId.value = id;
 
-        // Ajusta título e botão do modal
         const modalEl = document.getElementById('modal_cadastro');
         const modalTitle = document.getElementById('label_modal_cadastro');
         const submitBtn = document.querySelector('#form_cadastro_user .btn_adicionar');
@@ -307,7 +301,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Quando abrir o modal pelo botão "Adicionar", resetar para modo cadastro
     const addButtons = document.querySelectorAll('[data-bs-target="#modal_cadastro"]');
     addButtons.forEach(btn => {
         btn.addEventListener('click', function () {
@@ -325,7 +318,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             document.querySelectorAll('#form_cadastro_user .input-field input, #form_cadastro_user .input-field select, #form_cadastro_user .input-field textarea').forEach(campo => atualizarLabelFlutuante(campo));
             
-            // Senha obrigatória no cadastro
             const senhaInput = document.getElementById('input_senha');
             if (senhaInput) {
                 senhaInput.value = '';
@@ -341,7 +333,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Formulário de cadastro de usuário
     const formCadastro = document.getElementById('form_cadastro_user');
     if (formCadastro) {
         formCadastro.addEventListener('submit', function (e) {
@@ -360,45 +351,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
             mensagemDiv.innerHTML = '<div class="spinner-border spinner-border-sm text-primary" role="status"><span class="visually-hidden">Carregando...</span></div>';
 
-            const nome = document.getElementById('input_nome').value.trim();
-            const cpf = document.getElementById('input_cpf').value.trim();
-            const email = document.getElementById('input_email').value.trim();
-            const telefone = document.getElementById('input_telefone').value.trim();
-            const cep = document.getElementById('input_cep') ? document.getElementById('input_cep').value.trim() : '';
-            const logradouro = document.getElementById('input_logradouro') ? document.getElementById('input_logradouro').value.trim() : '';
-            const bairro = document.getElementById('input_bairro') ? document.getElementById('input_bairro').value.trim() : '';
-            const cidade = document.getElementById('input_cidade') ? document.getElementById('input_cidade').value.trim() : '';
-            const estado = document.getElementById('input_estado') ? document.getElementById('input_estado').value.trim() : '';
-            const senha = document.getElementById('input_senha').value.trim();
-            const permissao = document.getElementById('admin').checked ? 'admin' : 'funcionario';
-
-            const formData = new FormData();
-            formData.append('nome', nome);
-            formData.append('cpf', cpf);
-            formData.append('email', email);
-            formData.append('telefone', telefone);
-            formData.append('cep', cep);
-            formData.append('logradouro', logradouro);
-            formData.append('bairro', bairro);
-            formData.append('cidade', cidade);
-            formData.append('estado', estado);
-            formData.append('permissao', permissao);
-            
-            const userId = document.getElementById('input_user_id').value;
-            if (userId) {
-                formData.append('id', userId);
-                if (senha) {
-                    formData.append('senha', senha);
-                } else {
-                    formData.append('senha', '');
-                }
-            } else {
-                formData.append('senha', senha);
-            }
-
-            fetch('cadastrar_usuario.php', {
+            fetch(formCadastro.action, {
                 method: 'POST',
-                body: formData
+                body: new FormData(formCadastro)
             })
             .then(async response => {
                 const text = await response.text();
@@ -406,7 +361,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     const data = JSON.parse(text);
                     if (data.success) {
                         if (data.reload) {
-                            // Fecha o modal e recarrega a página
                             const modalCadastro = bootstrap.Modal.getInstance(document.getElementById('modal_cadastro'));
                             if (modalCadastro) {
                                 modalCadastro.hide();

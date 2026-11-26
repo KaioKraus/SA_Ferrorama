@@ -1,5 +1,4 @@
-/* geral */
-:root {
+﻿:root {
     --shadow-card: 0 0 14px rgba(0, 0, 0, 0.2);
     --shadow-card-hover: 0 0 18px rgba(0, 0, 0, 0.24);
     --shadow-modal: 0 10px 24px rgba(0, 0, 0, 0.15);
@@ -16,7 +15,6 @@ body {
     background-color: #cfd8d6;
 }
 
-/* login */
 .body_login {
     background: linear-gradient(#101111, #072A2A, #072A2A);
     height: 100vh;
@@ -149,7 +147,6 @@ body {
 }
 
 
-/* menu lateral */
 main {
     display: flex;
 }
@@ -268,7 +265,6 @@ h3 {
     font-size: 18px;
 }
 
-/* dropdown do usuario */
 .nav1 .dropdown-menu {
     width: 227px !important;
     margin: 5px !important;
@@ -294,7 +290,6 @@ h3 {
     color: #ffffff;
 }
 
-/* usuarios e rotas */
 .conteudo {
     flex-grow: 1;
     height: 100vh;
@@ -316,7 +311,6 @@ h3 {
     overflow: hidden;
 }
 
-/* tabelas e scroll */
 .card_usuarios .table-wrapper,
 .relatorios-tabela-container,
 .table-wrapper,
@@ -354,7 +348,6 @@ h3 {
     border-radius: 10px;
 }
 
-/* Scroll para tabela de usuários e rotas */
 .card_usuarios .table-wrapper {
     height: calc(100% - 120px);
     overflow-y: auto;
@@ -362,12 +355,10 @@ h3 {
     padding-right: 8px;
 }
 
-/* Ajuste para página de rotas com filtros adicionais */
 .rotas-page .table-wrapper {
     height: calc(100% - 180px);
 }
 
-/* busca, botoes e tabelas */
 .card_usuarios,
 .dashboard-painel,
 .trens-painel,
@@ -562,7 +553,6 @@ a.badge_funcionario:focus-visible {
     line-height: 1;
 }
 
-/* modais */
 .modal-content {
     border-radius: 15px;
     box-shadow: var(--shadow-modal);
@@ -830,8 +820,6 @@ a.badge_funcionario:focus-visible {
     cursor: default !important;
 }
 
-/* sensores */
-/* Input de localização no modal de sensores com overflow visível */
 #modal_cadastro_sensor .modal-body {
     overflow: visible !important;
 }
@@ -900,7 +888,6 @@ a.badge_funcionario:focus-visible {
     color: #0A3D3D !important;
 }
 
-/* Estilos para link ativo e para logout no modal */
 #navModal .modal-body a {
     display: inline-block;
     padding: 8px 10px;
@@ -909,7 +896,6 @@ a.badge_funcionario:focus-visible {
     color: #333333 !important;
 }
 
-/* perfil */
 #modal_editar_perfil .modal-dialog {
     max-width: 620px;
     margin: 1.25rem auto;
@@ -1087,7 +1073,6 @@ a.badge_funcionario:focus-visible {
 
 #navModal .modal-body a.nav-active {
     color: #0A3D3D !important;
-    /* cor do nav1_mobile */
     font-weight: 700;
     text-shadow: 0 0 25px #0A3D3D;
 }
@@ -1104,7 +1089,6 @@ a.badge_funcionario:focus-visible {
     text-shadow: 0 0 25px #FB4242;
 }
 
-/* formularios e controles */
 .modal-ferroviario {
     border: none;
     border-radius: 15px;
@@ -1200,7 +1184,6 @@ a.badge_funcionario:focus-visible {
     margin: 0;
 }
 
-/*animação switch*/
 .toggle-container .slider {
     position: absolute;
     top: 0;
@@ -1238,7 +1221,6 @@ a.badge_funcionario:focus-visible {
     transform: translateX(100%);
 }
 
-/*fim animação select*/
 
 .input-field {
     position: relative;
@@ -1297,7 +1279,6 @@ a.badge_funcionario:focus-visible {
 }
 
 
-/* dashboard e trens */
 .dashboard-conteudo {
     flex-grow: 1;
     height: 100vh;
@@ -1350,7 +1331,6 @@ a.badge_funcionario:focus-visible {
     border-radius: 10px;
 }
 
-/* tela de trens */
 .trens-topo {
     height: 99px;
     padding: 30px;
@@ -1652,7 +1632,6 @@ a.trens-card-status:focus-visible {
     top: 20px;
 }
 
-/* dashboard */
 .dashboard-graficos {
     margin: 20px 65px 0px;
     display: flex;
@@ -1727,7 +1706,6 @@ a.trens-card-status:focus-visible {
     max-height: 100%;
 }
 
-/* relatorios */
 .card_relatorios {
     background-color: #D9D9D9;
     border-radius: 17px;
@@ -1938,7 +1916,6 @@ a.trens-card-status:focus-visible {
     border-radius: 10px;
 }
 
-/* visualizar relatorio */
 .relatorio-preview-page {
     background: #c8d0ce;
     padding: 28px 24px;
@@ -2543,7 +2520,6 @@ a.trens-card-status:focus-visible {
     color: #ffffff;
 }
 
-/* rotas */
 .route-modal-body {
     padding: 0 1.5rem 2rem;
 }
@@ -2575,7 +2551,6 @@ a.trens-card-status:focus-visible {
     filter: none;
 }
 
-/* cadastro de rota */
 .route-modal-dialog {
     max-width: 600px;
     width: min(88vw, 600px);
@@ -2990,7 +2965,6 @@ a.trens-card-status:focus-visible {
     justify-content: center;
 }
 
-/* ajustes pra telas menores */
 @media (min-width: 821px) and (max-width: 1040px) {
     .body_login .form1 {
         width: min(70vw, 760px);
@@ -3387,10 +3361,8 @@ a.trens-card-status:focus-visible {
     }
 }
 
-/*Responsividade*/
 @media (max-width: 820px) {
 
-    /*Tela de login*/
     .body_login .logo-login {
         display: none;
     }
@@ -3424,7 +3396,6 @@ a.trens-card-status:focus-visible {
         font-weight: lighter;
     }
 
-    /* Dashboard */
     .nav1 {
         display: none;
     }
@@ -3499,7 +3470,6 @@ a.trens-card-status:focus-visible {
         border-radius: 10px;
     }
 
-    /* Relatórios*/
     .card_relatorios,
     .card_gerar_relatorios {
         width: 95%;
@@ -3631,7 +3601,6 @@ a.trens-card-status:focus-visible {
     }
 }
 
-/* indicadores do dashboard */
 
 .dashboard-metricas {
     display: grid;
@@ -3838,7 +3807,6 @@ a.trens-card-status:focus-visible {
     font-size: 10px;
 }
 
-/* Card de Velocidade */
 .dashboard-card-velocidade {
     padding: 12px;
 }
@@ -3882,7 +3850,6 @@ a.trens-card-status:focus-visible {
     margin: 5px 0 0;
 }
 
-/* Cards de Métrica */
 .metrica-icone {
     width: 40px;
     height: 40px;
@@ -3933,7 +3900,6 @@ a.trens-card-status:focus-visible {
     height: 35px !important;
 }
 
-/* Card de Status - Estilo do Mockup */
 .dashboard-card-status {
     background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
     border-radius: 12px;
@@ -4011,7 +3977,6 @@ a.trens-card-status:focus-visible {
     max-height: none;
 }
 
-/* Responsividade */
 @media (max-width: 1040px) {
     .dashboard-metricas {
         grid-template-columns: repeat(2, 1fr);
@@ -4031,7 +3996,6 @@ a.trens-card-status:focus-visible {
     }
 }
 
-/* pagina inicial */
         .landing-body {
             min-height: 100vh;
             font-family: 'Segoe UI', Arial, sans-serif;
@@ -4040,7 +4004,7 @@ a.trens-card-status:focus-visible {
         }
 
         .landing-body a {
-            color: inherit !important;
+            color: #ffff !important;
             text-decoration: none !important;
         }
 
@@ -4087,7 +4051,6 @@ a.trens-card-status:focus-visible {
             align-items: center;
             font-weight: 700;
             letter-spacing: 0.04em;
-            color: #ffffff;
             font-size: 0.95rem;
             white-space: nowrap;
         }

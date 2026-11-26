@@ -82,7 +82,7 @@ SA_Ferrorama/
 │   └── style/
 │
 ├── database/
-│   └── Celestial_steel_db.sql
+│   └── celestial_steel_db.sql
 │
 ├── doc/
 │   ├── identidade_visual.md
@@ -90,20 +90,20 @@ SA_Ferrorama/
 │   ├── pesquisa_scrum.md
 │   └── pesquisa_xampp.md
 │
+├── infra/
+│   └── conexao.php
+│
 ├── public/
-│   ├── dashboard.php
-│   ├── tela_cadastro_user.php
-│   ├── tela_login.php
-│   ├── tela_relatorios.php
-│   ├── tela_rotas.php
-│   ├── tela_sensores.php
-│   └── tela_trens.php
+│   ├── acesso/
+│   ├── compartilhado/
+│   ├── dashboard/
+│   ├── relatorios/
+│   ├── rotas/
+│   ├── sensores/
+│   ├── trens/
+│   └── usuarios/
 │
 ├── script/
-│   ├── botoes.js
-│   ├── cadastro.js
-│   ├── scripts.js
-│   └── validacao.js
 │
 ├── index.php
 ├── LICENSE
@@ -119,7 +119,7 @@ Contém os arquivos utilizados no visual do sistema, como imagens e estilos.
 Contém as pesquisas e documentos utilizados durante o desenvolvimento do projeto.
 
 **public/**  
-Contém as principais páginas PHP do sistema.
+Agrupa as páginas PHP e os endpoints por área do sistema. O modal de perfil fica em `compartilhado/`.
 
 **script/**  
 Contém os arquivos JavaScript responsáveis por algumas funções, botões e validações do sistema.
@@ -139,14 +139,14 @@ Contém as informações sobre a licença do projeto.
 
 Para executar o projeto localmente, primeiro é necessário ter um ambiente para rodar os arquivos.
 
-Como o projeto utiliza PHP e XAMPP, o XAMPP pode ser utilizado para executar o sistema.
+Use o XAMPP com PHP 8.2 ou superior para executar o sistema.
 
 Depois de colocar o projeto na pasta `htdocs` do XAMPP, basta iniciar o **Apache** e acessar o projeto pelo navegador.
 
 A tela de login está localizada em:
 
 ```text
-public/tela_login.php
+public/acesso/tela_login.php
 ```
 
 Se o banco já estiver criado e a tela de rotas informar que a tabela `estacoes` não existe, execute `database/migracao_estacoes.sql` no banco `celestial_steel_db` pelo phpMyAdmin ou cliente MySQL.

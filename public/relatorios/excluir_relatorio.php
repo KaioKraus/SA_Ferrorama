@@ -1,7 +1,8 @@
 <?php
+// Exclui um relatório selecionado e devolve o resultado ao histórico.
 session_start();
 
-require_once __DIR__ . '/validar_acesso.php';
+require_once __DIR__ . '/../acesso/validar_acesso.php';
 
 function voltarParaRelatorios(): void
 {
@@ -9,6 +10,7 @@ function voltarParaRelatorios(): void
     exit;
 }
 
+// Confere o método, a permissão de administrador e o ID recebido.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     header('Allow: POST');
@@ -30,6 +32,7 @@ if ($relatorioId === false) {
     voltarParaRelatorios();
 }
 
+// Exclui o registro pelo ID e registra na sessão se ele foi encontrado.
 try {
     $stmtExcluir = mysqli_prepare($conexao, 'DELETE FROM relatorio WHERE relatorio_id = ? LIMIT 1');
     if (!$stmtExcluir) {

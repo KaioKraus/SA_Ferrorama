@@ -1,72 +1,47 @@
 <?php
+// Prepara a listagem de sensores e os dados necessários para abrir o formulário.
 session_start();
-include __DIR__ . '/validar_acesso.php';
-include __DIR__ . '/../infra/conexao.php';
+require_once __DIR__ . '/../acesso/validar_acesso.php';
+require_once __DIR__ . '/_locais.php';
 
 $usuarioNome = $_SESSION['usuario_nome'] ?? 'Usuário';
-$termoBusca = trim((string)($_GET['busca'] ?? ''));
-$statusParametro = $_GET['status'] ?? '';
-$statusFiltro = is_string($statusParametro) ? trim($statusParametro) : '';
+// Lê o termo de busca e aceita apenas os status usados pela tela.
+$termoBusca = is_string($_GET['busca'] ?? null) ? trim($_GET['busca']) : '';
+$statusFiltro = is_string($_GET['status'] ?? null) ? trim($_GET['status']) : '';
 $statusPermitidos = ['Ativo', 'Inativo'];
 if (!in_array($statusFiltro, $statusPermitidos, true)) {
     $statusFiltro = '';
 }
 
-$locaisSensores = [];
-// Monta a lista de trens e rotas para o formulário de sensor.
-$resultadoTrensSensor = mysqli_query($conexao, 'SELECT trem_id, nome_trem FROM trens ORDER BY nome_trem');
-$resultadoRotasSensor = mysqli_query($conexao, 'SELECT rota_id, nome, ponto_partida, ponto_chegada FROM rotas ORDER BY nome');
-if (!$resultadoTrensSensor || !$resultadoRotasSensor) {
-    error_log('Erro ao carregar locais para sensores: ' . mysqli_error($conexao));
-    http_response_code(500);
-    die('Não foi possível carregar as opções de localização dos sensores.');
-}
-while ($tremSensor = mysqli_fetch_assoc($resultadoTrensSensor)) {
-    $locaisSensores[] = [
-        'chave' => 'trem_' . (int) $tremSensor['trem_id'],
-        'vinculo' => 'trem',
-        'nome' => 'Trem - ID ' . (int) $tremSensor['trem_id'] . ' (' . $tremSensor['nome_trem'] . ')',
-    ];
-}
-while ($rotaSensor = mysqli_fetch_assoc($resultadoRotasSensor)) {
-    $locaisSensores[] = [
-        'chave' => 'trecho_rota' . (int) $rotaSensor['rota_id'],
-        'vinculo' => 'rota',
-        'nome' => 'Rota ' . (int) $rotaSensor['rota_id'] . ': ' . $rotaSensor['ponto_partida'] . ' → ' . $rotaSensor['ponto_chegada'],
-    ];
-}
-mysqli_free_result($resultadoTrensSensor);
-mysqli_free_result($resultadoRotasSensor);
-
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Expires: 0');
 
-// Busca os sensores para mostrar na tabela.
-$sqlSensores = 'SELECT sensor_id, nome_sensor, localizacao, tipo_dado, status FROM sensores';
-if ($termoBusca !== '') {
-    $termoBuscaSql = mysqli_real_escape_string($conexao, $termoBusca);
-    $sqlSensores .= " WHERE nome_sensor LIKE '%{$termoBuscaSql}%' OR localizacao LIKE '%{$termoBuscaSql}%' OR tipo_dado LIKE '%{$termoBuscaSql}%' OR CAST(sensor_id AS CHAR) LIKE '%{$termoBuscaSql}%'";
-}
-$sqlSensores .= ' ORDER BY sensor_id ASC';
-
-$resultadoSensores = mysqli_query($conexao, $sqlSensores);
-$sensores = [];
-if ($resultadoSensores) {
-    while ($sensor = mysqli_fetch_assoc($resultadoSensores)) {
-        $sensores[] = $sensor;
-    }
-    mysqli_free_result($resultadoSensores);
+try {
+    // Carrega os vínculos disponíveis para o seletor de localização.
+    $locaisSensores = listarLocaisSensores($conexao);
+} catch (mysqli_sql_exception $erro) {
+    error_log('Erro ao carregar locais para sensores: ' . $erro->getMessage());
+    http_response_code(500);
+    exit('Não foi possível carregar as opções de localização dos sensores.');
 }
 
-if ($statusFiltro !== '') {
-    // Se foi escolhido um status, mantém só os sensores com esse status.
-    $sensores = array_values(array_filter($sensores, static function ($sensor) use ($statusFiltro) {
-        $statusSensor = (string) ($sensor['status'] ?? 'Inativo');
-        return $statusSensor === $statusFiltro;
-    }));
+// Busca por ID, nome, localização ou tipo de dado e combina a busca com o status.
+$sql = "SELECT sensor_id, nome_sensor, localizacao, tipo_dado, status
+        FROM sensores
+        WHERE (nome_sensor LIKE ? OR localizacao LIKE ? OR tipo_dado LIKE ? OR CAST(sensor_id AS CHAR) LIKE ?)
+          AND (? = '' OR BINARY COALESCE(status, 'Inativo') = ?)
+        ORDER BY sensor_id";
+$filtro = '%' . $termoBusca . '%';
+try {
+    $sensores = $conexao->execute_query($sql, [$filtro, $filtro, $filtro, $filtro, $statusFiltro, $statusFiltro])->fetch_all(MYSQLI_ASSOC);
+} catch (mysqli_sql_exception $erro) {
+    error_log('Erro ao consultar sensores: ' . $erro->getMessage());
+    $sensores = [];
 }
 
+
+// Usa a descrição armazenada para classificar o vínculo como trem ou rota no formulário.
 function normalizarVinculoLocalizacao(string $localizacao): array {
     $localizacaoNormalizada = trim($localizacao);
     if (stripos($localizacaoNormalizada, 'rota') !== false) {
@@ -76,6 +51,7 @@ function normalizarVinculoLocalizacao(string $localizacao): array {
     return ['vinculo' => 'trem', 'localizacao' => 'trem_5823'];
 }
 
+// Converte tipos antigos em chaves reconhecidas pelo seletor e mantém o texto original para edição.
 function normalizarTipoDado(string $tipoDado): string {
     $tipo = strtolower(trim($tipoDado));
 
@@ -99,13 +75,12 @@ function normalizarTipoDado(string $tipoDado): string {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="../assets/style/style.css?v=<?php echo filemtime(__DIR__ . '/../assets/style/style.css'); ?>">
+    <link rel="stylesheet" href="../../assets/style/style.css?v=<?php echo filemtime(__DIR__ . '/../../assets/style/style.css'); ?>">
     <title>Celestial Steel</title>
 </head>
 
 <body>
 
-    <!--Main-->
     <main>
 
         <nav class="nav1_mobile">
@@ -113,34 +88,34 @@ function normalizarTipoDado(string $tipoDado): string {
                 <i class="bi bi-list"></i>
             </button>
 
-            <img src="../assets/img/logo.svg" alt="logo" class="logo-mobile">
+            <img src="../../assets/img/logo.svg" alt="logo" class="logo-mobile">
         </nav>
 
 
         <nav class="nav1">
 
-            <img src="../assets/img/logo.svg" alt="logo" class="logo">
+            <img src="../../assets/img/logo.svg" alt="logo" class="logo">
 
             <ul class="ul1">
 
-                <li class="lista1" id="li1"><a href="dashboard.php" class="lista1">Dashboard</a></li>
+                <li class="lista1" id="li1"><a href="../dashboard/dashboard.php" class="lista1">Dashboard</a></li>
                 <hr class="hr1 opacity-100">
 
-                <li class="lista1" id="li1"><a href="tela_relatorios.php" class="lista1">Relatórios</a></li>
+                <li class="lista1" id="li1"><a href="../relatorios/tela_relatorios.php" class="lista1">Relatórios</a></li>
                 <hr class="hr1 opacity-100">
 
                 <?php if ($usuarioEhAdministrador): ?>
-                    <li class="lista1" id="li1"><a href="tela_cadastro_user.php" class="lista1">Usuários</a></li>
+                    <li class="lista1" id="li1"><a href="../usuarios/tela_cadastro_user.php" class="lista1">Usuários</a></li>
                     <hr class="hr1 opacity-100">
                 <?php endif; ?>
 
-                <li class="lista1" id="li1"><a href="tela_rotas.php" class="lista1">Rotas</a></li>
+                <li class="lista1" id="li1"><a href="../rotas/tela_rotas.php" class="lista1">Rotas</a></li>
                 <hr class="hr1 opacity-100">
 
                 <li class="lista" id="li1"><a href="tela_sensores.php" class="lista">Sensores</a></li>
                 <hr class="hr1 opacity-100">
 
-                <li class="lista1" id="li1"><a href="tela_trens.php" class="lista1">Trens</a></li>
+                <li class="lista1" id="li1"><a href="../trens/tela_trens.php" class="lista1">Trens</a></li>
             </ul>
 
             <div class="dropdown">
@@ -150,7 +125,7 @@ function normalizarTipoDado(string $tipoDado): string {
                     </div>
                 </div>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="logout.php">Sair</a></li>
+                    <li><a class="dropdown-item" href="../acesso/logout.php">Sair</a></li>
                     <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal_editar_perfil">Editar</button></li>
                 </ul>
             </div>
@@ -376,7 +351,6 @@ function normalizarTipoDado(string $tipoDado): string {
         </div>
     </div>
 
-    <!-- Modal: Navegação (para telas pequenas) -->
     <div class="modal fade" id="navModal" tabindex="-1" aria-labelledby="navModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-top">
             <div class="modal-content">
@@ -386,26 +360,26 @@ function normalizarTipoDado(string $tipoDado): string {
                 </div>
                 <div class="modal-body">
                     <ul class="list-unstyled">
-                        <li class="mb-2"><a href="dashboard.php" class="text-decoration-none">Dashboard</a></li>
-                        <li class="mb-2"><a href="tela_relatorios.php" class="text-decoration-none">Relatórios</a></li>
+                        <li class="mb-2"><a href="../dashboard/dashboard.php" class="text-decoration-none">Dashboard</a></li>
+                        <li class="mb-2"><a href="../relatorios/tela_relatorios.php" class="text-decoration-none">Relatórios</a></li>
                         <?php if ($usuarioEhAdministrador): ?>
-                            <li class="mb-2"><a href="tela_cadastro_user.php" class="text-decoration-none">Usuários</a></li>
+                            <li class="mb-2"><a href="../usuarios/tela_cadastro_user.php" class="text-decoration-none">Usuários</a></li>
                         <?php endif; ?>
-                        <li class="mb-2"><a href="tela_rotas.php" class="text-decoration-none">Rotas</a></li>
+                        <li class="mb-2"><a href="../rotas/tela_rotas.php" class="text-decoration-none">Rotas</a></li>
                         <li class="mb-2"><a href="tela_sensores.php" class="text-decoration-none">Sensores</a></li>
-                        <li class="mb-2"><a href="tela_login.php" class="text-decoration-none">Sair</a></li>
+                        <li class="mb-2"><a href="../acesso/tela_login.php" class="text-decoration-none">Sair</a></li>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
 
-    <?php include __DIR__ . '/_modal_perfil.php'; ?>
+    <?php include __DIR__ . '/../compartilhado/_modal_perfil.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../script/nav.js?v=20261006"></script>
-    <script src="../script/sensores.js?v=<?php echo filemtime(__DIR__ . '/../script/sensores.js'); ?>"></script>
+    <script src="../../script/nav.js?v=20261006"></script>
+    <script src="../../script/sensores.js?v=<?php echo filemtime(__DIR__ . '/../../script/sensores.js'); ?>"></script>
 
-    <script src="../script/validacao.js?v=<?php echo filemtime(__DIR__ . '/../script/validacao.js'); ?>"></script>
+    <script src="../../script/validacao.js?v=<?php echo filemtime(__DIR__ . '/../../script/validacao.js'); ?>"></script>
 </body>
 
 </html>

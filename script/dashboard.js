@@ -1,11 +1,9 @@
-// Configurações e constantes
 const LIMITES = {
-    TEMPERATURA_MAX: 85, // °C - temperatura máxima segura
+    TEMPERATURA_MAX: 85,
 };
 
-const INTERVALO_ATUALIZACAO = 5000; // 5 segundos
+const INTERVALO_ATUALIZACAO = 5000;
 
-// Elementos do DOM
 const metricaConsumo = document.getElementById('metrica_consumo');
 const mensagemConsumo = document.getElementById('mensagem-grafico-consumo');
 const avisoConsumoDemo = document.getElementById('aviso-consumo-demo');
@@ -22,7 +20,6 @@ const statusIcone = document.getElementById('status_icone');
 const statusTexto = document.getElementById('status_texto');
 const cardStatus = statusIcone?.closest('.dashboard-card-status');
 
-// Gráficos
 let miniGraficoConsumo;
 let graficoVelocidade;
 let quantidadePontos = 12;
@@ -86,7 +83,6 @@ function atualizarClima() {
     });
 }
 
-// Função para criar mini gráfico
 function criarMiniGrafico(canvasId, cor) {
     const ctx = document.getElementById(canvasId);
     if (!ctx) return null;
@@ -121,7 +117,6 @@ function criarMiniGrafico(canvasId, cor) {
     });
 }
 
-// Função para atualizar mini gráfico
 function atualizarMiniGrafico(grafico, novoValor, rotuloHorario) {
     if (!grafico) return;
 
@@ -134,12 +129,10 @@ function atualizarMiniGrafico(grafico, novoValor, rotuloHorario) {
     grafico.update('none');
 }
 
-// Função para determinar status do sistema
 function determinarStatus(temperatura) {
     return temperatura > LIMITES.TEMPERATURA_MAX ? 'ALERTA' : 'OPERACIONAL';
 }
 
-// Função para atualizar indicadores visuais
 function atualizarIndicadores(temperatura, consumo, rotuloHorario, historicoConsumo) {
     if (metricaConsumo) {
         metricaConsumo.textContent = consumo.toFixed(0);
@@ -181,7 +174,6 @@ function atualizarIndicadores(temperatura, consumo, rotuloHorario, historicoCons
     }
 }
 
-// Função para atualizar gráfico de velocidade
 let atualizando = false;
 function atualizarVelocidades() {
     if (atualizando) return;
@@ -295,7 +287,6 @@ function atualizarVelocidades() {
     });
 }
 
-// Inicialização
 document.addEventListener('DOMContentLoaded', function() {
     atualizarClima();
     setInterval(atualizarClima, INTERVALO_ATUALIZACAO_CLIMA);
@@ -305,7 +296,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
     
-    // Criar gráfico principal de velocidade SEM legenda
     const canvas = document.getElementById('grafico_velocidade');
     if (canvas) {
         graficoVelocidade = new Chart(canvas, {
@@ -324,7 +314,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 plugins: {
                     legend: {
-                        display: false  // LEGENDA DESABILITADA
+                        display: false
                     },
                     tooltip: {
                         callbacks: {
@@ -336,7 +326,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 scales: {
                     x: {
-                        display: false  // REMOVE HORÁRIOS DO EIXO X
+                        display: false
                     },
                     y: {
                         beginAtZero: true,
@@ -351,12 +341,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Criar mini gráficos
     miniGraficoConsumo = criarMiniGrafico('mini_grafico_consumo', '#111111');
     
-    // Buscar dados inicial
     atualizarVelocidades();
     
-    // Atualizar periodicamente
     setInterval(atualizarVelocidades, INTERVALO_ATUALIZACAO);
 });

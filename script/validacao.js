@@ -17,7 +17,6 @@ if (toggle_senha) {
     };
 }
 
-// Validação do form de cadastro de usuário
 
 const input_cpf = document.getElementById("input_cpf");
 const input_telefone = document.getElementById("input_telefone");
@@ -66,7 +65,6 @@ if (input_telefone) {
     });
 }
 
-// Validação do form de cadastro de sensor (RF18 / RN03)
 
 const form_cadastro_sensor = document.getElementById("form_cadastro_sensor");
 const mensagem_cadastro_sensor = document.getElementById("mensagem_cadastro_sensor");
@@ -74,8 +72,6 @@ const select_localizacao_sensor = document.getElementById("input_localizacao_sen
 const vinculo_trem_radio = document.getElementById("vinculo_trem");
 const vinculo_rota_radio = document.getElementById("vinculo_rota");
 
-// RN03: Todo sensor deve estar vinculado a um trem ou a um trecho da ferrovia.
-// O toggle Trem/Rota controla quais opções aparecem no select de Localização.
 const opcoes_localizacao = select_localizacao_sensor
     ? Array.from(select_localizacao_sensor.querySelectorAll("option[data-vinculo]")).map(opcao => ({
         value: opcao.value,
@@ -130,7 +126,6 @@ if (form_cadastro_sensor) {
             return;
         }
 
-        // RN03: Todo sensor deve estar vinculado a um trem ou a um trecho da ferrovia
         if (!localizacao_sensor.startsWith("trem_") && !localizacao_sensor.startsWith("trecho_rota")) {
             mensagem_cadastro_sensor.innerHTML = "<div class='text-danger fw-bold'>O sensor deve estar vinculado a um trem ou a uma rota!</div>";
             return;

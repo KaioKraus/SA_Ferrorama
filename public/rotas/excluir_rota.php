@@ -1,8 +1,9 @@
 <?php
+// Exclui uma rota escolhida na listagem e retorna à tela de rotas.
 session_start();
-require_once __DIR__ . '/validar_acesso.php';
-require_once __DIR__ . '/../infra/conexao.php';
+require_once __DIR__ . '/../acesso/validar_acesso.php';
 
+// Inclui a busca, o status e o resultado da exclusão na URL de retorno.
 function redirecionarRotas(string $resultado): void
 {
     $parametros = [];
@@ -22,6 +23,7 @@ function redirecionarRotas(string $resultado): void
     exit;
 }
 
+// Confere o método, o cargo e o ID recebido antes de alterar a tabela.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
     redirecionarRotas('invalid_request');
@@ -40,6 +42,7 @@ if ($rotaId === false) {
     redirecionarRotas('invalid_id');
 }
 
+// Exclui o ID informado e distingue uma rota inexistente de uma exclusão concluída.
 $stmt = mysqli_prepare($conexao, 'DELETE FROM rotas WHERE rota_id = ? LIMIT 1');
 if ($stmt === false) {
     error_log('Erro ao preparar exclusão de rota: ' . mysqli_error($conexao));
